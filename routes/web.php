@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\FormController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,9 +13,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+
 
 Route::middleware([
     'auth:sanctum',
@@ -24,5 +22,9 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', function () {
         return view('dashboard');
+        
     })->name('dashboard');
+
 });
+Route::resource('/', FormController::class);
+
