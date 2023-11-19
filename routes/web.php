@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\FormController;
+use App\Http\Controllers\FormsController;
 
 
 
@@ -15,6 +15,8 @@ Route::middleware([
         
     })->name('dashboard');
 });
-Route::resource('form', FormController::class)->middleware(['web']);
+Route::get('forms', [FormsController::class, 'index'])->name('forms.index');
+
+Route::post('store-form', [FormsController::class, 'store']);
 
 

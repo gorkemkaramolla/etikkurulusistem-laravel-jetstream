@@ -25,7 +25,7 @@ class StoreFormRequest extends FormRequest
         'name' => 'required|string|max:255',
         'tc_kimlik_no' => 'required|string|max:255',
         'calisma_basligi' => 'required|string|max:255',
-        'calisma_programı' => 'required|string|max:255',
+        'calisma_programi' => 'required|string|max:255',
         'path_gonullu_onam_form' => 'required|string|max:255',
         'path_anket_form' => 'required|string|max:255',
         'path_olcek_izinleri_form' => 'required|string|max:255',

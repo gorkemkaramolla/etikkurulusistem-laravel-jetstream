@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("name")->nullable();
             $table->string("tc_kimlik_no")->nullable();
             $table->string("calisma_basligi")->nullable();
-            $table->string("calisma_programı")->nullable();
+            $table->string("calisma_programi")->nullable();
             $table->string("path_gonullu_onam_form")->nullable();
             $table->string("path_anket_form")->nullable();
             $table->string("path_olcek_izinleri_form")->nullable();
