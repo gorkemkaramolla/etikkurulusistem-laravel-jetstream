@@ -23,11 +23,20 @@ class FormController extends Controller
 
     
     public function store(StoreFormRequest $request)
-    {
-        Form::create($request->validated());
- 
-        return redirect()->route('form.index');
-    }
+{
+    $validatedData = $request->validated();
+    
+    \Log::info('Validated Data:', $validatedData);
+
+    dd($validatedData); // Check the data in the browser
+    dd($request->all());
+
+
+    Form::create($validatedData);
+
+    return redirect()->route('form.index');
+}
+
 
    
     public function show(Form $form)

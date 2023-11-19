@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
-            $table->string("name");
-            $table->string("tc_kimlik_no");
-            $table->string("calisma_basligi");
-            $table->string("calisma_programı");
-            $table->string("path_gonullu_onam_form");
-            $table->string("path_anket_form");
-            $table->string("path_olcek_izinleri_form");
+            $table->string("name")->nullable();
+            $table->string("tc_kimlik_no")->nullable();
+            $table->string("calisma_basligi")->nullable();
+            $table->string("calisma_programı")->nullable();
+            $table->string("path_gonullu_onam_form")->nullable();
+            $table->string("path_anket_form")->nullable();
+            $table->string("path_olcek_izinleri_form")->nullable();
             $table->timestamps();
         });
     }
