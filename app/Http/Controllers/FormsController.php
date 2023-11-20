@@ -32,11 +32,11 @@ class FormsController extends Controller
             $form->ogrenci_no = trim($request->input('ogrenci_no'));
             $form->email = trim($request->input('email'));
 
-            // Create the folder if it doesn't exist
+            // Form folderı oluşturma
             $folderPath = 'public/forms/' . $form->ogrenci_no;
             Storage::makeDirectory($folderPath);
 
-            // Handle file uploads and store them in the created folder with custom names
+            // Dosya yükleme ve dosya yolları
             $onamFormName = $form->ogrenci_no . '_onam_formu.pdf';
             $anketFormName = $form->ogrenci_no . '_anket_formu.pdf';
             $olcekIzinleriFormName = $form->ogrenci_no . '_olcek_izinleri_formu.pdf';
@@ -52,7 +52,6 @@ class FormsController extends Controller
 
             return redirect()->route('forms.index')->with('success', 'Form successfully stored.');
         } catch (Exception $e) {
-            // Handle specific exceptions if needed
             return redirect()->back()->with('error', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');
         }
     }
