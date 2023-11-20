@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string("lastname", 32);
             $table->string("ogrenci_no", 11)->unique();
+            $table->string("path_basvuru_form", 120);
             $table->string("path_gonullu_onam_form", 120);
             $table->string("path_anket_form", 120);
             $table->string("path_olcek_izinleri_form", 120);

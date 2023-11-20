@@ -57,6 +57,7 @@
     </script>
 @endif
 
+
 <body style="padding:20px" class="bg-light  " data-new-gr-c-s-check-loaded="14.1138.0" style=" border: none;">
 
     <div class="">
@@ -106,9 +107,9 @@
                                     </span>
                                 </small>
                                 <div class="custom-file-input">
-                                    <label id="basvuru-form-title" for="basvuru-formu">Başvuru Formu</label>
+                                    <label id="path_basvuru_form" for="path_basvuru_form">Başvuru Formu</label>
                                     <input class="form-control" type="file" accept="application/pdf"
-                                        id="basvuru-formu" required>
+                                        name="path_basvuru_form"id="path_basvuru_form" required>
                                 </div>
                                 <div class="custom-file-input">
                                     <label id="path_gonullu_onam_form_label" for="path_gonullu_onam_form"> Gönüllü Onam
@@ -161,7 +162,18 @@
                         </div>
                     </form>
                 </div>
+                @if (
+                    $errors->has('path_basvuru_form') ||
+                        $errors->has('path_gonullu_onam_form') ||
+                        $errors->has('path_olcek_izinleri_form') ||
+                        $errors->has('path_anket_form'))
+                    <div class="alert alert-danger" role="alert">
+                        Dosya boyutu geçerli bir PDF olmalı ve 2048 KB'dan küçük olmalıdır.
+                    </div>
+                @endif
+
             </div>
+
         </div>
     </div>
     </div>
