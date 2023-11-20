@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Rules\MaxFileSize;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreFormRequest extends FormRequest
@@ -22,12 +23,14 @@ class StoreFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'name' => 'required|string|max:32',
-        'lastname' => 'required|string|max:32',
-        'ogrenci_no' => 'required|string|max:11',
-        'path_gonullu_onam_form' => 'required|string|max:255',
-        'path_anket_form' => 'required|string|max:255',
-        'path_olcek_izinleri_form' => 'required|string|max:255',
+            'name' => 'required',
+            'lastname' => 'required',
+            'ogrenci_no' => 'required',
+            'email' => 'required|email',
+            'path_basvuru_form' => 'required|mimes:pdf|max:2048',     
+            'path_gonullu_onam_form' => 'required|mimes:pdf|max:2048',     
+            'path_olcek_izinleri_form' => 'required|mimes:pdf|max:2048',
+            'path_anket_form' => 'required|mimes:pdf|max:2048',
         ];
     }
 }
