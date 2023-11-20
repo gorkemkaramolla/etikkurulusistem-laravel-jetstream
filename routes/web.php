@@ -15,7 +15,7 @@ Route::middleware([
         
     })->name('dashboard');
 });
-Route::get('forms', [FormsController::class, 'index'])->name('forms.index');
+Route::get('/', [FormsController::class, 'index'])->name('forms.index');
 
 Route::post('store-form', [FormsController::class, 'store']);
 

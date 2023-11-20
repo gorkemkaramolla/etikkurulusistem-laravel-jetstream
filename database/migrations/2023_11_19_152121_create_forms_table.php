@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +12,14 @@ return new class extends Migration
     {
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
-            $table->string("name")->nullable();
-            $table->string("tc_kimlik_no")->nullable();
-            $table->string("calisma_basligi")->nullable();
-            $table->string("calisma_programi")->nullable();
-            $table->string("path_gonullu_onam_form")->nullable();
-            $table->string("path_anket_form")->nullable();
-            $table->string("path_olcek_izinleri_form")->nullable();
+            $table->string("name", 32);
+            $table->string("lastname", 32);
+            $table->string("ogrenci_no", 11);
+            $table->string("calisma_basligi", 64);
+            $table->string("calisma_programi", 120);
+            $table->string("path_gonullu_onam_form", 120);
+            $table->string("path_anket_form", 120);
+            $table->string("path_olcek_izinleri_form", 120);
             $table->timestamps();
         });
     }

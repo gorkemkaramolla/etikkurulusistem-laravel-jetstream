@@ -22,8 +22,9 @@ class StoreFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-        'name' => 'required|string|max:255',
-        'tc_kimlik_no' => 'required|string|max:255',
+        'name' => 'required|string|max:32',
+        'lastname' => 'required|string|max:32',
+        'ogrenci_no' => 'required|string|max:11',
         'calisma_basligi' => 'required|string|max:255',
         'calisma_programi' => 'required|string|max:255',
         'path_gonullu_onam_form' => 'required|string|max:255',
