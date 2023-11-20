@@ -10,6 +10,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    transform: scale(0.9);
 }
 
 @media (min-width: 576px) {

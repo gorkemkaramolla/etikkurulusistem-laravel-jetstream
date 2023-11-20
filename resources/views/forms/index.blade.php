@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=0.9">
     <title>Form Submission</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -57,7 +57,7 @@
     </script>
 @endif
 
-<body style="padding:34px" class="bg-light  " data-new-gr-c-s-check-loaded="14.1138.0" style=" border: none;">
+<body style="padding:20px" class="bg-light  " data-new-gr-c-s-check-loaded="14.1138.0" style=" border: none;">
 
     <div class="">
         <div class="col-md-6 m-auto" style="border-radius: 10px;">
