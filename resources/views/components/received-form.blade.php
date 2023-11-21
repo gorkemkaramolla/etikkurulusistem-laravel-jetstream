@@ -4,32 +4,45 @@
 <div class="flex flex-col">
     <div class="-m-1.5 overflow-x-auto">
         <div class="p-1.5 min-w-full inline-block align-middle">
-            <div class="overflow-hidden">
+            <h1 class="p-8">
+                ONAY BEKLEYEN FORMLAR
+
+            </h1>
+            <div class="overflow-hidden px-8">
                 <table class="table-auto overflow-x-auto w-1/2">
                     <thead>
-                        <tr class="">
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">id</th>
+                        @if ($forms !== null && count($forms) > 0)
+                            <tr class="">
+                                <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">isim</th>
+                                <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">soyisim</th>
+                                <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">email</th>
+                                <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Öğrenci
+                                    No</th>
+                                <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Başvuru
+                                    Tarihi
+                                </th>
+                                <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Başvuru
+                                    Formu
+                                </th>
+                                <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Ölçek
+                                    İzinleri Formu
+                                </th>
+                                <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Anket Formu
+                                </th>
+                                <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Gönüllü
+                                    Onam Formu
+                                </th>
 
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">isim</th>
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">soyisim
-                            </th>
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">e-mail
-                            </th>
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">öğrenci_no
-                            </th>
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Başvuru
-                                formu</th>
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Gönüllü
-                                onam formu</th>
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Anket
-                                formu</th>
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Ölçek
-                                İzinleri Formu</th>
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">Başvuru
-                                Tarihi</th>
-                            <th class="px-1 py-3 text-start text-xs font-medium text-gray-500 uppercase">
-                                Düzenlenme Tarihi</th>
-                        </tr>
+
+
+
+
+
+
+
+
+                            </tr>
+                        @endif
                     </thead>
                     <tbody>
                         @foreach ($forms as $form)
