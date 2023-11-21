@@ -162,15 +162,8 @@
                         </div>
                     </form>
                 </div>
-                @if (
-                    $errors->has('path_basvuru_form') ||
-                        $errors->has('path_gonullu_onam_form') ||
-                        $errors->has('path_olcek_izinleri_form') ||
-                        $errors->has('path_anket_form'))
-                    <div class="alert alert-danger" role="alert">
-                        Dosya boyutu geçerli bir PDF olmalı ve 2048 KB'dan küçük olmalıdır.
-                    </div>
-                @endif
+                <x-file-upload-error />
+
 
             </div>
 
