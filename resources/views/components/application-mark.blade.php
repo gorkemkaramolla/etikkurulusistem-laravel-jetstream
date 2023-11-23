@@ -1,1 +1,1 @@
-<img src="assets/images/logo-nisantasi.png" width="80">
+<img src="/assets/images/logo-nisantasi.png" width="80">

@@ -42,18 +42,22 @@
                     <td class="p-3 flex flex-col gap-3">
                         <form action="{{ url('/forms/approve/' . $form->id) }}" method="post">
                             @csrf
-                            <input type="submit" value="onay"
-                                class="w-full capitalize px-2 py-1 hover:transition-color ring-green-400 ring-2">
-                        </form>
-                        <form action="">
-                            <button type="submit" value="düzeltme" type="submit"
-                                class="w-full capitalize px-2 py-1 flex justify-center hover:transition-colors ring-blue-400 ring-2">
-                                <x-gmdi-delete-r class="w-6 h-6" />
+                            <button type="submit" value="onay"
+                                class="w-full capitalize px-2 py-1 flex justify-center text-green-400 hover:transition-color ring-green-400 ">
+                                <x-typ-tick class="w-6 h-6" />
                             </button>
                         </form>
                         <form action="">
-                            <input type="submit"
-                                class="w-full capitalize px-2 py-1 hover:transition-colors ring-blue-400 ring-2">
+                            <button type="submit" value="düzeltme" type="submit"
+                                class="w-full capitalize px-2 py-1 flex justify-center text-red-400  ">
+                                <x-typ-delete class="w-6 h-6" />
+                            </button>
+                        </form>
+                        <form action="">
+                            <button type="submit"
+                                class="w-full flex justify-center text-indigo-400 capitalize px-2 py-1  ">
+                                <x-typ-pencil class="w-6 h-6" />
+                            </button>
                         </form>
                     </td>
                 </tr>
