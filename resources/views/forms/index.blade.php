@@ -48,14 +48,7 @@
 
     <title>Etik Kurulu Formu</title>
 </head>
-@if (session('error'))
-    <!-- Script to show a JavaScript alert on page load -->
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            alert("Error: {{ session('error') }}");
-        });
-    </script>
-@endif
+
 
 
 <body style="padding:20px" class="bg-light  " data-new-gr-c-s-check-loaded="14.1138.0" style=" border: none;">
@@ -69,6 +62,11 @@
                     <h4 class="card-title w-100 mt-3 text-center opacity-75 ">İSTANBUL NİŞANTAŞI ÜNİVERSİTESİ <br>Etik
                         Kurulu Formu</h4>
                 </div>
+                @if (session('error'))
+                    <div>
+                        Error: {{ session('error') }}
+                    </div>
+                @endif
                 <div class="card-body ">
                     <form enctype="multipart/form-data" action="{{ url('store-form') }}" method="POST" class="mb-4">
                         @csrf

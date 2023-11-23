@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html class="dark" lang="{{ str_replace('_', '-', app()->getLocale()) }}">
 
 <head>
     <meta charset="utf-8">
@@ -35,7 +35,7 @@
         @endif
 
         <!-- Page Content -->
-        <main class=" flex items-center justify-center">
+        <main class=" flex  justify-center w-screen h-screen">
             {{ $slot }}
         </main>
     </div>

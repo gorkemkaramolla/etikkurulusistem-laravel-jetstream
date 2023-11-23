@@ -12,7 +12,7 @@ class DashboardController extends Controller
     {
         // Fetch $forms directly in this controller
         $forms = Forms::where('stage', Auth::user()->role)
-        ->select('name', 'lastname', 'email',"ogrenci_no","created_at","path_basvuru_form","path_olcek_izinleri_form","path_anket_form"
+        ->select("id",'name', 'lastname', 'email',"ogrenci_no","created_at","path_basvuru_form","path_olcek_izinleri_form","path_anket_form"
         ,"path_gonullu_onam_form") // Replace with the actual column names you want
         ->get();
 

@@ -15,9 +15,10 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::post('/forms/approve/{formid}', [FormsController::class, 'approveForm']);
 });
 Route::get('/', [FormsController::class, 'index'])->name('forms.index');
 
 Route::post('store-form', [FormsController::class, 'store']);
-
 
