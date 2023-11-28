@@ -1,0 +1,95 @@
+<div class="container mt-5">
+    <div class="row g-3">
+        <div class="col-md-4 form-group">
+            <label for="q1">Başvuru Dönemi <br><span class="pt-0 small">Term:</span><span
+                    class="text-danger">*</span></label>
+            <select class="form-control" id="q1" name="q1" required>
+                <option value="">Başvuru dönemi seçiniz</option>
+                <option value="option1">Güz</option>
+                <option value="option2">Bahar</option>
+            </select>
+        </div>
+        <div class="col-md-4 form-group">
+            <label for="q2">Temel Alan Bilgisi<br><span class="pt-0 small">Basic Domain
+                    Knowledge:</span><span class="text-danger">*</span></label>
+            <select class="form-control" id="q2" name="q2" required>
+                <option value="">Temel Alanızı seçiniz</option>
+                <option value="option1">Sosyal Bilimler </option>
+                <option value="option2">Fen/Mühendislik Bilimleri</option>
+                <option value="option3">Sağlık Bilimleri</option>
+            </select>
+        </div>
+
+        <div class="col-md-4 form-group">
+            <label for="q3">Başvuru Türü<br><span class="pt-0 small">Program Type:</span><span
+                    class="text-danger">*</span></label>
+            <select class="form-control" id="q3" name="q3" onchange="toggleOtherInput(this, 'otherInput');"
+                required>
+                <option value="">Başvuru Türü</option>
+                <option value="option1">Başvuru Türü seçiniz</option>
+                <option value="option2">Düzeltme</option>
+                <option value="option3">Amaç/Yöntem Değişikliği</option>
+                <option value="option4">Devam Eden Proje</option>
+                <option value="option5">Diğer (belirtiniz):</option>
+            </select>
+            <div class="col-md-4 form-group" id="otherInput" style="display: none;">
+                <input type="text" class="form-control" id="other" name="other"
+                    placeholder="Lütfen belirtiniz">
+            </div>
+        </div>
+        <div class="col-md-4 form-group">
+            <label for="q4">Çalışmanın Niteliği <br><span class="pt-0 small">The Nature of the
+                    Work:</span><span class="text-danger">*</span></label>
+            <select class="form-control" id="q4" name="q4" onchange="toggleOtherInput(this, 'otherInput');"
+                required>
+                <option value="">Çalışmanın Niteliğinızı seçiniz</option>
+                <option value="option1">Yüksek Lisans Tezi </option>
+                <option value="option2">Doktora/Sanatta Yeterlik Tezi</option>
+                <option value="option3">BAP destekli proje</option>
+                <option value="option4">TÜBİTAK Projesi </option>
+                <option value="option5">Diğer (belirtiniz): </option>
+            </select>
+            <div class="col-md-4 form-group" id="otherInput" style="display: none;">
+                <input type="text" class="form-control" id="other" name="other"
+                    placeholder="Lütfen belirtiniz">
+            </div>
+        </div>
+        <div class="col-md-4 form-group">
+            <label for="q5">Araştırma Türü<br><span class="pt-0 small">Type of Research:</span><span
+                    class="text-danger">*</span></label>
+            <select class="form-control" id="q5" name="q5" onchange="toggleOtherInput(this, 'otherInput');"
+                required>
+                <option value="">Araştırma Türü seçiniz</option>
+                <option value="option1">Tarama Çalışması</option>
+                <option value="option2">Deneysel Çalışma</option>
+                <option value="option3">Nitel Çalışma</option>
+                <option value="option4">Karma Yöntem</option>
+                <option value="option5">Diğer (belirtiniz):</option>
+            </select>
+            <div class="col-md-4 form-group" id="otherInput" style="display: none;">
+                <input type="text" class="form-control" id="other" name="other"
+                    placeholder="Lütfen belirtiniz">
+            </div>
+        </div>
+        <div class="col-md-4 form-group">
+            <label for="q6">Kurum İzni<br><span class="pt-0 small">Institutional Permit:</span><span
+                    class="text-danger">*</span></label>
+            <select class="form-control" id="q6" name="q6" required>
+                <option value="">Kurum İzni seçiniz</option>
+                <option value="option1">Kurum İzni Alınmıştır</option>
+                <option value="option2">Kurum İzni İçin Başvuru Yapılmıştır</option>
+                <option value="option3">Kurum, etik kurul sonrası izin vereceğini belirtmektedir</option>
+                <option value="option4">Kurum iznine gerek yoktur</option>
+            </select>
+        </div>
+        <div class="col-md-4 form-group">
+            <label for="q7">Araştırma Başlama ve bitiş tarihi<br><span class="pt-0 small">Start and end
+                    date of the research:</span><span class="text-danger">*</span> </label>
+            <select class="form-control" id="q7" name="q7" required>
+                <option value="">Araştırma Başlama ve bitiş tarihi seçiniz</option>
+                <option value="option1">Başlama Tarihi</option>
+                <option value="option2">Bitiş Tarihi</option>
+            </select>
+        </div>
+    </div>
+</div>
