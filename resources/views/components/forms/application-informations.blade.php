@@ -3,16 +3,21 @@
         <div class="col-md-4 form-group">
             <label for="q1">Başvuru Dönemi <br><span class="pt-0 small">Term:</span><span
                     class="text-danger">*</span></label>
-            <select class="form-control" id="q1" name="q1" required>
+            <select name="application_semester" class="form-control" id="q1" name="q1" required>
                 <option value="">Başvuru dönemi seçiniz</option>
                 <option value="option1">Güz</option>
                 <option value="option2">Bahar</option>
             </select>
         </div>
         <div class="col-md-4 form-group">
+            <label for="q1">Akademik Yıl<br><span class="pt-0 small">Term:</span><span
+                    class="text-danger">*</span></label>
+            <input name="academic_year" type="text" class="form-control">
+        </div>
+        <div class="col-md-4 form-group">
             <label for="q2">Temel Alan Bilgisi<br><span class="pt-0 small">Basic Domain
                     Knowledge:</span><span class="text-danger">*</span></label>
-            <select class="form-control" id="q2" name="q2" required>
+            <select class="form-control" name="temel_alan_bilgisi" required>
                 <option value="">Temel Alanızı seçiniz</option>
                 <option value="option1">Sosyal Bilimler </option>
                 <option value="option2">Fen/Mühendislik Bilimleri</option>
@@ -23,7 +28,7 @@
         <div class="col-md-4 form-group">
             <label for="q3">Başvuru Türü<br><span class="pt-0 small">Program Type:</span><span
                     class="text-danger">*</span></label>
-            <select class="form-control" id="q3" name="q3" onchange="toggleOtherInput(this, 'otherInput');"
+            <select class="form-control" name="application_type" onchange="toggleOtherInput(this, 'otherInput');"
                 required>
                 <option value="">Başvuru Türü</option>
                 <option value="option1">Başvuru Türü seçiniz</option>
@@ -40,7 +45,7 @@
         <div class="col-md-4 form-group">
             <label for="q4">Çalışmanın Niteliği <br><span class="pt-0 small">The Nature of the
                     Work:</span><span class="text-danger">*</span></label>
-            <select class="form-control" id="q4" name="q4" onchange="toggleOtherInput(this, 'otherInput');"
+            <select class="form-control" name="work_qualification" onchange="toggleOtherInput(this, 'otherInput');"
                 required>
                 <option value="">Çalışmanın Niteliğinızı seçiniz</option>
                 <option value="option1">Yüksek Lisans Tezi </option>
@@ -57,8 +62,7 @@
         <div class="col-md-4 form-group">
             <label for="q5">Araştırma Türü<br><span class="pt-0 small">Type of Research:</span><span
                     class="text-danger">*</span></label>
-            <select class="form-control" id="q5" name="q5" onchange="toggleOtherInput(this, 'otherInput');"
-                required>
+            <select class="form-control" name="research_type" onchange="toggleOtherInput(this, 'otherInput');" required>
                 <option value="">Araştırma Türü seçiniz</option>
                 <option value="option1">Tarama Çalışması</option>
                 <option value="option2">Deneysel Çalışma</option>
@@ -74,7 +78,7 @@
         <div class="col-md-4 form-group">
             <label for="q6">Kurum İzni<br><span class="pt-0 small">Institutional Permit:</span><span
                     class="text-danger">*</span></label>
-            <select class="form-control" id="q6" name="q6" required>
+            <select class="form-control" name="institution_permission" required>
                 <option value="">Kurum İzni seçiniz</option>
                 <option value="option1">Kurum İzni Alınmıştır</option>
                 <option value="option2">Kurum İzni İçin Başvuru Yapılmıştır</option>
@@ -83,13 +87,16 @@
             </select>
         </div>
         <div class="col-md-4 form-group">
-            <label for="q7">Araştırma Başlama ve bitiş tarihi<br><span class="pt-0 small">Start and end
+            <label for="research_start_date">Araştırma Başlama ve bitiş tarihi<br><span class="pt-0 small">Start date
+                    of the research:</span><span class="text-danger">*</span> </label>
+            <input type="date" name="research_start_date" class="form-control" placeholder="dd/mm/yyyy"
+                pattern="\d{2}/\d{2}/\d{4}">
+        </div>
+        <div class="col-md-4 form-group">
+            <label for="research_end_date">Araştırma Bitiş Tarihi<br><span class="pt-0 small">End
                     date of the research:</span><span class="text-danger">*</span> </label>
-            <select class="form-control" id="q7" name="q7" required>
-                <option value="">Araştırma Başlama ve bitiş tarihi seçiniz</option>
-                <option value="option1">Başlama Tarihi</option>
-                <option value="option2">Bitiş Tarihi</option>
-            </select>
+            <input type="date" name="research_end_date" class="form-control" placeholder="dd/mm/yyyy"
+                pattern="\d{2}/\d{2}/\d{4}">
         </div>
     </div>
 </div>

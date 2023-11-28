@@ -16,6 +16,7 @@ return new class extends Migration
             $table->unsignedBigInteger('form_id');
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
             $table->enum('application_semester', ["güz","bahar"]);//başvuru dönemi
+            $table->string('temel_alan_bilgisi',50);//Temel alan bilgisi /Basic domain knowledge
             $table->smallInteger('academic_year');//akademik yıl
             $table->string('application_type',50);//başvuru türü
             $table->string('work_qualification',50);//çalışma_niteliği
