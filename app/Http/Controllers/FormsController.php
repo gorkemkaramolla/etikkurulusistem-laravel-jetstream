@@ -20,7 +20,7 @@ class FormsController extends Controller
         return view('forms.index');
     }
 
-    public function store(Request $request)
+    public function store(StoreFormRequest $request)
     {
 
         try {

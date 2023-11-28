@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string("name", 32);//isim
             $table->string("lastname", 32);//soyisim
             $table->string("advisor", 32);//danışman
-            $table->string("gsm",10);//telefon
+            $table->string("gsm",10)->unique();//telefon
             $table->string('email')->unique();
             $table->string('major',100);//anabilim dalı
             $table->string('department',100);//program
