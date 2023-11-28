@@ -5,8 +5,8 @@
                     class="text-danger">*</span></label>
             <select name="application_semester" class="form-control" id="q1" name="q1" required>
                 <option value="">Başvuru dönemi seçiniz</option>
-                <option value="Güz">Güz</option>
-                <option value="Bahar">Bahar</option>
+                <option value="güz">Güz</option>
+                <option value="bahar">Bahar</option>
             </select>
         </div>
         <div class="col-md-4 form-group">
