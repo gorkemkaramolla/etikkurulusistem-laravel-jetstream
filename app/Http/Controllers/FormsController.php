@@ -50,6 +50,14 @@ class FormsController extends Controller
 
             // $form->save();
             echo $request->input('lastname');
+            echo $request->input('name');
+            echo $request->input('academic_year');
+            echo $request->input('research_end_date');
+            echo $request->input('work_qualification');
+
+
+
+
 
 
             // return redirect()->route('forms.index')->with('success', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');

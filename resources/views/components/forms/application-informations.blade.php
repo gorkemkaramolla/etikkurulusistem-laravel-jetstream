@@ -48,11 +48,11 @@
             <select class="form-control" name="work_qualification" onchange="toggleOtherInput(this, 'otherInput');"
                 required>
                 <option value="">Çalışmanın Niteliğinızı seçiniz</option>
-                <option value="option1">Yüksek Lisans Tezi </option>
-                <option value="option2">Doktora/Sanatta Yeterlik Tezi</option>
-                <option value="option3">BAP destekli proje</option>
-                <option value="option4">TÜBİTAK Projesi </option>
-                <option value="option5">Diğer (belirtiniz): </option>
+                <option value="Yüksek Lisans Tezi">Yüksek Lisans Tezi </option>
+                <option value="Doktora/Sanatta Yeterlik Tezi">Doktora/Sanatta Yeterlik Tezi</option>
+                <option value="BAP destekli proje">BAP destekli proje</option>
+                <option value="TÜBİTAK Projesi">TÜBİTAK Projesi </option>
+                <option value="Diğer">Diğer </option>
             </select>
             <div class="col-md-4 form-group" id="otherInput" style="display: none;">
                 <input type="text" class="form-control" id="other" name="other"
