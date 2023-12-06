@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreFormRequest;
 use App\Mail\FormSubmitted;
+use App\Models\ApplicationInformations;
+use App\Models\ResearcherInformations;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Forms;
 use App\Models\User;
 use App\Models\EtikKurulOnayi;
+use App\Models\ResearchInformations;
 use Illuminate\Support\Facades\Mail;
 
 use Exception;
@@ -24,45 +27,63 @@ class FormsController extends Controller
     {
 
         try {
-            // Validate the request data
-            // $validated = $request->validated();
+            $validated = $request->validated();
+            //create form
+            echo $validated['document_number'];
+            $form = new Forms();
+            $form->name = trim($validated['document_number']);
+            $form->email = trim($validated['email']);
+            $form->save();
+            // //create researcher informations
+            // $researcher = new ResearcherInformations();
+            // $researcher->form_id = $form->id;
+            // $researcher->name = trim($validated['name']);
+            // $researcher->lastname = trim($validated['lastname']);
+            // $researcher->advisor = trim($validated['advisor']);
+            // $researcher->gsm = trim($validated['gsm']);
+            // $researcher->email = trim($validated['email']); 
+            // $researcher->major = trim($validated['major']);
+            // $researcher->department = trim($validated['department']);
+            // $researcher->student_no = trim($validated['student_no']);
+            // $researcher->save();
+            // //create application informations
+            // $applicationInfo = new ApplicationInformations();
+            // $applicationInfo->form_id = $form->id;
+            // $applicationInfo->application_semester = trim($validated['application_semester']);
+            // $applicationInfo->temel_alan_bilgisi = trim($validated['temel_alan_bilgisi']);
+            // $applicationInfo->academic_year = trim($validated['academic_year']);
+            // $applicationInfo->application_type = trim($validated['application_type']);
+            // $applicationInfo->work_qualification = trim($validated['work_qualification']); 
+            // $applicationInfo->research_type = trim($validated['research_type']);
+            // $applicationInfo->institution_permission = trim($validated['institution_permission']);
+            // $applicationInfo->research_start_date = trim($validated['research_start_date']);
+            // $applicationInfo->research_end_date = trim($validated['research_end_date']);
+            // $applicationInfo->save();
+            // //create research informations
+            // $research = new ResearchInformations();
+            // $research->form_id = $form->id;
+            // $research->research_title = trim($validated['research_title']);
+            // $research->research_subject_purpose = trim($validated['research_subject_purpose']);
+            // $research->research_unique_value = trim($validated['research_unique_value']);
+            // $research->research_hypothesis = trim($validated['research_hypothesis']);
+            // $research->research_method = trim($validated['research_method']); 
+            // $research->research_universe = trim($validated['research_universe']);
+            // $research->research_forms = trim($validated['research_forms']);
+            // $research->research_data_collection = trim($validated['research_data_collection']);
+            // $research->research_restrictions = trim($validated['research_restrictions']);
+            // $research->research_place_date = trim($validated['research_place_date']);
+            // $research->research_literature_review = trim($validated['research_literature_review']);
 
-            // $form = new Forms();
-            // $form->name = trim($request->input('name'));
-            // $form->lastname = trim($request->input('lastname'));
-            // $form->ogrenci_no = trim($request->input('ogrenci_no'));
-            // $form->email = trim($request->input('email'));
-            // // Form folderı oluşturma
-            // $folderPath = 'public/forms/' . $form->ogrenci_no;
-            // Storage::makeDirectory($folderPath);
-            // Storage::setVisibility($folderPath, 'public');
-            // // Dosya yükleme ve dosya yolları
-            // $onamFormName = $form->ogrenci_no . '_onam_formu.pdf';
-            // $anketFormName = $form->ogrenci_no . '_anket_formu.pdf';
-            // $olcekIzinleriFormName = $form->ogrenci_no . '_olcek_izinleri_formu.pdf';
-            // $basvuruFormName = $form->ogrenci_no . '_basvuru_formu.pdf';
-
-            // $form->path_basvuru_form = $request->file('path_gonullu_onam_form')->storeAs($folderPath, $basvuruFormName);
-            // $form->path_gonullu_onam_form = $request->file('path_gonullu_onam_form')->storeAs($folderPath, $onamFormName);
-            // $form->path_olcek_izinleri_form = $request->file('path_olcek_izinleri_form')->storeAs($folderPath, $olcekIzinleriFormName);
-            // $form->path_anket_form = $request->file('path_anket_form')->storeAs($folderPath, $anketFormName);
-            // // Mail::to($form->email)->send(new FormSubmitted());
-
-            // $form->save();
-            echo $request->input('lastname');
-            echo $request->input('name');
-            echo $request->input('academic_year');
-            echo $request->input('research_end_date');
-            echo $request->input('work_qualification');
+            // $research->save();
 
 
 
 
 
 
-            // return redirect()->route('forms.index')->with('success', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');
+            return redirect()->route('forms.index')->with('success', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');
         } catch (Exception $e) {
-            // return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->with('error', $e->getMessage());
 
         }
     }

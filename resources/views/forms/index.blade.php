@@ -4,12 +4,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.min.js"
-        integrity="sha512-WW8/jxkELe2CAiE4LvQfwm1rajOS8PHasCCx+knHG0gBHt8EXxS6T6tJRTGuDQVnluuAvMxWF4j8SNFDKceLFg=="
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
+        integrity="sha512-b2QcS5SsA8tZodcDtGRELiGv5SaKSk1vDHDaQRda0htPYWZ6046lr3kJ5bAAQdpV2mmA/4v0wQF9MyU6/pDIAg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"
+        integrity="sha512-X/YkDZyjTf4wyc2Vy16YGCPHwAY8rZJY+POgokZjQB2mhIRFJCckEGc6YyX9eNsPfn0PzThEuNs+uaomE5CO6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 
     <link rel="stylesheet" href="/assets/css/form.css">
     <title>Etik Kurulu Formu</title>
@@ -18,6 +20,8 @@
 
 
 <body>
+
+
     @if (session('error'))
         <div>
             Error: {{ session('error') }}
@@ -29,13 +33,15 @@
             <div class="row d-flex justify-content-center mb-1">
                 <img src="assets/images/logo-nisantasi.png" style="width:180px;">
             </div>
-            <h3 class=" text-center ">
+            <h1 style="font-size: 1.2em" class=" text-center ">
                 T.C.
-                İSTANBUL NİŞANTAŞI ÜNİVERSİTESİ
-                LİSANSÜSTÜ EĞİTİM ENSTİTÜSÜ<br>
-                ETİK KURUL BAŞVURU FORMU<br>
-                Ethics Committee Application Form
-            </h3>
+                <br>
+                İSTANBUL NİŞANTAŞI ÜNİVERSİTESİ<br>
+                <span style="font-size: 1em"> ETİK KURULU BAŞVURU FORMU</span><br>
+                <span>
+                    ETHICS COMMITTEE APPLICATION FORM
+                </span>
+            </h1>
 
 
             <x-forms.form-informations></x-forms.form-informations>
@@ -144,7 +150,16 @@
 
         </form>
     </div>
-
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+            var popoverList = popoverTriggerList.map(function(element) {
+                return new bootstrap.Popover(element);
+            });
+        });
+        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    </script>
 </body>
 
 </html>

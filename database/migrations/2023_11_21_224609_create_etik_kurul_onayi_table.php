@@ -19,8 +19,5 @@ class CreateEtikKurulOnayiTable extends Migration
         });
     }
 
-    public function down()
-    {
-        Schema::dropIfExists('etik_kurul_onayi');
-    }
+   
 }

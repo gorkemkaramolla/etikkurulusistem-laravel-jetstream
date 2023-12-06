@@ -31,16 +31,13 @@
             <select class="form-control" name="application_type" onchange="toggleOtherInput(this, 'otherInput');"
                 required>
                 <option value="Başvuru Türü">Başvuru Türü</option>
-                <option value="Başvuru Türü seçiniz">Başvuru Türü seçiniz</option>
+                <option value="Yeni Başvuru">Yeni Başvuru</option>
                 <option value="Düzeltme">Düzeltme</option>
                 <option value="Amaç/Yöntem Değişikliği">Amaç/Yöntem Değişikliği</option>
                 <option value="Devam Eden Proje">Devam Eden Proje</option>
-                <option value="Diğer (belirtiniz)">Diğer (belirtiniz):</option>
+                <option value="Diğer">Diğer</option>
             </select>
-            <div class="col-md-4 form-group" id="otherInput" style="display: none;">
-                <input type="text" class="form-control" id="other" name="other"
-                    placeholder="Lütfen belirtiniz">
-            </div>
+
         </div>
         <div class="col-md-4 form-group">
             <label for="q4">Çalışmanın Niteliği <br><span class="pt-0 small">The Nature of the
@@ -68,7 +65,7 @@
                 <option value="Deneysel Çalışma">Deneysel Çalışma</option>
                 <option value="itel Çalışma">Nitel Çalışma</option>
                 <option value="Karma Yöntem">Karma Yöntem</option>
-                <option value="Diğer (belirtiniz)">Diğer (belirtiniz):</option>
+                <option value="Diğer">Diğer</option>
             </select>
             <div class="col-md-4 form-group" id="otherInput" style="display: none;">
                 <input type="text" class="form-control" id="other" name="other"
@@ -82,7 +79,8 @@
                 <option value="Kurum İzni seçiniz">Kurum İzni seçiniz</option>
                 <option value="Kurum İzni Alınmıştır">Kurum İzni Alınmıştır</option>
                 <option value="Kurum İzni İçin Başvuru Yapılmıştır">Kurum İzni İçin Başvuru Yapılmıştır</option>
-                <option value="Kurum, etik kurul sonrası izin vereceğini belirtmektedir">Kurum, etik kurul sonrası izin vereceğini belirtmektedir</option>
+                <option value="Kurum, etik kurul sonrası izin vereceğini belirtmektedir">Kurum, etik kurul sonrası izin
+                    vereceğini belirtmektedir</option>
                 <option value="Kurum iznine gerek yoktur">Kurum iznine gerek yoktur</option>
             </select>
         </div>

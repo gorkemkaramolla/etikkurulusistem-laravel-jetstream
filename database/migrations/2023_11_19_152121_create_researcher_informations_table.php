@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('researcher_informations', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('form_id');
+            $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
             $table->string("name", 32);//isim
             $table->string("lastname", 32);//soyisim
             $table->string("advisor", 32);//danışman
