@@ -22,12 +22,22 @@
 <body>
 
 
+
     @if (session('error'))
         <div>
             Error: {{ session('error') }}
         </div>
     @endif
     <div class="container">
+        @if ($errors->any())
+            <div class="alert alert-danger">
+                <ul>
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
         <form enctype="multipart/form-data" action="{{ url('store-form') }}" method="POST">
             @csrf
             <div class="row d-flex justify-content-center mb-1">
@@ -92,7 +102,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="accordion-item">
+                {{-- <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-headingFour">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false"
@@ -107,12 +117,12 @@
 
                         </div>
                     </div>
-                </div>
+                </div> --}}
 
             </div>
 
             <!-- PDF DOCUMENTS -->
-            <div class="d-flex flex-column gap-2 pt-5 justify-content-center align-items-center ">
+            {{-- <div class="d-flex flex-column gap-2 pt-5 justify-content-center align-items-center ">
                 <div class="custom-file-input">
                     <small class="form-text mt-4 text-muted text-transform: capitalize;">Lütfen Dosya Pdf
                         Türünde Yükleniyiniz
@@ -144,8 +154,9 @@
                 <a href="https://www.nisantasi.edu.tr/Uploads/LE_FR.17%20et%C4%B0k%20kurul%20ba%C5%9Evuru%20formu.docx">Gönüllü
                     Onam Formuna ulaşmak için tıklayınız</a>
             </div>
+          --}}
             <div class="container pb-4 text-center">
-                <button type="submit" class="btn btn-primary" style="width: 200px;">Submit</button>
+                <input type="submit" class="btn btn-primary" style="width: 200px;">
             </div>
 
         </form>

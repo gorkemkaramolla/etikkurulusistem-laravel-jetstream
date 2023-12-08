@@ -73,7 +73,7 @@
             </div>
         </div>
         <div class="col-md-4 form-group">
-            <label for="q6">Kurum İzni<br><span class="pt-0 small">Institutional Permit:</span><span
+            <label for="institution_permission">Kurum İzni<br><span class="pt-0 small">Institutional Permit:</span><span
                     class="text-danger">*</span></label>
             <select class="form-control" name="institution_permission" required>
                 <option value="Kurum İzni seçiniz">Kurum İzni seçiniz</option>
