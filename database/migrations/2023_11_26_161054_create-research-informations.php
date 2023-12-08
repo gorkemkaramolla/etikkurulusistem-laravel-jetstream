@@ -24,6 +24,8 @@ return new class extends Migration
             $table->string("research_restrictions",255);//Sınırlar ve kısıtlar
             $table->string("research_place_date",255);//Araştırma tarih ve yeri
             $table->string("research_literature_review",255);//Faydalanıcak kaynaklar
+            $table->timestamps();
+
         });
     }
 

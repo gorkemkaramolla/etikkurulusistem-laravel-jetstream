@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('institution_permission',50);//kurum izinleri
             $table->date('research_start_date');//araştırma başlangıç tarihi
             $table->date('research_end_date');//araştırma bitiş tarihi
+            $table->timestamps();
                         
         });
     }
