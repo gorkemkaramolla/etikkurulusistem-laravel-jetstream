@@ -1,19 +1,12 @@
 <?php
-
 namespace App\Http\Controllers;
-
 use App\Http\Requests\StoreFormRequest;
-use App\Mail\FormSubmitted;
 use App\Models\ApplicationInformations;
 use App\Models\ResearcherInformations;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use App\Models\Forms;
+use App\Models\Form;
 use App\Models\User;
 use App\Models\EtikKurulOnayi;
 use App\Models\ResearchInformations;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Log;
 use Exception;
 
 class FormsController extends Controller
@@ -30,7 +23,7 @@ class FormsController extends Controller
             $validated = $request->validated();
             //create form
 
-            $form = new Forms();
+            $form = new Form();
             $form->document_number=$validated['document_number'];
             $form->save();
             // //create researcher informations
@@ -89,7 +82,7 @@ class FormsController extends Controller
     }
     public function approveForm($formid)
     {
-        $form = Forms::find($formid);
+        $form = Form::find($formid);
         $this->startApprovalProcess($form);
         return redirect()->route('dashboard')->with('success', 'Redirected to the dashboard successfully.');
 
@@ -97,7 +90,7 @@ class FormsController extends Controller
     
 
     
-    private function startApprovalProcess(Forms $form)
+    private function startApprovalProcess(Form $form)
     {
         $form->stage="etik_kurul";
         $form->save();
