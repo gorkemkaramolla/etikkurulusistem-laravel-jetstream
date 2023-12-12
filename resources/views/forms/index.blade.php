@@ -2,7 +2,8 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
@@ -41,7 +42,7 @@
         <form enctype="multipart/form-data" action="{{ url('store-form') }}" method="POST">
             @csrf
             <div class="row d-flex justify-content-center mb-1">
-                <img src="assets/images/logo-nisantasi.png" style="width:180px;">
+                <img src="/assets/images/logo-nisantasi.png" style="width:180px;">
             </div>
             <h1 style="font-size: 1.2em" class=" text-center ">
                 T.C.

@@ -3,7 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FormsController;
 
-
 use Illuminate\Support\Facades\Gate;
 
 use App\Http\Controllers\DashboardController;
@@ -18,6 +17,8 @@ Route::middleware([
     Route::get('/forms/{slug}', [DashboardController::class, 'getFormSlug'],)->name('forms.get');
 
     Route::post('/forms/approve/{formid}', [FormsController::class, 'approveForm']);
+    Route::get('/pdf/{slug}', [DashboardController::class, 'generatePdf']);
+
 });
 Route::get('/', [FormsController::class, 'index'])->name('forms.index');
 

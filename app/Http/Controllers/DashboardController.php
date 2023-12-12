@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use App\Models\Form;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
@@ -20,6 +22,8 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized action.');
         }
     }
+
+    
     public function getFormSlug($slug)
     {
         $forms = Form::with(['research_informations',"application_informations","researcher_informations"])
