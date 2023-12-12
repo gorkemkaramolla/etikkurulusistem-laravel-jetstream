@@ -15,6 +15,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/forms/{slug}', [DashboardController::class, 'getFormSlug'],)->name('forms.get');
 
     Route::post('/forms/approve/{formid}', [FormsController::class, 'approveForm']);
 });

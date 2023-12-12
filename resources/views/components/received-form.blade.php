@@ -30,7 +30,7 @@
                     <td class="border px-4 py-2">{{ $form['researcher_informations']['name'] }}</td>
                     <td class="border px-4 py-2">{{ $form['researcher_informations']['email'] }}</td>
                     <td class="border px-4 py-2">
-                        <a class="text-blue-400" href="basvuru">Görüntüle</a>
+                        <a href="/forms/{{ $form['id'] }}" class="text-blue-400" href="basvuru">Görüntüle</a>
                     </td>
                 </tr>
             @endforeach
