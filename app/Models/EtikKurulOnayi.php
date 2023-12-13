@@ -15,7 +15,7 @@ class EtikKurulOnayi extends Model
 
     public function form()
     {
-        return $this->belongsTo(Forms::class, 'form_id');
+        return $this->belongsTo(Form::class, 'form_id');
     }
 
     public function etikKurulUye()

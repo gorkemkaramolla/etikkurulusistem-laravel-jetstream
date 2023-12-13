@@ -3,7 +3,7 @@
         table {
             width: 100%;
             height: 100px;
-            font-size: 12px;
+            font-size: 16px;
         }
 
         .pdf-render {

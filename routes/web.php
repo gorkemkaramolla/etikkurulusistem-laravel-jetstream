@@ -14,13 +14,16 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/forms/{slug}', [DashboardController::class, 'getFormSlug'],)->name('forms.get');
+    Route::get('/forms/{student_no}/{created_at}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
+
+    Route::get('/approve-sekreterlik/{formid}', [FormsController::class, 'approveForm'])->name('approve.sekreterlik');
+    Route::get('/approve-etikkurul/{formid}', [FormsController::class, 'approveEtikkurul'])->name('approve.etikkurul');
+
+
 
     Route::post('/forms/approve/{formid}', [FormsController::class, 'approveForm']);
     Route::get('/pdf/{slug}', [DashboardController::class, 'generatePdf']);
-
 });
 Route::get('/', [FormsController::class, 'index'])->name('forms.index');
 
 Route::post('store-form', [FormsController::class, 'store']);
-

@@ -19,5 +19,20 @@ class Form extends Model
     {
         return $this->hasOne(ResearcherInformations::class);
     }
-    
+    public function etik_kurul_onayi()
+    {
+        return $this->hasMany(EtikKurulOnayi::class, 'form_id');
+    }
+    public function isApprovedByEtikKurul()
+    {
+        $etikKurulApprovals = $this->etik_kurul_onayi->pluck('onay_durumu')->toArray();
+        return count(array_unique($etikKurulApprovals)) === 1 && in_array('onaylandi', $etikKurulApprovals);
+    }
+
+    public function approveFormByEtikKurul()
+    {
+        if ($this->isApprovedByEtikKurul()) {
+            $this->update(['stage' => 'approved']);
+        }
+    }
 }

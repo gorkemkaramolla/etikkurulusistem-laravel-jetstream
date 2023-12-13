@@ -12,10 +12,13 @@
                 <th>ID</th>
                 <th>Döküman Numarası</th>
                 <th>Onay Durumu</th>
-                <th>Research Title</th>
-                <th>Researcher Name</th>
-                <th>Researcher Email</th>
+                <th>Araştırma Başlığı</th>
+                <th>Araştırmacı Öğrenci No</th>
+                <th>Araştırmacı Adı</th>
+                <th>Araştırmacı Email</th>
+                <th>Araştırmacı Telefon</th>
                 <th>Tüm Başvuruyu Görüntüle</th>
+                <th>Onay</th>
 
             </tr>
         </thead>
@@ -27,11 +30,49 @@
                     <td class="border px-4 py-2">{{ $form['document_number'] }}</td>
                     <td class="border px-4 py-2">{{ $form['stage'] }}</td>
                     <td class="border px-4 py-2">{{ $form['research_informations']['research_title'] }}
+                    <td class="border px-4 py-2">{{ $form['researcher_informations']['student_no'] }}</td>
                     <td class="border px-4 py-2">{{ $form['researcher_informations']['name'] }}</td>
                     <td class="border px-4 py-2">{{ $form['researcher_informations']['email'] }}</td>
+                    <td class="border px-4 py-2">{{ $form['researcher_informations']['gsm'] }}</td>
+
                     <td class="border px-4 py-2">
-                        <a href="/forms/{{ $form['id'] }}" class="text-blue-400" href="basvuru">Görüntüle</a>
+                        <a target="_blank"
+                            href="/forms/{{ $form['researcher_informations']['student_no'] }}/{{ \Carbon\Carbon::parse($form['created_at'])->format('d-m-Y-His') }}"
+                            class="text-blue-400">Görüntüle</a>
                     </td>
+                    @foreach ($forms as $form)
+                        <td class="border px-4 py-2">
+                            @if (auth()->user()->hasRole('sekreterlik'))
+                                @if ($form->etik_kurul_onayi->where('user_id', auth()->user()->id)->where('onay_durumu', 'onaylandi')->count() > 0)
+                                    <span class="text-green-600">Onaylandı</span>
+                                @else
+                                    <a href="{{ route('approve.sekreterlik', ['formid' => $form->id]) }}"
+                                        class="text-green-600">Onayla✓</a>
+                                @endif
+                            @elseif(auth()->user()->hasRole('etik_kurul'))
+                                @php
+                                    $etikKurulOnayi = $form->etik_kurul_onayi->where('user_id', auth()->user()->id)->first();
+                                @endphp
+
+                                @if ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'onaylandi')
+                                    <span class="text-blue-600">Etik Kurul Onaylandı</span>
+                                @else
+                                    <a href="{{ route('approve.etikkurul', ['formid' => $form->id]) }}"
+                                        class="text-blue-600">Etik Kurul Onayla✓</a>
+                                @endif
+                            @else
+                                <!-- Handle other roles or no role -->
+                                <span class="text-gray-500">Not applicable</span>
+                            @endif
+                        </td>
+                    @endforeach
+
+
+
+
+
+
+
                 </tr>
             @endforeach
         </tbody>
