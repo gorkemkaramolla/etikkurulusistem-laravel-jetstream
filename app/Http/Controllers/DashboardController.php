@@ -12,14 +12,28 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $forms = Form::with([
-            'research_informations',
-            'application_informations',
-            'researcher_informations',
-            'etik_kurul_onayi'
-        ])
-            ->where('stage', Auth::user()->role)
-            ->get();
+        // Check if the 'onaylandi' parameter is present in the query string
+        $whichForms = request()->query('onaylandi');
+
+        if ($whichForms === null) {
+            $forms = Form::with([
+                'research_informations',
+                'application_informations',
+                'researcher_informations',
+                'etik_kurul_onayi'
+            ])
+                ->where('stage', Auth::user()->role)
+                ->get();
+        } elseif ($whichForms === "true") {
+            $forms = Form::with([
+                'research_informations',
+                'application_informations',
+                'researcher_informations',
+                'etik_kurul_onayi'
+            ])
+                ->where('stage', 'onaylandi')
+                ->get();
+        }
 
         // Check the 'access-dashboard' gate before showing the dashboard
         if (Gate::allows('access-dashboard')) {
@@ -28,6 +42,7 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized action.');
         }
     }
+
 
 
     public function getFormSlug($studentNo, $formattedDate)
