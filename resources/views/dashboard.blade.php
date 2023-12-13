@@ -1,7 +1,7 @@
 <x-app-layout>
 
     <head>
-
+        <title>{{ auth()->user()->role }}</title>
     </head>
     <x-received-form :forms="$forms" />
 

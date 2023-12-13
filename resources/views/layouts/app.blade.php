@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="//cdn.datatables.net/1.13.7/css/jquery.dataTables.min.css">
     <script src="//cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
 
-    <title>{{ config('app.name', 'Laravel') }}</title>
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -38,7 +37,7 @@
         @endif
 
         <!-- Page Content -->
-        <main class=" flex  justify-center w-screen h-screen">
+        <main class=" flex  justify-center w-screen ">
             {{ $slot }}
         </main>
     </div>

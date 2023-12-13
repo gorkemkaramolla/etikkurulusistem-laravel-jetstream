@@ -90,13 +90,15 @@
                                     <button type="button"
                                         class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none focus:bg-gray-50 active:bg-gray-50 transition ease-in-out duration-150">
                                         <div class="flex flex-col ">
-                                            <p>
+                                            <p class="capitalize">
                                                 {{ Auth::user()->name }}
                                                 {{ Auth::user()->lastname }}
 
                                             </p>
                                             <p class="capitalize">
-                                                {{ str_replace('_', ' ', Auth::user()->role) }}
+                                                {{ Auth::user()->role === 'sekreterlik'
+                                                    ? ' Etik Kurulu' . ' ' . str_replace('_', ' ', Auth::user()->role)
+                                                    : str_replace('_', ' ', Auth::user()->role) . 'u ' . 'Üyesi' }}
 
                                             </p>
                                         </div>
