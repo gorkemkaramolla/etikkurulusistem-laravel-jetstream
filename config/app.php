@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Translation\TranslationServiceProvider as BaseTranslationServiceProvider;
+use LaravelLang\JsonFallbackHotfix\TranslationServiceProvider as JsonTranslationServiceProvider;
 
 return [
 
@@ -83,7 +85,7 @@ return [
     |
     */
 
-    'locale' => 'en',
+    'locale' => 'tr',
 
     /*
     |--------------------------------------------------------------------------
@@ -170,7 +172,10 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\FortifyServiceProvider::class,
         App\Providers\JetstreamServiceProvider::class,
+    ])->replace([
+        BaseTranslationServiceProvider::class => JsonTranslationServiceProvider::class,
     ])->toArray(),
+    
 
     /*
     |--------------------------------------------------------------------------

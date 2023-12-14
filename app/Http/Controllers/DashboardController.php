@@ -43,7 +43,11 @@ class DashboardController extends Controller
         }
     }
 
-
+    public function changeLanguageToTurkish()
+    {
+        App::setLocale('tr');
+        // Dil değişikliği gerçekleştirildi, buradan sonra Türkçe dil dosyaları kullanılacak
+    }
 
     public function getFormSlug($studentNo, $formattedDate)
     {

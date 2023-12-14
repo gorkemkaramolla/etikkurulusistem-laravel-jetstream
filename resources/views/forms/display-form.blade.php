@@ -73,8 +73,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Araştırmacı Adı ve Soyadı:</p>
-                        <p><i>Name </i></p>
+                        <p class="font-bold">Araştırmacı Adı ve Soyadı:</p>
+                        <p class="font-bold"><i>Name </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['researcher_informations']['name'] }}
@@ -83,7 +83,7 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Danışman/Yürütücü:</p>
+                        <p class="font-bold">Danışman/Yürütücü:</p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['researcher_informations']['advisor'] }}
@@ -92,8 +92,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Öğrenci No / TC No:</p>
-                        <p><i>Student ID Number </i></p>
+                        <p class="font-bold">Öğrenci No / TC No:</p>
+                        <p class="font-bold"><i>Student ID Number </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['researcher_informations']['student_no'] }}
@@ -102,8 +102,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Anabilim Dalı :</p>
-                        <p><i>Department </i></p>
+                        <p class="font-bold">Anabilim Dalı :</p>
+                        <p class="font-bold"><i>Department </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['researcher_informations']['major'] }}
@@ -112,8 +112,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Program :</p>
-                        <p><i>Department </i></p>
+                        <p class="font-bold">Program :</p>
+                        <p class="font-bold"><i>Department </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['researcher_informations']['department'] }}
@@ -122,8 +122,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Telefon ve Mail :</p>
-                        <p><i>Phone and Mail </i></p>
+                        <p class="font-bold">Telefon ve Mail :</p>
+                        <p class="font-bold"><i>Phone and Mail </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p class="flex flex-col">
@@ -150,8 +150,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Başvuru Dönemi:</p>
-                        <p><i>Term </i></p>
+                        <p class="font-bold">Başvuru Dönemi:</p>
+                        <p class="font-bold"><i>Term </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['application_informations']['application_semester'] }}
@@ -160,8 +160,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Temel Alan Bilgisi:</p>
-                        <p><i>Basic Domain Knowledge</i></p>
+                        <p class="font-bold">Temel Alan Bilgisi:</p>
+                        <p class="font-bold"><i>Basic Domain Knowledge</i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['application_informations']['temel_alan_bilgisi'] }}
@@ -170,8 +170,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Başvuru Türü:</p>
-                        <i>Program Type</i>
+                        <p class="font-bold">Başvuru Türü:</p>
+                        <i class="font-bold">Program Type</i>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['application_informations']['application_type'] }}
@@ -180,8 +180,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Çalışmanın Niteliği</p>
-                        <p><i>Nature of the Study </i></p>
+                        <p class="font-bold">Çalışmanın Niteliği</p>
+                        <p class="font-bold"><i>Nature of the Study </i></p>
 
                     </td>
                     <td class="w-8/12" colspan="3">
@@ -191,8 +191,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Araştırma Türü :</p>
-                        <p><i>Research Type </i></p>
+                        <p class="font-bold">Araştırma Türü :</p>
+                        <p class="font-bold"><i>Research Type </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['application_informations']['research_type'] }}
@@ -201,8 +201,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Kurum İzni :</p>
-                        <p><i>Department </i></p>
+                        <p class="font-bold">Kurum İzni :</p>
+                        <p class="font-bold"><i>Department </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['application_informations']['institution_permission'] }}
@@ -211,8 +211,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Araştırma Başlama ve Bitiş Tarihi :</p>
-                        <p><i>Research Start and End Date</i></p>
+                        <p class="font-bold">Araştırma Başlama ve Bitiş Tarihi :</p>
+                        <p class="font-bold"><i>Research Start and End Date</i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p class="flex flex-col">
@@ -239,8 +239,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Araştırma Başlığı:</p>
-                        <p><i>Research Title </i></p>
+                        <p class="font-bold">Araştırma Başlığı:</p>
+                        <p class="font-bold"><i>Research Title </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['research_informations']['research_title'] }}
@@ -249,8 +249,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Konu ve Amaç:</p>
-                        <p><i>Research Subject and Purpose</i></p>
+                        <p class="font-bold">Konu ve Amaç:</p>
+                        <p class="font-bold"><i>Research Subject and Purpose</i></p>
 
                     </td>
                     <td class="w-8/12" colspan="3">
@@ -260,8 +260,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Özgün Değer:</p>
-                        <i>Unique value of Research</i>
+                        <p class="font-bold">Özgün Değer:</p>
+                        <p class="font-bold"><i >Unique value of Research</i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['research_informations']['research_unique_value'] }}
@@ -270,8 +270,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Hipotezler/Araştırma Soruları</p>
-                        <p><i>Hypothesis</i></p>
+                        <p class="font-bold">Hipotezler/Araştırma Soruları</p>
+                        <p class="font-bold"><i>Hypothesis</i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['research_informations']['research_hypothesis'] }}
@@ -280,8 +280,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Yöntem :</p>
-                        <p><i>Research Method </i></p>
+                        <p class="font-bold">Yöntem :</p>
+                        <p class="font-bold"><i>Research Method </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['research_informations']['research_method'] }}
@@ -290,8 +290,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Evren ve Örneklem :</p>
-                        <p><i>Research Universe and Sample </i></p>
+                        <p class="font-bold">Evren ve Örneklem :</p>
+                        <p class="font-bold"><i>Research Universe and Sample </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['research_informations']['research_universe'] }}
@@ -300,8 +300,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Ölçek ve Formlar :</p>
-                        <p><i>Scale and Forms </i></p>
+                        <p class="font-bold">Ölçek ve Formlar :</p>
+                        <p class="font-bold"><i>Scale and Forms </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p>
@@ -312,8 +312,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Verilerin Toplanması ve Analizi:</p>
-                        <p><i>Data Collection and Analysis </i></p>
+                        <p class="font-bold">Verilerin Toplanması ve Analizi:</p>
+                        <p class="font-bold"><i>Data Collection and Analysis </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p>
@@ -324,8 +324,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Sınırlar ve Kısıtlar:</p>
-                        <p><i>Research Restrictions </i></p>
+                        <p class="font-bold">Sınırlar ve Kısıtlar:</p>
+                        <p class="font-bold"><i>Research Restrictions </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p>
@@ -336,8 +336,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Araştırma Yeri ve Tarihi:</p>
-                        <p><i>Research Place and Date </i></p>
+                        <p class="font-bold">Araştırma Yeri ve Tarihi:</p>
+                        <p class="font-bold"><i>Research Place and Date </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p>
@@ -348,8 +348,8 @@
                 </tr>
                 <tr>
                     <td class="w-4/12">
-                        <p>Faydalanılacak Kaynaklar/Literatür Taraması:</p>
-                        <p><i>Sources to Use/Literature Review </i></p>
+                        <p class="font-bold">Faydalanılacak Kaynaklar/Literatür Taraması:</p>
+                        <p class="font-bold"><i>Sources to Use/Literature Review </i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p>
