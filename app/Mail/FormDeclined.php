@@ -8,7 +8,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class FormApproved extends Mailable
+class FormDeclined extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -23,7 +23,7 @@ class FormApproved extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Başvurunuz Onaylanmıştır',
+            subject: 'Başvuru Reddedildi',
         );
     }
 
@@ -33,7 +33,7 @@ class FormApproved extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.form-approved',
+            view: 'emails.form-declined',
         );
     }
 }

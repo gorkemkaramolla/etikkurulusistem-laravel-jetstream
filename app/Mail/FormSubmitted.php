@@ -12,7 +12,7 @@ class FormSubmitted extends Mailable
 {
     use Queueable, SerializesModels;
 
- 
+
     public function __construct()
     {
     }
@@ -23,7 +23,7 @@ class FormSubmitted extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Form Submitted',
+            subject: 'Başvurunuz tarafımıza ulaştı',
         );
     }
 
@@ -36,7 +36,4 @@ class FormSubmitted extends Mailable
             view: 'emails.form-submitted',
         );
     }
-
-  
-
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Request;
 
 use App\Http\Requests\StoreFormRequest;
 use App\Models\ApplicationInformations;
@@ -14,6 +15,7 @@ use App\Models\EtikKurulOnayi;
 use App\Models\ResearchInformations;
 use Exception;
 use App\Mail\FormApproved;
+use App\Mail\FormDeclined;
 
 class FormsController extends Controller
 {
@@ -143,37 +145,50 @@ class FormsController extends Controller
             $etikKurulOnayi->save();
         }
     }
-    public function approveEtikkurul($formid)
+    public function approveEtikkurul($formid, Request $request)
     {
         $form = Form::find($formid);
-        $this->startEtikkurulApprovalProcess($form);
-        $form->approveFormByEtikKurul(); // Call the new method
+        $decide_reason = $request->input('decide_reason');
+        $decide = $request->input('decide');
+
+
+        // Use $decide_reason as needed in your approval process
+        $this->startEtikkurulApprovalProcess($form, $decide, $decide_reason);
+
         return redirect()->route('dashboard')->with('success', 'Redirected to the dashboard successfully.');
     }
 
-    private function startEtikkurulApprovalProcess(Form $form)
+    private function startEtikkurulApprovalProcess(Form $form,  $decide, $decide_reason)
     {
-        // Assuming there is only one EtikKurulOnayi entry for each Form
         $etikKurulOnayi = $form->etik_kurul_onayi;
 
-        // Check if the form is already approved to avoid redundant updates
-        if ($form->stage !== 'onaylandi') {
-            // Find the current user's approval entry
-            $currentUserApproval = $etikKurulOnayi->where('user_id', auth()->user()->id)->first();
 
-            // Check if the current user has not approved yet
-            if ($currentUserApproval && $currentUserApproval->onay_durumu !== 'onaylandi') {
-                $currentUserApproval->onay_durumu = 'onaylandi';
-                $currentUserApproval->save();
-            }
+        $currentUserApproval = $etikKurulOnayi->where('user_id', auth()->user()->id)->where("form_id", $form->id)->first();
 
-            // Check if all users with etik_kurul role have approved
-            if ($etikKurulOnayi->where('onay_durumu', 'bekleme')->count() === 0) {
+        $currentUserApproval->onay_durumu = $decide;
+        $currentUserApproval->decide_reason = $decide_reason;
+        $currentUserApproval->save();
+        if ($decide === "duzeltme" || $decide === "reddedildi") {
+
+            $form->stage = $decide;
+            $form->decide_reason = $decide_reason;
+            $form->save();
+            $researcherEmail = $form->researcher_informations->email;
+
+
+            // Use the Mail facade to send an email
+            Mail::send('emails.form-declined', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail) {
+                // Set the recipient's email address and name
+                $message->to($researcherEmail)
+                    ->subject('Etik Kurulu Başvurunuz Reddedildi');
+            });
+        } else {
+            if ($etikKurulOnayi->whereNotIn('onay_durumu', ['bekleme', 'duzeltme', 'reddedildi'])->count() === $etikKurulOnayi->count()) {
+
                 $form->stage = 'onaylandi';
                 $form->save();
                 $researcherEmail = $form->researcher_informations->email;
 
-                // Send an email to the researcher using the FormApproved Mailable class
                 Mail::to($researcherEmail)->send(new FormApproved());
             }
         }

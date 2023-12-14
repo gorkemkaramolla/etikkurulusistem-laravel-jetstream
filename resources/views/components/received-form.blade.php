@@ -41,7 +41,7 @@
                                 href="/forms/{{ $form['researcher_informations']['student_no'] }}/{{ \Carbon\Carbon::parse($form['created_at'])->format('d-m-Y-His') }}"
                                 class="text-blue-400">Görüntüle</a>
                         </td>
-                        <td class="border px-4 py-2">
+                        <td class="flex items-center justify-center flex-col">
                             @if (auth()->user()->hasRole('sekreterlik') && $form->stage === 'sekreterlik')
                                 <a href="{{ route('approve.sekreterlik', ['formid' => $form->id]) }}"
                                     class="text-green-600">Onayla✓</a>
@@ -55,10 +55,28 @@
                                 @endphp
 
                                 @if ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'onaylandi')
-                                    <span class="text-green-600">Etik kurulu onayı verdiniz.</span>
+                                    <span class="text-green-600">Etik kurulu onay oyu verdiniz.</span>
+                                @elseif ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'reddedildi')
+                                    <span class="text-red-600">Etik kurulu red oyu verdiniz.</span>
+                                @elseif ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'duzeltme')
+                                    <span class="text-yellow-500">Etik kurulu düzeltme oyu verdiniz.</span>
                                 @else
-                                    <a href="{{ route('approve.etikkurul', ['formid' => $form->id]) }}"
-                                        class="text-blue-600">Etik Kurul Onayla✓</a>
+                                    <x-approve-modal :formid="$form->id"></x-approve-modal>
+
+                                    {{-- <div>
+                                        <a href="{{ route('approve.etikkurul', ['formid' => $form->id, 'decide' => 'onaylandi']) }}"
+                                            class="text-blue-600">Onayla✓</a>
+                                    </div>
+                                    <div>
+                                        <a href="{{ route('approve.etikkurul', ['formid' => $form->id, 'decide' => 'duzeltme']) }}"class="text-yellow-600"
+                                            href="">Düzeltme</a>
+
+                                    </div>
+                                    <div>
+                                        <a href="{{ route('approve.etikkurul', ['formid' => $form->id, 'decide' => 'reddedildi']) }}"class="text-red-600"
+                                            href="">Reddet</a>
+
+                                    </div> --}}
                                 @endif
                             @endif
                         </td>

@@ -14,10 +14,15 @@ class CreateEtikKurulOnayiTable extends Migration
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->enum('onay_durumu', ["bekleme","duzeltme",'onaylandi', 'reddedildi']);
+            $table->enum('onay_durumu', ["bekleme", "duzeltme", 'onaylandi', 'reddedildi']);
+            $table->text('decide_reason')->nullable()->default(null);
+
+
+
+
+
+
             $table->timestamps();
         });
     }
-
-   
 }

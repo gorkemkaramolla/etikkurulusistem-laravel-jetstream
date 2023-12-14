@@ -19,7 +19,9 @@ Route::middleware([
     Route::get('/forms/{student_no}/{created_at}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
 
     Route::get('/approve-sekreterlik/{formid}', [FormsController::class, 'approveSekreterlik'])->name('approve.sekreterlik');
-    Route::get('/approve-etikkurul/{formid}', [FormsController::class, 'approveEtikkurul'])->name('approve.etikkurul');
+    Route::post('/approve-etikkurul/{formid}', [FormsController::class, 'approveEtikkurul'])->name('approve.etikkurul');
+
+    Route::get('/dil-degistir', [DashboardController::class, 'changeLanguageToTurkish']);
 
 
 
