@@ -13,14 +13,18 @@
         integrity="sha512-X/YkDZyjTf4wyc2Vy16YGCPHwAY8rZJY+POgokZjQB2mhIRFJCckEGc6YyX9eNsPfn0PzThEuNs+uaomE5CO6A=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <link rel="stylesheet" href="/assets/css/form.css">
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
     <title>Etik Kurulu Formu</title>
 
 </head>
 
 
-<body>
+<body class="d-flex flex-column">
+
 
 
 
@@ -29,7 +33,9 @@
             Error: {{ session('error') }}
         </div>
     @endif
+
     <div class="container">
+
         @if ($errors->any())
             <div class="alert alert-danger">
                 <ul>
@@ -39,6 +45,7 @@
                 </ul>
             </div>
         @endif
+
         <form enctype="multipart/form-data" action="{{ url('store-form') }}" method="POST">
             @csrf
             <div class="row d-flex justify-content-center mb-1">
@@ -156,8 +163,8 @@
                     Onam Formuna ulaşmak için tıklayınız</a>
             </div>
           --}}
-            <div class="container pb-4 text-center">
-                <input type="submit" class="btn btn-primary" style="width: 200px;">
+            <div class="container pb-4 text-center my-3">
+                <input type="submit" value="Başvuruyu Tamamla" class="btn btn-primary" style="width: 400px;">
             </div>
 
         </form>

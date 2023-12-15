@@ -13,12 +13,10 @@
 
         <div class="col-md-4">
 
-            <label for="studentID" class="form-label">Öğrenci No / TC No<br><span class="pt-0 small">Student ID
-                    Number</span></label>
-            <span data-bs-toggle="tooltip" data-bs-placement="top" data-bs-custom-class="custom-tooltip"
-                data-bs-title="info">
-                i
-            </span>
+            <label for="studentID" class="form-label">Öğrenci No / TC No<br>
+                <span class="pt-0 small">Student ID Number</span></label>
+
+
             <input type="text" name="student_no" class="form-control" id="studentID" placeholder="">
         </div>
         <div class="col-md-4">

@@ -28,7 +28,8 @@ Route::middleware([
     Route::post('/forms/approve/{formid}', [FormsController::class, 'approveSekreterlik']);
     Route::get('/pdf/{slug}', [DashboardController::class, 'generatePdf']);
 });
-Route::get('/', [FormsController::class, 'index'])->name('forms.index');
+Route::get('/form', [FormsController::class, 'index'])->name('forms.index');
+Route::view('/', 'root.index')->name('root.index');
 
 Route::post('store-form', [FormsController::class, 'store']);
 Route::get('/seed-database', [DatabaseSeedController::class, 'seed']);
