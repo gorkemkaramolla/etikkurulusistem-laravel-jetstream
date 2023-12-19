@@ -120,27 +120,42 @@ class FormsController extends Controller
             return redirect()->back()->with('error', $e->getMessage());
         }
     }
-    public function approveSekreterlik($formid)
+    public function approveSekreterlik($formid, Request $request)
     {
         $form = Form::find($formid);
-        $this->startSekreterlikApprovalProcess($form);
+        $decide_reason = $request->input('decide_reason');
+        $decide = $request->input('decide');
+
+        $this->startSekreterlikApprovalProcess($form, $decide, $decide_reason);
         return redirect()->route('dashboard')->with('success', 'Redirected to the dashboard successfully.');
     }
 
-    private function startSekreterlikApprovalProcess(Form $form)
+    private function startSekreterlikApprovalProcess(Form $form, $decide, $decide_reason)
     {
-        $form->stage = "etik_kurul";
-        $form->save();
-        $etikKurulUyeler = User::where('role', 'etik_kurul')->get();
+        if ($decide === "onaylandi") {
+            $form->stage = "etik_kurul";
+            $form->save();
+            $etikKurulUyeler = User::where('role', 'etik_kurul')->get();
 
-        foreach ($etikKurulUyeler as $etikKurulUye) {
-            $etikKurulOnayi = new EtikKurulOnayi([
-                'form_id' => $form->id,
-                'user_id' => $etikKurulUye->id,
-                'onay_durumu' => 'bekleme',
-            ]);
+            foreach ($etikKurulUyeler as $etikKurulUye) {
+                $etikKurulOnayi = new EtikKurulOnayi([
+                    'form_id' => $form->id,
+                    'user_id' => $etikKurulUye->id,
+                    'onay_durumu' => 'bekleme',
+                ]);
 
-            $etikKurulOnayi->save();
+                $etikKurulOnayi->save();
+            }
+        } else if ($decide === "duzeltme") {
+            $form->stage = "duzeltme";
+            $form->decide_reason = $decide_reason;
+            $form->save();
+            $researcherEmail = $form->researcher_informations->email;
+
+            Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail) {
+                $message->to($researcherEmail)
+                    ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
+            });
         }
     }
     public function approveEtikkurul($formid, Request $request)

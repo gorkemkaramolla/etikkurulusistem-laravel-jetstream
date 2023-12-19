@@ -12,7 +12,6 @@
     <table id="myTable" class="table-auto w-full">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Döküman Numarası</th>
                 <th>Onay Durumu</th>
                 <th>Araştırma Başlığı</th>
@@ -42,8 +41,7 @@
                         </td>
                         <td class="flex items-center justify-center flex-col">
                             @if (auth()->user()->hasRole('sekreterlik') && $form->stage === 'sekreterlik')
-                                <a href="{{ route('approve.sekreterlik', ['formid' => $form->id]) }}"
-                                    class="text-green-600">Onayla✓</a>
+                                <x-approve-modal :formid="$form->id"></x-approve-modal>
                             @elseif(auth()->user()->hasRole('etik_kurul'))
                                 @php
                                     // Check if there is an ethics committee approval for the specific form and user
@@ -61,21 +59,6 @@
                                     <span class="text-yellow-500">Etik kurulu düzeltme oyu verdiniz.</span>
                                 @else
                                     <x-approve-modal :formid="$form->id"></x-approve-modal>
-
-                                    {{-- <div>
-                                        <a href="{{ route('approve.etikkurul', ['formid' => $form->id, 'decide' => 'onaylandi']) }}"
-                                            class="text-blue-600">Onayla✓</a>
-                                    </div>
-                                    <div>
-                                        <a href="{{ route('approve.etikkurul', ['formid' => $form->id, 'decide' => 'duzeltme']) }}"class="text-yellow-600"
-                                            href="">Düzeltme</a>
-
-                                    </div>
-                                    <div>
-                                        <a href="{{ route('approve.etikkurul', ['formid' => $form->id, 'decide' => 'reddedildi']) }}"class="text-red-600"
-                                            href="">Reddet</a>
-
-                                    </div> --}}
                                 @endif
                             @endif
                         </td>
@@ -203,5 +186,76 @@
         /* Add any additional styling you need here */
     }
 </style>
+<script>
+    // Function to toggle input visibility and disabled attribute based on the selected radio button
+    function toggleInputVisibility() {
+        const radioButtons = document.getElementsByName('decide');
+        const inputElement = document.getElementById('decide-reason-input');
+
+        // Loop through radio buttons to find the selected one
+        for (const radioButton of radioButtons) {
+            if (radioButton.checked) {
+                // Show the input only if a non-"Onay" radio button is selected
+                const isOnay = radioButton.value === 'onaylandi';
+                inputElement.style.display = isOnay ? 'none' : 'block';
+
+                // Set the 'disabled' attribute based on whether the input should be included in the form submission
+                inputElement.disabled = isOnay;
+                return;
+            }
+        }
+
+        inputElement.style.display = 'none';
+        inputElement.disabled = true;
+    }
+
+    const radioButtons = document.getElementsByName('decide');
+    for (const radioButton of radioButtons) {
+        radioButton.addEventListener('change', toggleInputVisibility);
+    }
+
+    toggleInputVisibility();
+</script>
+
+
+<script>
+    var openmodal = document.querySelectorAll('.modal-open')
+    for (var i = 0; i < openmodal.length; i++) {
+        openmodal[i].addEventListener('click', function(event) {
+            event.preventDefault()
+            toggleModal()
+        })
+    }
+
+    const overlay = document.querySelector('.modal-overlay')
+    overlay.addEventListener('click', toggleModal)
+
+    var closemodal = document.querySelectorAll('.modal-close')
+    for (var i = 0; i < closemodal.length; i++) {
+        closemodal[i].addEventListener('click', toggleModal)
+    }
+
+    document.onkeydown = function(evt) {
+        evt = evt || window.event
+        var isEscape = false
+        if ("key" in evt) {
+            isEscape = (evt.key === "Escape" || evt.key === "Esc")
+        } else {
+            isEscape = (evt.keyCode === 27)
+        }
+        if (isEscape && document.body.classList.contains('modal-active')) {
+            toggleModal()
+        }
+    };
+
+
+    function toggleModal() {
+        const body = document.querySelector('body')
+        const modal = document.querySelector('.modal')
+        modal.classList.toggle('opacity-0')
+        modal.classList.toggle('pointer-events-none')
+        body.classList.toggle('modal-active')
+    }
+</script>
 
 </html>

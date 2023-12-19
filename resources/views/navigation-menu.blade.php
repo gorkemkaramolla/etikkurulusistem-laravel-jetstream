@@ -96,9 +96,12 @@
 
                                             </p>
                                             <p class="capitalize">
-                                                {{ Auth::user()->role === 'sekreterlik'
-                                                    ? ' Etik Kurulu' . ' ' . str_replace('_', ' ', Auth::user()->role)
-                                                    : str_replace('_', ' ', Auth::user()->role) . 'u ' . 'Üyesi' }}
+                                                <span>Etik Kurulu</span>
+                                                <span class="text-red-500">
+                                                    {{ Auth::user()->role === 'sekreterlik'
+                                                        ? str_replace('_', ' ', Auth::user()->role)
+                                                        : str_replace('_', ' ', Auth::user()->role) . 'u ' . 'Üyesi' }}
+                                                </span>
 
                                             </p>
                                         </div>

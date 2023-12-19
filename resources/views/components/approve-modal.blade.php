@@ -1,6 +1,6 @@
 @props(['formid'])
 
-<body class="bg-gray-200 flex items-center justify-center h-screen">
+<div class="">
 
     <button
         class="modal-open bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-4 rounded-full">Karar</button>
@@ -24,7 +24,9 @@
             <div class="modal-content py-4 text-left px-6">
                 <!--Title-->
                 <div class="flex justify-between items-center pb-3">
-                    <p class="text-2xl font-bold">Simple Modal!</p>
+                    <p class="text-2xl font-bold">
+                        {{ Auth::user()->hasRole('sekreterlik') ? 'Sekreterlik Kararı/ Secretary Decision' : 'Etik Kurulu Kararı/Ethics Comittee Decision' }}
+                    </p>
                     <div class="modal-close cursor-pointer z-50">
                         <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18"
                             height="18" viewBox="0 0 18 18">
@@ -34,115 +36,44 @@
                         </svg>
                     </div>
                 </div>
-                <form action="{{ route('approve.etikkurul', ['formid' => $formid]) }}" method="POST">
+                <form
+                    action="{{ !Auth::user()->hasRole('sekreterlik') ? route('approve.etikkurul', ['formid' => $formid]) : route('approve.sekreterlik', ['formid' => $formid]) }}"
+                    method="POST">
 
                     @csrf
                     <label for="onay-radio" class="block text-gray-700 text-sm font-bold mb-2">
-                        Onayla:
+                        Onayla/Approve:
                         <input checked type="radio" name="decide" value="onaylandi" id="onay-radio" required>
                     </label>
 
                     <label for="duzeltme-radio" class="block text-gray-700 text-sm font-bold mb-2">
-                        Düzeltme:
+                        Düzeltme/Correction:
                         <input type="radio" name="decide" value="duzeltme" id="duzeltme-radio" required>
                     </label>
-
-                    <label for="reddedildi-radio" class="block text-gray-700 text-sm font-bold mb-2">
-                        Reddedildi:
-                        <input type="radio" name="decide" value="reddedildi" id="reddedildi-radio" required>
-                    </label>
-
+                    @if (!Auth::user()->hasRole('sekreterlik'))
+                        <label for="reddedildi-radio" class="block text-gray-700 text-sm font-bold mb-2">
+                            Reddedildi:
+                            <input type="radio" name="decide" value="reddedildi" id="reddedildi-radio" required>
+                        </label>
+                    @endif
                     <!-- Input for other cases -->
-                    <input type="text" name="decide_reason" id="decide-reason-input"
-                        class="w-full px-3 py-2 border  rounded" placeholder="Karar sebebi..." required>
 
-
-
-
+                    <textarea placeholder="Lütfen karar nedeninizi giriniz / Please enter your reason for decision"
+                        class="w-full px-3 py-2 border rounded" name="decide_reason" id="decide-reason-input" cols="30" rows="5"
+                        required></textarea>
 
                     <!--Footer-->
                     <div class="flex justify-end pt-2">
-                        <input type="submit"
-                            class="px-4 bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2">
+                        <input type="submit" value="Kararı Onayla/Approve Decision"
+                            class="px-4 cursor-pointer bg-transparent p-3 rounded-lg text-indigo-500 hover:bg-gray-100 hover:text-indigo-400 mr-2">
                 </form>
+
 
 
             </div>
 
         </div>
     </div>
-    </div>
-    <script>
-        // Function to toggle input visibility and disabled attribute based on the selected radio button
-        function toggleInputVisibility() {
-            const radioButtons = document.getElementsByName('decide');
-            const inputElement = document.getElementById('decide-reason-input');
+</div>
 
-            // Loop through radio buttons to find the selected one
-            for (const radioButton of radioButtons) {
-                if (radioButton.checked) {
-                    // Show the input only if a non-"Onay" radio button is selected
-                    const isOnay = radioButton.value === 'onaylandi';
-                    inputElement.style.display = isOnay ? 'none' : 'block';
-
-                    // Set the 'disabled' attribute based on whether the input should be included in the form submission
-                    inputElement.disabled = isOnay;
-                    return;
-                }
-            }
-
-            inputElement.style.display = 'none';
-            inputElement.disabled = true;
-        }
-
-        // Attach the function to the change event of radio buttons
-        const radioButtons = document.getElementsByName('decide');
-        for (const radioButton of radioButtons) {
-            radioButton.addEventListener('change', toggleInputVisibility);
-        }
-
-        // Call the function initially to set the state on page load
-        toggleInputVisibility();
-    </script>
-
-
-    <script>
-        var openmodal = document.querySelectorAll('.modal-open')
-        for (var i = 0; i < openmodal.length; i++) {
-            openmodal[i].addEventListener('click', function(event) {
-                event.preventDefault()
-                toggleModal()
-            })
-        }
-
-        const overlay = document.querySelector('.modal-overlay')
-        overlay.addEventListener('click', toggleModal)
-
-        var closemodal = document.querySelectorAll('.modal-close')
-        for (var i = 0; i < closemodal.length; i++) {
-            closemodal[i].addEventListener('click', toggleModal)
-        }
-
-        document.onkeydown = function(evt) {
-            evt = evt || window.event
-            var isEscape = false
-            if ("key" in evt) {
-                isEscape = (evt.key === "Escape" || evt.key === "Esc")
-            } else {
-                isEscape = (evt.keyCode === 27)
-            }
-            if (isEscape && document.body.classList.contains('modal-active')) {
-                toggleModal()
-            }
-        };
-
-
-        function toggleModal() {
-            const body = document.querySelector('body')
-            const modal = document.querySelector('.modal')
-            modal.classList.toggle('opacity-0')
-            modal.classList.toggle('pointer-events-none')
-            body.classList.toggle('modal-active')
-        }
-    </script>
-</body>
+</div>
