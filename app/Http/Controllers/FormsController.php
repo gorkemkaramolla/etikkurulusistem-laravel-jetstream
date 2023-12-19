@@ -108,10 +108,12 @@ class FormsController extends Controller
 
                 // Add more mappings as needed for other sections
             ];
+            $ccRecipients = User::pluck('email')->toArray();
 
-            Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher) {
+            Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $ccRecipients) {
                 $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
-                    ->subject('Application Confirmation');
+                    ->subject('Application Confirmation')
+                    ->cc($ccRecipients); // Add all user emails to CC
             });
 
             return redirect()->route('forms.index')->with('success', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');
@@ -132,6 +134,8 @@ class FormsController extends Controller
 
     private function startSekreterlikApprovalProcess(Form $form, $decide, $decide_reason)
     {
+        $ccRecipients = User::pluck('email')->toArray();
+
         if ($decide === "onaylandi") {
             $form->stage = "etik_kurul";
             $form->save();
@@ -152,10 +156,12 @@ class FormsController extends Controller
             $form->save();
             $researcherEmail = $form->researcher_informations->email;
 
-            Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail) {
+            Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
                 $message->to($researcherEmail)
+                    ->cc($ccRecipients) // Add CC recipients
                     ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
             });
+            $form->delete();
         }
     }
     public function approveEtikkurul($formid, Request $request)
@@ -181,6 +187,8 @@ class FormsController extends Controller
         $currentUserApproval->onay_durumu = $decide;
         $currentUserApproval->decide_reason = $decide_reason;
         $currentUserApproval->save();
+        $ccRecipients = User::pluck('email')->toArray();
+
         if ($decide === "duzeltme" || $decide === "reddedildi") {
 
             $form->stage = $decide;
@@ -190,11 +198,12 @@ class FormsController extends Controller
 
 
             // Use the Mail facade to send an email
-            Mail::send('emails.form-declined', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail) {
+            Mail::send('emails.form-declined', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
                 // Set the recipient's email address and name
                 $message->to($researcherEmail)
-                    ->subject('Etik Kurulu Başvurunuz Reddedildi');
+                    ->subject('Etik Kurulu Başvurunuz Reddedildi')->cc($ccRecipients);
             });
+            $form->delete();
         } else {
             if ($etikKurulOnayi->whereNotIn('onay_durumu', ['bekleme', 'duzeltme', 'reddedildi'])->count() === $etikKurulOnayi->count()) {
 
@@ -202,7 +211,11 @@ class FormsController extends Controller
                 $form->save();
                 $researcherEmail = $form->researcher_informations->email;
 
-                Mail::to($researcherEmail)->send(new FormApproved());
+                Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
+                    $message->to($researcherEmail)
+                        ->cc($ccRecipients) // Add CC recipients
+                        ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
+                });
             }
         }
     }

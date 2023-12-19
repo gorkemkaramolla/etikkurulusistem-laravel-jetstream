@@ -53,6 +53,7 @@
                         <div style='text-align:center; height:50%;'>
                             <span style='font-size:11px;'>Evrak No</span>
                             <p style="font-size:11px;">
+                                {{ $form->id }}
                             </p>
                         </div>
 

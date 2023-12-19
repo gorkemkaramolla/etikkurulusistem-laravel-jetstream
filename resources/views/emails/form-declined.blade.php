@@ -8,7 +8,7 @@
     <style>
         .correction-title {
             font-weight: bold;
-            color: orange;
+            color: red;
         }
 
         h1 {
@@ -23,7 +23,7 @@
     </div>
     <div style="text-align: center; margin: 20px;">
         <h1>Başvurunuz
-            {{ Auth::user()->hasRole('sekreterlik') ? 'Sekreterlik ' : 'Etik Kurulu ' }} tarafından reddedildi;
+            {{ Auth::user()->hasRole('sekreterlik') ? 'Sekreterlik ' : 'Etik Kurulu ' }} tarafından reddedildi
         </h1>
     </div>
 

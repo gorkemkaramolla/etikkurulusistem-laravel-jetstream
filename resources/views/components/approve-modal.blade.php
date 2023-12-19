@@ -52,7 +52,7 @@
                     </label>
                     @if (!Auth::user()->hasRole('sekreterlik'))
                         <label for="reddedildi-radio" class="block text-gray-700 text-sm font-bold mb-2">
-                            Reddedildi:
+                            Reddet/Decline:
                             <input type="radio" name="decide" value="reddedildi" id="reddedildi-radio" required>
                         </label>
                     @endif
