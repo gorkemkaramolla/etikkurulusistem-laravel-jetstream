@@ -30,8 +30,7 @@ class StoreFormRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //forms 
-            "document_number"=>"required|string|max:50",
+            //forms
             // Validation for the "application_informations" table
             'application_semester' => 'required|in:güz,bahar',
             'temel_alan_bilgisi' => 'required|string|max:50',
@@ -42,7 +41,7 @@ class StoreFormRequest extends FormRequest
             'institution_permission' => 'required|string|max:100',
             'research_start_date' => 'required|date',
             'research_end_date' => 'required|date',
-            
+
             // Validation for the "research_informations" table
             'research_title' => 'required|string|max:100',
             'research_subject_purpose' => 'required|string|max:255',
@@ -67,5 +66,4 @@ class StoreFormRequest extends FormRequest
             'student_no' => 'required|string|max:11|unique:researcher_informations,student_no',
         ];
     }
-
 }

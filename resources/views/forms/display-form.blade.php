@@ -53,7 +53,6 @@
                         <div style='text-align:center; height:50%;'>
                             <span style='font-size:11px;'>Evrak No</span>
                             <p style="font-size:11px;">
-                                {{ $form['document_number'] }}
                             </p>
                         </div>
 
@@ -261,7 +260,7 @@
                 <tr>
                     <td class="w-4/12">
                         <p class="font-bold">Özgün Değer:</p>
-                        <p class="font-bold"><i >Unique value of Research</i></p>
+                        <p class="font-bold"><i>Unique value of Research</i></p>
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['research_informations']['research_unique_value'] }}

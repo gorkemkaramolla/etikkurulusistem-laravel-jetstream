@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Form extends Model
 {
-    protected $fillable = ["document_number"];
     public function research_informations()
     {
         return $this->hasOne(ResearchInformations::class);

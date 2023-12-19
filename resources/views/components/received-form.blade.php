@@ -29,7 +29,6 @@
                 @foreach ($forms as $form)
                     <tr>
                         <td class="border px-4 py-2">{{ $form['id'] }}</td>
-                        <td class="border px-4 py-2">{{ $form['document_number'] }}</td>
                         <td class="border px-4 py-2">{{ $form['stage'] }}</td>
                         <td class="border px-4 py-2">{{ $form['research_informations']['research_title'] }}</td>
                         <td class="border px-4 py-2">{{ $form['researcher_informations']['student_no'] }}</td>

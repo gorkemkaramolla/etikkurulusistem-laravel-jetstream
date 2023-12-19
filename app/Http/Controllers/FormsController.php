@@ -33,7 +33,6 @@ class FormsController extends Controller
 
 
             $form = new Form();
-            $form->document_number = $validated['document_number'];
             $form->save();
             // //create researcher informations
             $researcher = new ResearcherInformations();
@@ -78,7 +77,6 @@ class FormsController extends Controller
             $research->save();
 
             $fieldNameMappings = [
-                'document_number' => 'Evrak Numarası',
                 'name' => 'Araştırmacı Adı',
                 'lastname' => 'Araştırmacı Soyadı',
                 'advisor' => 'Danışman Adı',

@@ -12,7 +12,6 @@ return new class extends Migration
     {
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
-            $table->string('document_number'); //evrak no
             $table->string('stage')->default('sekreterlik'); // durum
             $table->text('decide_reason')->nullable()->default(null);
 
