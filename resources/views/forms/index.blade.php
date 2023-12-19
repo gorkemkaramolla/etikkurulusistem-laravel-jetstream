@@ -64,49 +64,49 @@
 
             <x-forms.form-informations></x-forms.form-informations>
             <div class="accordion" id="accordionPanelsStayOpenExample">
+            
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
                         <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                            aria-controls="panelsStayOpen-collapseOne">
+                                data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                                aria-controls="panelsStayOpen-collapseOne">
                             ARAŞTIRMACI BİLGİLERİ
                         </button>
                     </h2>
                     <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show m-2"
-                        aria-labelledby="panelsStayOpen-headingOne">
+                         aria-labelledby="panelsStayOpen-headingOne">
                         <x-forms.researcher-informations></x-forms.researcher-informations>
-
                     </div>
                 </div>
+            
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
-                            aria-controls="panelsStayOpen-collapseTwo">
+                                data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
+                                aria-controls="panelsStayOpen-collapseTwo">
                             BAŞVURU BİLGİLERİ
                         </button>
                     </h2>
                     <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
-                        aria-labelledby="panelsStayOpen-headingTwo">
+                         aria-labelledby="panelsStayOpen-headingTwo">
                         <div class="accordion-body">
                             <x-forms.application-informations></x-forms.application-informations>
-
                         </div>
                     </div>
                 </div>
+            
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-headingThree">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
-                            aria-controls="panelsStayOpen-collapseThree">
+                                data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
+                                aria-controls="panelsStayOpen-collapseThree">
                             ARAŞTIRMA BİLGİLERİ
                         </button>
                     </h2>
                     <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
-                        aria-labelledby="panelsStayOpen-headingThree">
+                         aria-labelledby="panelsStayOpen-headingThree">
                         <div class="accordion-body">
                             <x-forms.research-informations></x-forms.research-informations>
-
                         </div>
                     </div>
                 </div>

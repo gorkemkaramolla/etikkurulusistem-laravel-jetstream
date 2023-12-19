@@ -25,7 +25,7 @@
             </div>
 
             <div class="col-12 text-center mt-4">
-                <h4 class="opacity-50">Etik Kurulu Sistemi</h4>
+                <h4 class="opacity-50">Etik Kurulu Başvuru Sistemi</h4>
             </div>
 
             <div class="col-md-8 mt-4 m-auto">
