@@ -16,12 +16,13 @@
     </div>
 
     <div style="text-align: center; margin: 20px;">
-        <p style="font-size: 16px; line-height: 1.5;">Etik kurulu başvurunuz başarıyla bizlere ulaşmıştır. Sonucu size
+        <p style="font-size: 16px; line-height: 1.5;">Etik kurulu başvurunuz bizlere ulaşmıştır. Başvurunuz
+            sonuçlandığında size
             mail olarak iletilecektir.</p>
     </div>
 
     <div style="margin: 20px;">
-        <h2 style="text-align: center;">Submitted Form Details</h2>
+        <h2 style="text-align: center;">Başvurunuzun Detayları</h2>
         <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
             <thead>
 
@@ -38,9 +39,9 @@
             </tbody>
         </table>
     </div>
-
-    <!-- Add more content or styling as needed -->
-
+    <div style="text-align: center; margin: 20px;">
+        <img src="http://etikkurul.nisantasi.edu.tr/assets/images/mail-thumbnail.jpg" alt="Nisantasi Thumbnail">
+    </div>
 </body>
 
 </html>

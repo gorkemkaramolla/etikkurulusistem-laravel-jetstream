@@ -12,24 +12,25 @@
         }
 
         h1 {
-            font-size: 18px;
+            font-size: 24px;
         }
     </style>
 </head>
 
 <body style="font-family: 'Arial', sans-serif;">
     <div style="text-align: center; margin: 20px;">
-        <img src="https://etikkurul.nisantasi.edu.tr/assets/images/logo-nisantasi.png" alt="Nisantasi Logo" width="250">
+        <img src="https://etikkurul.nisantasi.edu.tr/assets/images/logo-nisantasi.png" alt="Nisantasi Logo" width="180">
     </div>
     <div style="text-align: center; margin: 20px;">
         <h1>Başvurunuz
-            {{ Auth::user()->hasRole('sekreterlik') ? 'Sekreterlik ' : 'Etik Kurulu ' }} tarafından reddedildi;
+            {{ Auth::user()->hasRole('sekreterlik') ? 'Sekreterlik ' : 'Etik Kurulu ' }} tarafından düzeltmeye
+            gönderilmiştir
         </h1>
     </div>
 
     <div style="text-align: center; margin: 20px;">
 
-        <p> <span class="correction-title">Red Gerekçesi:</span> {{ $decide_reason }}</p>
+        <p> <span class="correction-title">Düzeltme Gerekçesi:</span> {{ $decide_reason }}</p>
     </div>
     <div style="text-align: center; margin: 20px;">
         <img src="http://etikkurul.nisantasi.edu.tr/assets/images/mail-thumbnail.jpg" alt="Nisantasi Thumbnail">
