@@ -8,6 +8,13 @@
             font-size: 16px;
         }
 
+        td {
+            word-wrap: break-word;
+            /* or use overflow-wrap: break-word; */
+            max-width: 200px;
+            /* Set a specific max-width if needed */
+        }
+
         @media (max-width: 500px) {
             .pdf-render {}
         }
@@ -51,7 +58,7 @@
                             </p>
                         </div>
                         <div style='text-align:center; height:50%;'>
-                            <span style='font-size:11px;'>Evrak No</span>
+                            <span style='font-size:11px;'>Evrak No/Document Number</span>
                             <p style="font-size:11px;">
                                 {{ $form->id }}
                             </p>
@@ -66,7 +73,7 @@
             <table>
                 <tr class="bg-[#ac143c] text-white  w-full text-center">
                     <td colspan="2" class="w-full">
-                        <h2 class=" font-extrabold text-sm">1-Araştırmacı Bilgileri</h2>
+                        <h2 class=" font-extrabold text-sm">1-Araştırmacı Bilgileri/Researcher Informations</h2>
 
                     </td>
 
@@ -84,6 +91,8 @@
                 <tr>
                     <td class="w-4/12">
                         <p class="font-bold">Danışman/Yürütücü:</p>
+                        <p class="font-bold"><i>Advisor </i></p>
+
                     </td>
                     <td class="w-8/12" colspan="3">
                         <p> {{ $form['researcher_informations']['advisor'] }}
@@ -143,7 +152,7 @@
             <table class="  ">
                 <tr class="bg-[#ac143c] text-white  w-full text-center">
                     <td colspan="2" class="w-full">
-                        <h2 class=" font-extrabold text-sm">2-Başvuru Bilgileri</h2>
+                        <h2 class=" font-extrabold text-sm">2-Başvuru Bilgileri/Application Informations</h2>
 
                     </td>
 
@@ -232,7 +241,7 @@
             <table>
                 <tr class="bg-[#ac143c] text-white  w-full text-center">
                     <td colspan="2" class="w-full">
-                        <h2 class=" font-extrabold text-sm">3-Araştırma Bilgileri</h2>
+                        <h2 class=" font-extrabold text-sm">3-Araştırma Bilgileri/Research Informations</h2>
 
                     </td>
 

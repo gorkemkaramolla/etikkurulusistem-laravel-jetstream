@@ -37,7 +37,7 @@
                         <td class="border px-4 py-2">
                             <a target="_blank"
                                 href="/forms/{{ $form['researcher_informations']['student_no'] }}/{{ \Carbon\Carbon::parse($form['created_at'])->format('d-m-Y-His') }}"
-                                class="text-blue-400">Görüntüle</a>
+                                class="text-blue-400">Görüntüle/Show</a>
                         </td>
                         <td class="flex items-center justify-center flex-col">
                             @if (auth()->user()->hasRole('sekreterlik') && $form->stage === 'sekreterlik')

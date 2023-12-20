@@ -1,7 +1,7 @@
 <x-app-layout>
 
     <head>
-        <title>{{ auth()->user()->role }}</title>
+        <title>{{ auth()->user()->role === 'sekreterlik' ? 'Sekreterlik Üyesi' : 'Etik Kurulu Üyesi' }}</title>
     </head>
     <x-received-form :forms="$forms" />
 

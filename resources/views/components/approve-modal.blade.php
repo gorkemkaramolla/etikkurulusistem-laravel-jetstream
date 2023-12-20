@@ -3,7 +3,7 @@
 <div class="">
 
     <button
-        class="modal-open bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-4 rounded-full">Karar</button>
+        class="modal-open bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-4 rounded-full">Karar/Verdict</button>
 
     <div class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center">
         <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
@@ -25,7 +25,7 @@
                 <!--Title-->
                 <div class="flex justify-between items-center pb-3">
                     <p class="text-2xl font-bold">
-                        {{ Auth::user()->hasRole('sekreterlik') ? 'Sekreterlik Kararı/ Secretary Decision' : 'Etik Kurulu Kararı/Ethics Comittee Decision' }}
+                        {{ Auth::user()->hasRole('sekreterlik') ? 'Sekreterlik Kararı/ Secretary Verdict' : 'Etik Kurulu Kararı/Ethics Comittee Verdict' }}
                     </p>
                     <div class="modal-close cursor-pointer z-50">
                         <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18"

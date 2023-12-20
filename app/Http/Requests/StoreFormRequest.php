@@ -33,37 +33,39 @@ class StoreFormRequest extends FormRequest
             //forms
             // Validation for the "application_informations" table
             'application_semester' => 'required|in:güz,bahar',
-            'temel_alan_bilgisi' => 'required|string|max:50',
+            'temel_alan_bilgisi' => 'required|string',
             'academic_year' => 'required|integer',
-            'application_type' => 'required|string|max:50',
-            'work_qualification' => 'required|string|max:50',
-            'research_type' => 'required|string|max:50',
-            'institution_permission' => 'required|string|max:100',
+            'application_type' => 'required|string',
+            'work_qualification' => 'required|string',
+            'research_type' => 'required|string',
+            'institution_permission' => 'required|string',
             'research_start_date' => 'required|date',
             'research_end_date' => 'required|date',
 
             // Validation for the "research_informations" table
-            'research_title' => 'required|string|max:100',
-            'research_subject_purpose' => 'required|string|max:255',
-            'research_unique_value' => 'required|string|max:255',
-            'research_hypothesis' => 'required|string|max:255',
-            'research_method' => 'required|string|max:255',
-            'research_universe' => 'required|string|max:255',
-            'research_forms' => 'required|string|max:255',
-            'research_data_collection' => 'required|string|max:255',
-            'research_restrictions' => 'required|string|max:255',
-            'research_place_date' => 'required|string|max:255',
-            'research_literature_review' => 'required|string|max:255',
+            'research_title' => 'required|string',
+            'research_subject_purpose' => 'required|string',
+            'research_unique_value' => 'required|string',
+            'research_hypothesis' => 'required|string',
+            'research_method' => 'required|string',
+            'research_universe' => 'required|string',
+            'research_forms' => 'required|string',
+            'research_data_collection' => 'required|string',
+            'research_restrictions' => 'required|string',
+            'research_place_date' => 'required|string',
+            'research_literature_review' => 'required|string',
 
             // Validation for the "researcher_informations" table
-            'name' => 'required|string|max:32',
-            'lastname' => 'required|string|max:32',
-            'advisor' => 'required|string|max:32',
+            'name' => 'required|string',
+            'lastname' => 'required|string',
+            'advisor' => 'required|string',
             'gsm' => 'required|string|max:10|unique:researcher_informations,gsm',
             'email' => 'required|email|unique:researcher_informations,email',
-            'major' => 'required|string|max:100',
-            'department' => 'required|string|max:100',
+            'major' => 'required|string',
+            'department' => 'required|string',
             'student_no' => 'required|string|max:11|unique:researcher_informations,student_no',
+
+
         ];
     }
 }

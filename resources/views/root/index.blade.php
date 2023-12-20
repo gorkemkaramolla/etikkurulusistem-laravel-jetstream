@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta http-equiv="Content-Language" content="tr">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-    <title>Etik Kurul Sistemi</title>
+    <title>Etik Kurul Başvuru Sistemi</title>
     <meta name="viewport"
         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, shrink-to-fit=no">
 
@@ -25,7 +25,7 @@
             </div>
 
             <div class="col-12 text-center mt-4">
-                <h4 class="opacity-50">Etik Kurulu Başvuru Sistemi</h4>
+                <h4 class="opacity-50">Etik Kurul Başvuru Sistemi</h4>
             </div>
 
             <div class="col-md-8 mt-4 m-auto">
@@ -39,7 +39,7 @@
                 <div class="col-md-12 col-lg-10 m-auto mt-3">
                     <a href="/login"
                         class="btn btn-secondary text-white w-100 d-flex align-items-center justify-content-center text-uppercase fw-semibold h-60px"
-                        role="button">Etik Kurulu Girişi</a>
+                        role="button">Etik Kurul Girişi</a>
                 </div>
             </div>
 

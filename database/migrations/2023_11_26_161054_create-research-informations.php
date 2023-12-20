@@ -6,28 +6,25 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-  
+
     public function up(): void
     {
         Schema::create("research_informations", function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('form_id');
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
-            $table->string("research_title",100);//Araştırma başlığı
-            $table->string("research_subject_purpose",255);//Konu ve amaç
-            $table->string("research_unique_value",255);//Özgün değer
-            $table->string("research_hypothesis",255);//Hipotezler
-            $table->string("research_method",255);//Yöntem
-            $table->string("research_universe",255);//Evren ve örneklem
-            $table->string("research_forms",255);//Ölçek ve formlar
-            $table->string("research_data_collection",255);//Verilerin toplanması ve analizi
-            $table->string("research_restrictions",255);//Sınırlar ve kısıtlar
-            $table->string("research_place_date",255);//Araştırma tarih ve yeri
-            $table->string("research_literature_review",255);//Faydalanıcak kaynaklar
+            $table->text("research_title"); //Araştırma başlığı
+            $table->text("research_subject_purpose"); //Konu ve amaç
+            $table->text("research_unique_value"); //Özgün değer
+            $table->text("research_hypothesis"); //Hipotezler
+            $table->text("research_method"); //Yöntem
+            $table->text("research_universe"); //Evren ve örneklem
+            $table->text("research_forms"); //Ölçek ve formlar
+            $table->text("research_data_collection"); //Verilerin toplanması ve analizi
+            $table->text("research_restrictions"); //Sınırlar ve kısıtlar
+            $table->text("research_place_date"); //Araştırma tarih ve yeri
+            $table->text("research_literature_review"); //Faydalanıcak kaynaklar
             $table->timestamps();
-
         });
     }
-
-
 };

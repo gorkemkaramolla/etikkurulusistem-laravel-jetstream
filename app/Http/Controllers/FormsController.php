@@ -118,8 +118,7 @@ class FormsController extends Controller
 
             return redirect()->route('forms.index')->with('success', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');
         } catch (Exception $e) {
-
-            return redirect()->back()->with('error', $e->getMessage());
+            return redirect()->back()->withErrors($validated)->withInput();
         }
     }
     public function approveSekreterlik($formid, Request $request)
