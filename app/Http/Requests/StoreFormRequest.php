@@ -31,6 +31,10 @@ class StoreFormRequest extends FormRequest
     {
         return [
             //forms
+            'onam_path' => 'required|file|mimes:pdf|max:4096', // Adjust the mime type and max file size as needed
+            'kurum_izinleri_path' => 'nullable|file|mimes:pdf|max:4096',
+
+            'anket_path' => 'required|file|mimes:pdf|max:4096',
             // Validation for the "application_informations" table
             'application_semester' => 'required|in:güz,bahar',
             'temel_alan_bilgisi' => 'required|string',

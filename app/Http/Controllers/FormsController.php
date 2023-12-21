@@ -16,6 +16,7 @@ use App\Models\ResearchInformations;
 use Exception;
 use App\Mail\FormApproved;
 use App\Mail\FormDeclined;
+use Illuminate\Support\Facades\Storage;
 
 class FormsController extends Controller
 {
@@ -29,11 +30,36 @@ class FormsController extends Controller
 
         try {
             $validated = $request->validated();
-            //create form
-
-
+            // Create form
             $form = new Form();
             $form->save();
+
+            // Create a directory based on the researcher's student number
+            $studentNumber = $validated['student_no'];
+            $directory = "public/forms/{$studentNumber}";
+
+            // Create the directory with 755 permissions
+            Storage::makeDirectory($directory, 0755, true);
+
+            // Explicitly set the permissions for the created directory
+            chmod(storage_path("app/{$directory}"), 0755);
+
+            // Save the files in the specified directories
+            $form->onam_path = Storage::putFileAs($directory, $validated["onam_path"], 'onam.pdf', 'public');
+            $form->anket_path = Storage::putFileAs($directory, $validated["anket_path"], 'anket.pdf', 'public');
+
+            // Check if 'kurum_izinleri_path' is present and not empty before attempting to save it
+            if ($request->hasFile('kurum_izinleri_path') && $request->file('kurum_izinleri_path')->isValid()) {
+                $form->kurum_izinleri_path = Storage::putFileAs($directory, $validated["kurum_izinleri_path"], 'kurum_izinleri.pdf', 'public');
+            }
+
+            // Save the form after handling file uploads
+            $form->save();
+
+
+
+
+
             // //create researcher informations
             $researcher = new ResearcherInformations();
             $researcher->form_id = $form->id;
@@ -108,13 +134,13 @@ class FormsController extends Controller
 
                 // Add more mappings as needed for other sections
             ];
-            $ccRecipients = User::pluck('email')->toArray();
+            // $ccRecipients = User::pluck('email')->toArray();
 
-            Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $ccRecipients) {
-                $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
-                    ->subject('Application Confirmation')
-                    ->cc($ccRecipients); // Add all user emails to CC
-            });
+            // Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $ccRecipients) {
+            //     $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
+            //         ->subject('Application Confirmation')
+            //         ->cc($ccRecipients); // Add all user emails to CC
+            // });
 
             return redirect()->route('forms.index')->with('success', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');
         } catch (Exception $e) {

@@ -19,6 +19,7 @@
                 <th>Araştırmacı Adı</th>
                 <th>Araştırmacı Email</th>
                 <th>Araştırmacı Telefon</th>
+                <th>Ek Dosyalar</th>
                 <th>Tüm Başvuruyu Görüntüle</th>
                 <th>Onay</th>
             </tr>
@@ -35,8 +36,32 @@
                         <td class="border px-4 py-2">{{ $form['researcher_informations']['email'] }}</td>
                         <td class="border px-4 py-2">{{ $form['researcher_informations']['gsm'] }}</td>
                         <td class="border px-4 py-2">
+                            @if ($form->onam_path)
+                                <div>
+                                    <a class="text-blue-400" href="{{ Storage::url($form->onam_path) }}"
+                                        target="_blank">Gönüllü Onam Formu</a>
+                                </div>
+                            @endif
+                            <hr>
+                            @if ($form->kurum_izinleri_path)
+                                <div>
+                                    <a class="text-blue-400" href="{{ Storage::url($form->kurum_izinleri_path) }}"
+                                        target="_blank">Kurum İzinleri</a>
+                                </div>
+                            @endif
+                            <hr>
+                            @if ($form->anket_path)
+                                <div>
+                                    <a class="text-blue-400" href="{{ Storage::url($form->anket_path) }}"
+                                        target="_blank">Anket Formu</a>
+                                </div>
+                            @endif
+                        </td>
+
+
+                        <td class="border px-4 py-2">
                             <a target="_blank"
-                                href="/forms/{{ $form['researcher_informations']['student_no'] }}/{{ \Carbon\Carbon::parse($form['created_at'])->format('d-m-Y-His') }}"
+                                href="/formshow/{{ $form['researcher_informations']['student_no'] }}/{{ \Carbon\Carbon::parse($form['created_at'])->format('d-m-Y-His') }}"
                                 class="text-blue-400">Görüntüle/Show</a>
                         </td>
                         <td class="flex items-center justify-center flex-col">

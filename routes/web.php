@@ -16,7 +16,9 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/forms/{student_no}/{created_at}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
+    Route::get('/formshow/{student_no}/{created_at}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
+
+
 
     Route::post('/approve-sekreterlik/{formid}', [FormsController::class, 'approveSekreterlik'])->name('approve.sekreterlik');
     Route::post('/approve-etikkurul/{formid}', [FormsController::class, 'approveEtikkurul'])->name('approve.etikkurul');
@@ -33,3 +35,12 @@ Route::view('/', 'root.index')->name('root.index');
 
 Route::post('store-form', [FormsController::class, 'store']);
 Route::get('/seed-database', [DatabaseSeedController::class, 'seed']);
+Route::get('generate', function () {
+    \Illuminate\Support\Facades\Artisan::call('storage:link');
+    echo 'ok';
+});
+Route::get('migrate', function () {
+    \Illuminate\Support\Facades\Artisan::call('db:seed');
+
+    echo 'ok';
+});

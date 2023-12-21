@@ -24,51 +24,70 @@ class DatabaseSeeder extends Seeder
             'password' => Hash::make('password'),
 
         ]);
+
         DB::table('users')->insert([
-            'name' => "Sibel",
+            'name' => "Gözde",
+            "lastname" => "Mert",
             "role" => "etik_kurul",
 
-            "lastname" => "Boran",
-            'email' => "sibel.boran@nisantasi.edu.tr",
+            'email' => "gozde.mert@nisantasi.edu.tr",
             'password' => Hash::make('password'),
 
         ]);
         DB::table('users')->insert([
-            'name' => "etikkurul3",
+            'name' => "Arif",
+            "lastname" => "Şener",
             "role" => "etik_kurul",
 
-            "lastname" => "etikkurul3",
-            'email' => "etikkurul3@nisantasi.edu.tr",
+            'email' => "arif.sener@nisantasi.edu.tr",
             'password' => Hash::make('password'),
 
         ]);
         DB::table('users')->insert([
-            'name' => "etikkurul4",
-            "lastname" => "etikkurul4",
+            'name' => "Yaprak",
+            "lastname" => "Özen",
             "role" => "etik_kurul",
-            'email' => "etikkurul4@nisantasi.edu.tr",
+            'email' => "yaprak.ozen@nisantasi.edu.tr",
             'password' => Hash::make('password'),
 
         ]);
         DB::table('users')->insert([
-            'name' => "etikkurul5",
-            "lastname" => "etikkurul5",
+            'name' => "Kürşat",
+            "lastname" => "Yalçıner",
             "role" => "etik_kurul",
-            'email' => "etikkurul5@nisantasi.edu.tr",
+            'email' => "kursat.yalciner@nisantasi.edu.tr",
             'password' => Hash::make('password'),
 
         ]);
         DB::table('users')->insert([
-            'name' => "sekreter1",
-            "lastname" => "nişantaşı",
-            'email' => "sekreter1@nisantasi.edu.tr",
+            'name' => "Abdurrahman",
+            "lastname" => "Boyacı",
+            "role" => "etik_kurul",
+            'email' => "abdurrahman.boyaci@nisantasi.edu.tr",
             'password' => Hash::make('password'),
 
         ]);
         DB::table('users')->insert([
-            'name' => "sekreter2",
-            "lastname" => "nişantaşı",
-            'email' => "sekreter2@nisantasi.edu.tr",
+            'name' => "Aynur",
+            "lastname" => "Müdüroğlu",
+            "role" => "etik_kurul",
+            'email' => "aynur.muduroglu@nisantasi.edu.tr",
+            'password' => Hash::make('password'),
+
+        ]);
+        DB::table('users')->insert([
+            'name' => "Esra",
+            "role" => "sekreterlik",
+            "lastname" => "İleri",
+            'email' => "esra.ileri@nisantasi.edu.tr",
+            'password' => Hash::make('password'),
+
+        ]);
+        DB::table('users')->insert([
+            'name' => "Şerafettin",
+            "lastname" => "Sevgili",
+            "role" => "sekreterlik",
+            'email' => "serafettin.sevgili2@nisantasi.edu.tr",
             'password' => Hash::make('password'),
 
         ]);

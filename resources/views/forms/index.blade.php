@@ -110,59 +110,54 @@
                         </div>
                     </div>
                 </div>
-                {{-- <div class="accordion-item">
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="panelsStayOpen-headingFour">
                         <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                             data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false"
                             aria-controls="panelsStayOpen-collapseFour">
-                            ANKET BILGILERI
+                            EK DOSYALAR
                         </button>
                     </h2>
                     <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse"
                         aria-labelledby="panelsStayOpen-headingFour">
                         <div class="accordion-body">
-                            <x-forms.questionaire></x-forms.questionaire>
+                            <div class="d-flex flex-column gap-2 pt-5 justify-content-center align-items-center ">
+                                <div class="custom-file-input">
+
+                                    <label id="path_gonullu_onam_form_label" for="onam_path"> Gönüllü Onam
+                                        Formu</label>
+                                    <input class="form-control" type="file" name="onam_path" accept="application/pdf"
+                                        id="onam_path" required>
+                                </div>
+                                <div class="custom-file-input">
+
+                                    <label id="path_gonullu_onam_form_label" for="anket_path"> Anket Formu</label>
+                                    <input class="form-control" type="file" name="anket_path"
+                                        accept="application/pdf" id="anket_path" required>
+                                </div>
+                                <div class="custom-file-input">
+
+                                    <label id="path_gonullu_onam_form_label" for="kurum_izinleri_path"> Kurum İzni
+                                        (Varsa)</label>
+                                    <input class="form-control" type="file" name="kurum_izinleri_path"
+                                        accept="application/pdf" id="kurum_izinleri_path">
+                                </div>
+                            </div>
 
                         </div>
                     </div>
-                </div> --}}
+                </div>
 
             </div>
 
             <!-- PDF DOCUMENTS -->
-            {{-- <div class="d-flex flex-column gap-2 pt-5 justify-content-center align-items-center ">
-                <div class="custom-file-input">
-                    <small class="form-text mt-4 text-muted text-transform: capitalize;">Lütfen Dosya Pdf
-                        Türünde Yükleniyiniz
-                        <span class="form-eng">
-                            (PDF Documents)
-                        </span>
-                    </small>
-                    <label id="path_gonullu_onam_form_label" for="path_gonullu_onam_form"> Gönüllü Onam Formu</label>
-                    <input class="form-control" type="file" name="path_gonullu_onam_form" accept="application/pdf"
-                        id="path_gonullu_onam_form" required>
-                </div>
-            </div>
-            <div class="col-md-12 ">
-                <div class="icheck-primary ">
-                    <div class=" d-flex justify-content-center mt-4 gap-2">
-                        <input style="width:1.3em; height:1.3em;" type="checkbox" id="remember" class="mt-1"
-                            style="display:block;" required>
-                        <label class="text-info" for="remember"> Kişisel verilerin işlenmesi ve korunmasına yönelik
-                            aydınlatma metnini okudum, onaylıyorum.
-                            <span class="form-eng"> (I have read and understand the
-                                clarification text for the processing and protection of personel
-                                data.)
-                            </span>
-                        </label>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-12 mt-3 pb-3 text-center">
+
+
+            {{-- <div class="col-md-12 mt-3 pb-3 text-center">
                 <a href="https://www.nisantasi.edu.tr/Uploads/LE_FR.17%20et%C4%B0k%20kurul%20ba%C5%9Evuru%20formu.docx">Gönüllü
                     Onam Formuna ulaşmak için tıklayınız</a>
-            </div>
-          --}}
+            </div> --}}
+
             <div class="container pb-4 text-center my-3 ">
                 <input type="submit" value="Başvuruyu Tamamla" class="btn btn-primary">
             </div>
