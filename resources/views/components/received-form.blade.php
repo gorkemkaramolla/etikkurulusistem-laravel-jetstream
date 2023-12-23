@@ -119,24 +119,7 @@
     @endif
 </div>
 
-<script>
-    $('#myTable').DataTable({
-        scrollY: 600,
-        paging: true,
-        lengthMenu: [10, 25, 50, 100],
-        pageLength: 0,
-        language: {
-            "lengthMenu": '<select class="selectx2">' +
-                '<option value="10">10</option>' +
-                '<option value="20">20</option>' +
-                '<option value="30">30</option>' +
-                '<option value="40">40</option>' +
-                '<option value="50">50</option>' +
-                '<option value="-1">All</option>' +
-                '</select> adet gösteriliyor. '
-        }
-    });
-</script>
+
 
 
 <style>
@@ -153,7 +136,6 @@
     }
 </style>
 <script>
-    // Function to toggle input visibility and disabled attribute based on the selected radio button
     function toggleInputVisibility() {
         const radioButtons = document.getElementsByName('decide');
         const inputElement = document.getElementById('decide-reason-input');
@@ -175,53 +157,77 @@
         inputElement.disabled = true;
     }
 
-    const radioButtons = document.getElementsByName('decide');
-    for (const radioButton of radioButtons) {
-        radioButton.addEventListener('change', toggleInputVisibility);
-    }
-
-    toggleInputVisibility();
-</script>
-
-
-<script>
-    var openmodal = document.querySelectorAll('.modal-open')
-    for (var i = 0; i < openmodal.length; i++) {
-        openmodal[i].addEventListener('click', function(event) {
-            event.preventDefault()
-            toggleModal()
-        })
-    }
-
-    const overlay = document.querySelector('.modal-overlay')
-    overlay.addEventListener('click', toggleModal)
-
-    var closemodal = document.querySelectorAll('.modal-close')
-    for (var i = 0; i < closemodal.length; i++) {
-        closemodal[i].addEventListener('click', toggleModal)
-    }
-
-    document.onkeydown = function(evt) {
-        evt = evt || window.event
-        var isEscape = false
-        if ("key" in evt) {
-            isEscape = (evt.key === "Escape" || evt.key === "Esc")
-        } else {
-            isEscape = (evt.keyCode === 27)
-        }
-        if (isEscape && document.body.classList.contains('modal-active')) {
-            toggleModal()
-        }
-    };
-
-
     function toggleModal() {
-        const body = document.querySelector('body')
-        const modal = document.querySelector('.modal')
-        modal.classList.toggle('opacity-0')
-        modal.classList.toggle('pointer-events-none')
-        body.classList.toggle('modal-active')
+        const body = document.querySelector('body');
+        const modal = document.querySelector('.modal');
+        modal.classList.toggle('opacity-0');
+        modal.classList.toggle('pointer-events-none');
+        body.classList.toggle('modal-active');
     }
+
+    function setupEventListeners() {
+        const radioButtons = document.getElementsByName('decide');
+        for (const radioButton of radioButtons) {
+            radioButton.addEventListener('change', toggleInputVisibility);
+        }
+
+        var openmodal = document.querySelectorAll('.modal-open');
+        for (var i = 0; i < openmodal.length; i++) {
+            openmodal[i].addEventListener('click', function(event) {
+                event.preventDefault();
+                toggleModal();
+            });
+        }
+
+        const overlay = document.querySelector('.modal-overlay');
+        overlay.addEventListener('click', toggleModal);
+
+        var closemodal = document.querySelectorAll('.modal-close');
+        for (var i = 0; i < closemodal.length; i++) {
+            closemodal[i].addEventListener('click', toggleModal);
+        }
+
+        document.onkeydown = function(evt) {
+            evt = evt || window.event;
+            var isEscape = false;
+            if ("key" in evt) {
+                isEscape = (evt.key === "Escape" || evt.key === "Esc");
+            } else {
+                isEscape = (evt.keyCode === 27);
+            }
+            if (isEscape && document.body.classList.contains('modal-active')) {
+                toggleModal();
+            }
+        };
+    }
+
+    // Setup event listeners initially
+    setupEventListeners();
+
+    // DataTable initialization
+    const myTable = $('#myTable').DataTable({
+        scrollY: 600,
+        paging: true,
+        lengthMenu: [10, 25, 50, 100],
+        pageLength: 0,
+        language: {
+            "lengthMenu": '<select class="selectx2">' +
+                '<option value="10">10</option>' +
+                '<option value="20">20</option>' +
+                '<option value="30">30</option>' +
+                '<option value="40">40</option>' +
+                '<option value="50">50</option>' +
+                '<option value="-1">All</option>' +
+                '</select> adet gösteriliyor. '
+        }
+    });
+
+    // Add event listener for DataTable draw event
+    myTable.on('draw', function() {
+        toggleInputVisibility();
+    });
 </script>
+
+
 
 </html>
