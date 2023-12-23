@@ -17,6 +17,7 @@ use Exception;
 use App\Mail\FormApproved;
 use App\Mail\FormDeclined;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class FormsController extends Controller
 {
@@ -29,7 +30,10 @@ class FormsController extends Controller
     {
 
         try {
+            DB::beginTransaction();
+          
             $validated = $request->validated();
+            DB::commit();
             // Create form
             $form = new Form();
             $form->save();
@@ -132,9 +136,8 @@ class FormsController extends Controller
                 'research_place_date' => 'Araştırma Yapılacak Yer ve Tarih',
                 'research_literature_review' => 'Araştırma Literatür Taraması',
 
-                // Add more mappings as needed for other sections
             ];
-            // $ccRecipients = User::pluck('email')->toArray();
+            $ccRecipients = User::pluck('email')->toArray();
 
             // Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $ccRecipients) {
             //     $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
@@ -144,6 +147,7 @@ class FormsController extends Controller
 
             return redirect()->route('forms.index')->with('success', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');
         } catch (Exception $e) {
+            DB::rollBack();
             return redirect()->back()->withErrors($validated)->withInput();
         }
     }
@@ -181,11 +185,11 @@ class FormsController extends Controller
             $form->save();
             $researcherEmail = $form->researcher_informations->email;
 
-            Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
-                $message->to($researcherEmail)
-                    ->cc($ccRecipients) // Add CC recipients
-                    ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
-            });
+            // Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
+            //     $message->to($researcherEmail)
+            //         ->cc($ccRecipients) // Add CC recipients
+            //         ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
+            // });
             $form->delete();
         }
     }
