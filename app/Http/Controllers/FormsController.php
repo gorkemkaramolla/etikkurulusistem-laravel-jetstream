@@ -18,6 +18,7 @@ use App\Mail\FormApproved;
 use App\Mail\FormDeclined;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\LOG;
 
 class FormsController extends Controller
 {
@@ -31,9 +32,8 @@ class FormsController extends Controller
 
         try {
             DB::beginTransaction();
-          
+
             $validated = $request->validated();
-            DB::commit();
             // Create form
             $form = new Form();
             $form->save();
@@ -105,6 +105,7 @@ class FormsController extends Controller
             $research->research_literature_review = trim($validated['research_literature_review']);
 
             $research->save();
+            DB::commit();
 
             $fieldNameMappings = [
                 'name' => 'Araştırmacı Adı',
@@ -139,15 +140,17 @@ class FormsController extends Controller
             ];
             $ccRecipients = User::pluck('email')->toArray();
 
-            // Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $ccRecipients) {
-            //     $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
-            //         ->subject('Application Confirmation')
-            //         ->cc($ccRecipients); // Add all user emails to CC
-            // });
+            Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $ccRecipients) {
+                $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
+                    ->subject('Application Confirmation')
+                    ->cc($ccRecipients); // Add all user emails to CC
+            });
 
             return redirect()->route('forms.index')->with('success', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');
         } catch (Exception $e) {
             DB::rollBack();
+            Log::error('Form patladi: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+
             return redirect()->back()->withErrors($validated)->withInput();
         }
     }

@@ -1,5 +1,6 @@
 @props(['forms'])
-
+<style>
+</style>
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <h2 class="text-2xl font-bold mb-4">
         @if (request()->query('onaylandi') === 'true')
@@ -14,7 +15,6 @@
             <tr>
                 <th>Döküman Numarası</th>
                 <th>Onay Durumu</th>
-                <th>Araştırma Başlığı</th>
                 <th>Araştırmacı Öğrenci No</th>
                 <th>Araştırmacı Adı</th>
                 <th>Araştırmacı Email</th>
@@ -28,44 +28,50 @@
             @if ($forms->count() !== 0)
                 @foreach ($forms as $form)
                     <tr>
-                        <td class="border px-4 py-2">{{ $form['id'] }}</td>
-                        <td class="border px-4 py-2">{{ $form['stage'] }}</td>
-                        <td class="border px-4 py-2">{{ $form['research_informations']['research_title'] }}</td>
-                        <td class="border px-4 py-2">{{ $form['researcher_informations']['student_no'] }}</td>
-                        <td class="border px-4 py-2">{{ $form['researcher_informations']['name'] }}</td>
-                        <td class="border px-4 py-2">{{ $form['researcher_informations']['email'] }}</td>
-                        <td class="border px-4 py-2">{{ $form['researcher_informations']['gsm'] }}</td>
+                        <td class="border px-4 py-2">{{ $form['id'] ?? 'N/A' }}</td>
+                        <td class="border px-4 py-2">{{ $form['stage'] ?? 'N/A' }}</td>
+
+                        <td class="border px-4 py-2">{{ $form['researcher_informations']['student_no'] ?? 'N/A' }}
+                        </td>
+                        <td class="border px-4 py-2">{{ $form['researcher_informations']['name'] ?? 'N/A' }}</td>
+                        <td class="border px-4 py-2">{{ $form['researcher_informations']['email'] ?? 'N/A' }}</td>
+                        <td class="border px-4 py-2">{{ $form['researcher_informations']['gsm'] ?? 'N/A' }}</td>
                         <td class="border px-4 py-2">
-                            @if ($form->onam_path)
+                            @if ($form && $form->onam_path)
                                 <div>
-                                    <a class="text-blue-400" href="{{ Storage::url($form->onam_path) }}"
+                                    <a class="text-blue-400" href="{{ url('/show-pdf/' . $form->onam_path) }}"
                                         target="_blank">Gönüllü Onam Formu</a>
+
                                 </div>
                             @endif
                             <hr>
-                            @if ($form->kurum_izinleri_path)
+                            @if ($form && $form->kurum_izinleri_path)
                                 <div>
-                                    <a class="text-blue-400" href="{{ Storage::url($form->kurum_izinleri_path) }}"
+
+                                    <a class="text-blue-400" href="{{ url('/show-pdf/' . $form->kurum_izinleri_path) }}"
                                         target="_blank">Kurum İzinleri</a>
                                 </div>
                             @endif
                             <hr>
-                            @if ($form->anket_path)
+                            @if ($form && $form->anket_path)
                                 <div>
-                                    <a class="text-blue-400" href="{{ Storage::url($form->anket_path) }}"
+
+                                    <a class="text-blue-400" href="{{ url('/show-pdf/' . $form->anket_path) }}"
                                         target="_blank">Anket Formu</a>
                                 </div>
                             @endif
                         </td>
 
-
                         <td class="border px-4 py-2">
                             <a target="_blank"
-                                href="/formshow/{{ $form['researcher_informations']['student_no'] }}/{{ \Carbon\Carbon::parse($form['created_at'])->format('d-m-Y-His') }}"
+                                href="/formshow/{{ $form['researcher_informations']['student_no'] ?? '' }}"
                                 class="text-blue-400">Görüntüle/Show</a>
+
                         </td>
-                        <td class="flex items-center justify-center flex-col">
-                            @if (auth()->user()->hasRole('sekreterlik') && $form->stage === 'sekreterlik')
+                        <td>
+                            @if (auth()->user()->hasRole('sekreterlik') &&
+                                    $form &&
+                                    $form->stage === 'sekreterlik')
                                 <x-approve-modal :formid="$form->id"></x-approve-modal>
                             @elseif(auth()->user()->hasRole('etik_kurul'))
                                 @php
@@ -87,6 +93,7 @@
                                 @endif
                             @endif
                         </td>
+
                     </tr>
                 @endforeach
             @else
@@ -114,7 +121,7 @@
 
 <script>
     $('#myTable').DataTable({
-        scrollY: 300,
+        scrollY: 600,
         paging: true,
         lengthMenu: [10, 25, 50, 100],
         pageLength: 0,
@@ -128,72 +135,6 @@
                 '<option value="-1">All</option>' +
                 '</select> adet gösteriliyor. '
         }
-    });
-    $('#toggleForms').click(function(e) {
-        e.preventDefault();
-
-        // Toggle the data-value attribute
-        var onaylandiValue = $(this).data('value') === 'true' ? 'false' : 'true';
-
-        // Show loading indicator
-        $('#myTable').html('<p>Loading...</p>');
-
-        // Construct the URL based on the condition
-        var url = onaylandiValue === 'true' ? '/dashboard?onaylandi=true' : '/dashboard';
-
-        // Check if DataTable is already initialized
-        if ($.fn.DataTable.isDataTable('#myTable')) {
-            // Destroy the existing DataTable
-            $('#myTable').DataTable().destroy();
-        }
-
-        // Make an AJAX request
-        $.ajax({
-            url: url,
-            type: 'GET',
-            success: function(data) {
-                // Update the content with the response
-                $('#myTable').html($(data).find('#myTable').html());
-
-                // Reinitialize DataTable
-                $('#myTable').DataTable({
-                    scrollY: 300,
-                    paging: true,
-                    lengthMenu: [10, 25, 50, 100],
-                    pageLength: 0,
-                    language: {
-                        "lengthMenu": '<select class="selectx2">' +
-                            '<option value="10">10</option>' +
-                            '<option value="20">20</option>' +
-                            '<option value="30">30</option>' +
-                            '<option value="40">40</option>' +
-                            '<option value="50">50</option>' +
-                            '<option value="-1">All</option>' +
-                            '</select> adet gösteriliyor. '
-                    }
-                });
-
-                // Update the link's data-value attribute
-                $('#toggleForms').data('value', onaylandiValue);
-
-                // Update the browser's URL without reloading the page
-                var newURL = onaylandiValue === 'true' ? '/dashboard?onaylandi=true' : '/dashboard';
-                window.history.pushState({}, document.title, newURL);
-
-                // Update the h2 element based on onaylandiValue
-                $('h2').text(onaylandiValue === 'true' ? 'Onaylanmış Formlar' :
-                    'Onay Bekleyen Formlar');
-
-                // Update the button text based on onaylandiValue
-                $('#toggleForms').text(onaylandiValue === 'true' ?
-                    'Onay bekleyen formları görüntüle' : 'Onaylanmış formları görüntüle');
-            },
-            error: function(error) {
-                console.error('Error:', error);
-                // Handle errors if needed
-                $('#myTable').html('<p>Error loading data</p>');
-            }
-        });
     });
 </script>
 

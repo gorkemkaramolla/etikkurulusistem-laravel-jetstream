@@ -16,7 +16,8 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/formshow/{student_no}/{created_at}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
+    Route::get('/formshow/{student_no}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
+
 
 
 
@@ -26,6 +27,15 @@ Route::middleware([
     Route::get('/dil-degistir', [DashboardController::class, 'changeLanguageToTurkish']);
 
 
+    Route::get('/show-pdf/{path}', function ($path) {
+        $filePath = base_path("storage/app/{$path}");
+
+        if (file_exists($filePath)) {
+            return response()->file($filePath);
+        } else {
+            abort(404, 'File not found');
+        }
+    })->where('path', '.*');
 
     Route::post('/forms/approve/{formid}', [FormsController::class, 'approveSekreterlik']);
     Route::get('/pdf/{slug}', [DashboardController::class, 'generatePdf']);

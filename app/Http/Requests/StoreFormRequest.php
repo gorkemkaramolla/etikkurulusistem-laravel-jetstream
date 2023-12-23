@@ -67,7 +67,9 @@ class StoreFormRequest extends FormRequest
             'email' => 'required|email|unique:researcher_informations,email',
             'major' => 'required|string',
             'department' => 'required|string',
-            'student_no' => 'required|string|max:11|unique:researcher_informations,student_no',
+            'student_no' => 'required|numeric|digits:11|unique:researcher_informations,student_no',
+
+
 
 
         ];
