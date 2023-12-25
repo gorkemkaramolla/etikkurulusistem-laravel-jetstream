@@ -1,13 +1,13 @@
 @props(['formid'])
 
-<div class="">
+<div class="modal-body{{ $formid }}">
 
-    <button
+    <button onclick="toggleModal('{{ $formid }}')"
         class="modal-open bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-4 rounded-full">Karar/Verdict</button>
 
-    <div class="modal opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center">
+    <div
+        class="modal{{ $formid }} opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center">
         <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
-
         <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
 
             <div
@@ -19,6 +19,7 @@
                     </path>
                 </svg>
                 <span class="text-sm">(Esc)</span>
+
             </div>
 
             <div class="modal-content py-4 text-left px-6">
@@ -36,6 +37,8 @@
                         </svg>
                     </div>
                 </div>
+                {{ $formid }}
+
                 <form
                     action="{{ !Auth::user()->hasRole('sekreterlik') ? route('approve.etikkurul', ['formid' => $formid]) : route('approve.sekreterlik', ['formid' => $formid]) }}"
                     method="POST">
@@ -75,5 +78,44 @@
         </div>
     </div>
 </div>
+<script>
+    function toggleModal(formid) {
+        const body = document.querySelector(`.modal-body${formid}`);
+        const modal = document.querySelector(`.modal${formid}`);
+
+        modal.classList.toggle('opacity-0');
+        modal.classList.toggle('pointer-events-none');
+        body.classList.toggle('modal-active');
+        toggleInputVisibility(formid)
+    }
+
+    // Setup event listeners for modal closing
+    var closemodal = document.querySelectorAll('.modal-close');
+    for (var i = 0; i < closemodal.length; i++) {
+        closemodal[i].addEventListener('click', function() {
+            const formid = "{{ $formid }}"
+            toggleModal(formid);
+        });
+    }
+
+    function toggleInputVisibility() {
+        const radioButtons = document.getElementsByName(`.modal${formid} decide`);
+        const inputElement = document.querySelector(`.modal${formid} decide-reason-input`);
+
+        for (const radioButton of radioButtons) {
+            if (radioButton.checked) {
+                const isOnay = radioButton.value === 'onaylandi';
+
+                inputElement.style.display = isOnay ? 'none' : 'block';
+
+                inputElement.disabled = isOnay;
+                return;
+            }
+        }
+
+        inputElement.style.display = 'none';
+        inputElement.disabled = true;
+    }
+</script>
 
 </div>

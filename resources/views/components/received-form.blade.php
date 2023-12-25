@@ -136,35 +136,6 @@
     }
 </style>
 <script>
-    function toggleInputVisibility() {
-        const radioButtons = document.getElementsByName('decide');
-        const inputElement = document.getElementById('decide-reason-input');
-
-        // Loop through radio buttons to find the selected one
-        for (const radioButton of radioButtons) {
-            if (radioButton.checked) {
-                // Show the input only if a non-"Onay" radio button is selected
-                const isOnay = radioButton.value === 'onaylandi';
-                inputElement.style.display = isOnay ? 'none' : 'block';
-
-                // Set the 'disabled' attribute based on whether the input should be included in the form submission
-                inputElement.disabled = isOnay;
-                return;
-            }
-        }
-
-        inputElement.style.display = 'none';
-        inputElement.disabled = true;
-    }
-
-    function toggleModal() {
-        const body = document.querySelector('body');
-        const modal = document.querySelector('.modal');
-        modal.classList.toggle('opacity-0');
-        modal.classList.toggle('pointer-events-none');
-        body.classList.toggle('modal-active');
-    }
-
     function setupEventListeners() {
         const radioButtons = document.getElementsByName('decide');
         for (const radioButton of radioButtons) {
