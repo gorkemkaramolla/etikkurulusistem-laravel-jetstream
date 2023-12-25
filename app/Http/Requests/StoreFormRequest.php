@@ -60,16 +60,14 @@ class StoreFormRequest extends FormRequest
             'research_literature_review' => 'required|string',
 
             // Validation for the "researcher_informations" table
-            'name' => 'required|string',
-            'lastname' => 'required|string',
-            'advisor' => 'required|string',
+            'name' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'advisor' => 'required|string|max:255',
             'gsm' => 'required|string|max:10|unique:researcher_informations,gsm',
             'email' => 'required|email|unique:researcher_informations,email',
             'major' => 'required|string',
             'department' => 'required|string',
-            'student_no' => 'required|numeric|digits:11|unique:researcher_informations,student_no',
-
-
+            'student_no' => 'required|string|max:11|unique:researcher_informations,student_no',
 
 
         ];
