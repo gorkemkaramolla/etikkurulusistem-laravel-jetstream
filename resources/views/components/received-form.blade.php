@@ -2,6 +2,12 @@
 <style>
 </style>
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div>
+        <a href="{{ route('export.array') }}"
+            class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
+            Export using array
+        </a>
+    </div>
     <h2 class="text-2xl font-bold mb-4">
         @if (request()->query('onaylandi') === 'true')
             Onaylanmış Formlar
@@ -14,7 +20,7 @@
         <thead>
             <tr>
                 <th>Döküman Numarası</th>
-                <th>Onay Durumu</th>
+                <th>Gönderilme Tarihi</th>
                 <th>Araştırmacı Öğrenci No</th>
                 <th>Araştırmacı Adı</th>
                 <th>Araştırmacı Email</th>
@@ -29,11 +35,13 @@
                 @foreach ($forms as $form)
                     <tr>
                         <td class="border px-4 py-2">{{ $form['id'] ?? 'N/A' }}</td>
-                        <td class="border px-4 py-2">{{ $form['stage'] ?? 'N/A' }}</td>
-
+                        <td class="border px-4 py-2">
+                            {{ \Carbon\Carbon::parse($form['created_at'])->format('d/m/Y') ?? 'N/A' }}
+                        </td>
                         <td class="border px-4 py-2">{{ $form['researcher_informations']['student_no'] ?? 'N/A' }}
                         </td>
-                        <td class="border px-4 py-2">{{ $form['researcher_informations']['name'] ?? 'N/A' }}</td>
+                        <td class="border px-4 py-2">{{ $form['researcher_informations']['name'] ?? 'N/A' }}
+                            {{ $form['researcher_informations']['lastname'] ?? 'N/A' }}</td>
                         <td class="border px-4 py-2">{{ $form['researcher_informations']['email'] ?? 'N/A' }}</td>
                         <td class="border px-4 py-2">{{ $form['researcher_informations']['gsm'] ?? 'N/A' }}</td>
                         <td class="border px-4 py-2">
