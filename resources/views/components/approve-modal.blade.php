@@ -28,7 +28,7 @@
                     <p class="text-2xl font-bold">
                         {{ Auth::user()->hasRole('sekreterlik') ? 'Sekreterlik Kararı/ Secretary Verdict' : 'Etik Kurulu Kararı/Ethics Comittee Verdict' }}
                     </p>
-                    <div class="modal-close cursor-pointer z-50">
+                    <div onclick="toggleModal('{{ $formid }}')" class="modal-close cursor-pointer z-50">
                         <svg class="fill-current text-black" xmlns="http://www.w3.org/2000/svg" width="18"
                             height="18" viewBox="0 0 18 18">
                             <path
@@ -46,24 +46,28 @@
                     @csrf
                     <label for="onay-radio" class="block text-gray-700 text-sm font-bold mb-2">
                         Onayla/Approve:
-                        <input checked type="radio" name="decide" value="onaylandi" id="onay-radio" required>
+                        <input onchange="toggleInputVisibility(event,'{{ $formid }}')" checked type="radio"
+                            name="decide" value="onaylandi" id="onay-radio" required>
                     </label>
 
                     <label for="duzeltme-radio" class="block text-gray-700 text-sm font-bold mb-2">
                         Düzeltme/Correction:
-                        <input type="radio" name="decide" value="duzeltme" id="duzeltme-radio" required>
+                        <input type="radio" onchange="toggleInputVisibility(event,'{{ $formid }}')"
+                            name="decide" value="duzeltme" id="duzeltme-radio" required>
                     </label>
                     @if (!Auth::user()->hasRole('sekreterlik'))
                         <label for="reddedildi-radio" class="block text-gray-700 text-sm font-bold mb-2">
                             Reddet/Decline:
-                            <input type="radio" name="decide" value="reddedildi" id="reddedildi-radio" required>
+                            <input onchange="toggleInputVisibility(event,'{{ $formid }}')" type="radio"
+                                name="decide" value="reddedildi" id="reddedildi-radio" required>
                         </label>
                     @endif
                     <!-- Input for other cases -->
 
-                    <textarea placeholder="Lütfen karar nedeninizi giriniz / Please enter your reason for decision"
-                        class="w-full px-3 py-2 border rounded" name="decide_reason" id="decide-reason-input" cols="30" rows="5"
-                        required></textarea>
+                    <textarea disabled style="display: none"
+                        placeholder="Lütfen karar nedeninizi giriniz / Please enter your reason for decision"
+                        class="w-full px-3 py-2 border rounded" name="decide_reason" id="decide-reason-input{{ $formid }}"
+                        cols="30" rows="5" required></textarea>
 
                     <!--Footer-->
                     <div class="flex justify-end pt-2">
@@ -79,43 +83,40 @@
     </div>
 </div>
 <script>
-    function toggleModal(formid) {
-        const body = document.querySelector(`.modal-body${formid}`);
-        const modal = document.querySelector(`.modal${formid}`);
+    // var closemodal = document.querySelector(`.modal-body${formid} .modal-close`);
+    // closemodal.addEventListener('click', function() {
+    //     const formid = "{{ $formid }}"
+    //     alert(formid)
+    //     toggleModal(formid);
+    // });
 
+    function toggleModal(formid) {
+
+        const body = document.querySelector(`.modal-body${formid}`);
+
+        const modal = document.querySelector(`.modal${formid}`);
         modal.classList.toggle('opacity-0');
         modal.classList.toggle('pointer-events-none');
         body.classList.toggle('modal-active');
-        toggleInputVisibility(formid)
     }
 
-    // Setup event listeners for modal closing
-    var closemodal = document.querySelectorAll('.modal-close');
-    for (var i = 0; i < closemodal.length; i++) {
-        closemodal[i].addEventListener('click', function() {
-            const formid = "{{ $formid }}"
-            toggleModal(formid);
-        });
-    }
-
-    function toggleInputVisibility() {
-        const radioButtons = document.getElementsByName(`.modal${formid} decide`);
-        const inputElement = document.querySelector(`.modal${formid} decide-reason-input`);
-
-        for (const radioButton of radioButtons) {
-            if (radioButton.checked) {
-                const isOnay = radioButton.value === 'onaylandi';
-
-                inputElement.style.display = isOnay ? 'none' : 'block';
-
-                inputElement.disabled = isOnay;
-                return;
-            }
+    function toggleInputVisibility(event, formid) {
+        const inputElement = document.getElementById(`decide-reason-input${formid}`);
+        console.log(event.target.value);
+        if (event.target.value === "onaylandi") {
+            inputElement.disabled = true;
+            inputElement.style.display = "none";
+        } else {
+            inputElement.disabled = false;
+            inputElement.style.display = "block";
         }
-
-        inputElement.style.display = 'none';
-        inputElement.disabled = true;
     }
+    const onayButtons = document.getElementsByName('decide');
+    onayButtons.forEach((onay) => {
+        onay.addEventListener('change', (event) => {
+
+        });
+    });
 </script>
 
 </div>
