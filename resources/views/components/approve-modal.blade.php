@@ -3,11 +3,11 @@
 <div class="modal-body{{ $formid }}">
 
     <button onclick="toggleModal('{{ $formid }}')"
-        class="modal-open bg-transparent border border-gray-500 hover:border-indigo-500 text-gray-500 hover:text-indigo-500 font-bold py-2 px-4 rounded-full">Karar/Verdict</button>
+        class="modal-open bg-transparent  py-2 px-4">Karar/Verdict</button>
 
     <div
         class="modal{{ $formid }} opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center">
-        <div class="modal-overlay absolute w-full h-full bg-gray-900 opacity-50"></div>
+        <div class="modal-overlay absolute w-full h-full bg-black z-50 opacity-70"></div>
         <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
 
             <div
@@ -111,12 +111,14 @@
             inputElement.style.display = "block";
         }
     }
-    const onayButtons = document.getElementsByName('decide');
-    onayButtons.forEach((onay) => {
-        onay.addEventListener('change', (event) => {
-
+    if (typeof onayButtons === 'undefined') {
+        const onayButtons = document.getElementsByName('decide');
+        onayButtons.forEach((onay) => {
+            onay.addEventListener('change', (event) => {
+                // Your event listener code here
+            });
         });
-    });
+    }
 </script>
 
 </div>

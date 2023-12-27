@@ -26,7 +26,7 @@ class FormsController extends Controller
     {
         return view('forms.index');
     }
-
+    // /FORMS SUBMIT REQUEST CONTROLLER
     public function store(StoreFormRequest $request)
     {
 
@@ -59,11 +59,6 @@ class FormsController extends Controller
 
             // Save the form after handling file uploads
             $form->save();
-
-
-
-
-
             // //create researcher informations
             $researcher = new ResearcherInformations();
             $researcher->form_id = $form->id;
@@ -140,13 +135,15 @@ class FormsController extends Controller
             ];
             $ccRecipients = User::pluck('email')->toArray();
 
-            Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $ccRecipients) {
-                $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
-                    ->subject('Application Confirmation')
-                    ->cc($ccRecipients); // Add all user emails to CC
-            });
+            // Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $ccRecipients) {
+            //     $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
+            //         ->subject('Application Confirmation')
+            //         ->cc($ccRecipients); // Add all user emails to CC
+            // });
+            $linkPath = "/query-etikkurul/{$researcher->student_no}";
+            $successMessage = 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.';
 
-            return redirect()->route('forms.index')->with('success', 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.');
+            return redirect()->route('forms.index')->with('successMessage', $successMessage)->with('linkPath', $linkPath);
         } catch (Exception $e) {
             DB::rollBack();
             Log::error('Form patladi: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
@@ -166,7 +163,6 @@ class FormsController extends Controller
 
     private function startSekreterlikApprovalProcess(Form $form, $decide, $decide_reason)
     {
-        $ccRecipients = User::pluck('email')->toArray();
 
         if ($decide === "onaylandi") {
             $form->stage = "etik_kurul";
@@ -183,6 +179,8 @@ class FormsController extends Controller
                 $etikKurulOnayi->save();
             }
         } else if ($decide === "duzeltme") {
+            $ccRecipients = User::pluck('email')->toArray();
+
             $form->stage = "duzeltme";
             $form->decide_reason = $decide_reason;
             $form->save();
@@ -249,6 +247,31 @@ class FormsController extends Controller
                         ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
                 });
             }
+        }
+    }
+
+    public function generateQueryStageForm($studentNo)
+    {
+        try {
+            $form = Form::select('forms.created_at', 'forms.stage') // Include 'forms.stage' in the select statement
+                ->join('research_informations', 'forms.id', '=', 'research_informations.form_id')
+                ->join('researcher_informations', 'forms.id', '=', 'researcher_informations.form_id')
+                ->where('researcher_informations.student_no', $studentNo)
+                ->select(
+                    'forms.created_at',
+                    'forms.stage', // Include 'forms.stage' here
+                    'research_informations.research_title',
+                    'researcher_informations.name',
+                    'researcher_informations.lastname',
+                    'researcher_informations.major',
+                    'researcher_informations.department'
+                )
+                ->first();
+
+
+            return view('forms.display-querystage', compact('form'));
+        } catch (\Exception $e) {
+            return response()->view('errors.500', ['error' => $e->getMessage()], 500);
         }
     }
 }

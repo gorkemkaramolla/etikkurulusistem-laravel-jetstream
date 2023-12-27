@@ -1,13 +1,8 @@
 @props(['forms'])
-<style>
-</style>
+
+
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-    <div>
-        <a href="{{ route('export.array') }}"
-            class="inline-flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 active:bg-gray-900 focus:outline-none focus:border-gray-900 focus:ring ring-gray-300 disabled:opacity-25 transition ease-in-out duration-150">
-            Export using array
-        </a>
-    </div>
+
     <h2 class="text-2xl font-bold mb-4">
         @if (request()->query('onaylandi') === 'true')
             Onaylanmış Formlar
@@ -16,7 +11,7 @@
         @endif
     </h2>
 
-    <table id="myTable" class="table-auto w-full">
+    <table id="myTable" class="hidden">
         <thead>
             <tr>
                 <th>Döküman Numarası</th>
@@ -34,46 +29,72 @@
             @if ($forms->count() !== 0)
                 @foreach ($forms as $form)
                     <tr>
-                        <td class="border px-4 py-2">{{ $form['id'] ?? 'N/A' }}</td>
-                        <td class="border px-4 py-2">
+                        <td class="border ">{{ $form['id'] ?? 'N/A' }}</td>
+                        <td class="border ">
                             {{ \Carbon\Carbon::parse($form['created_at'])->format('d/m/Y') ?? 'N/A' }}
                         </td>
-                        <td class="border px-4 py-2">{{ $form['researcher_informations']['student_no'] ?? 'N/A' }}
+                        <td class="border ">{{ $form['researcher_informations']['student_no'] ?? 'N/A' }}
                         </td>
-                        <td class="border px-4 py-2">{{ $form['researcher_informations']['name'] ?? 'N/A' }}
+                        <td class="border ">{{ $form['researcher_informations']['name'] ?? 'N/A' }}
                             {{ $form['researcher_informations']['lastname'] ?? 'N/A' }}</td>
-                        <td class="border px-4 py-2">{{ $form['researcher_informations']['email'] ?? 'N/A' }}</td>
-                        <td class="border px-4 py-2">{{ $form['researcher_informations']['gsm'] ?? 'N/A' }}</td>
-                        <td class="border px-4 py-2">
-                            @if ($form && $form->onam_path)
-                                <div>
-                                    <a class="text-blue-400" href="{{ url('/show-pdf/' . $form->onam_path) }}"
-                                        target="_blank">Gönüllü Onam Formu</a>
+                        <td class="border ">{{ $form['researcher_informations']['email'] ?? 'N/A' }}</td>
+                        <td class="border ">{{ $form['researcher_informations']['gsm'] ?? 'N/A' }}</td>
+                        <td class="border ">
+                            <x-dropdown align="left" width="60">
+                                <x-slot name="trigger">
 
-                                </div>
-                            @endif
-                            <hr>
-                            @if ($form && $form->kurum_izinleri_path)
-                                <div>
+                                    <span class="inline-flex rounded-md">
+                                        <button type="button"
+                                            class="items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500  transition ease-in-out duration-150">
+                                            Formları Görüntüle
 
-                                    <a class="text-blue-400" href="{{ url('/show-pdf/' . $form->kurum_izinleri_path) }}"
-                                        target="_blank">Kurum İzinleri</a>
-                                </div>
-                            @endif
-                            <hr>
-                            @if ($form && $form->anket_path)
-                                <div>
 
-                                    <a class="text-blue-400" href="{{ url('/show-pdf/' . $form->anket_path) }}"
-                                        target="_blank">Anket Formu</a>
-                                </div>
-                            @endif
+                                        </button>
+                                    </span>
+
+                                </x-slot>
+
+                                <x-slot name="content">
+                                    <div class="w-60 ">
+                                        @if ($form && $form->onam_path)
+                                            <div>
+                                                <x-dropdown-link href="{{ url('/show-pdf/' . $form->onam_path) }}"
+                                                    target="_blank">Gönüllü Onam Formu</x-dropdown-link>
+
+                                            </div>
+                                        @endif
+                                        <hr>
+                                        @if ($form && $form->kurum_izinleri_path)
+                                            <div>
+
+                                                <x-dropdown-link
+                                                    href="{{ url('/show-pdf/' . $form->kurum_izinleri_path) }}"
+                                                    target="_blank">Kurum İzinleri</x-dropdown-link>
+                                            </div>
+                                        @endif
+                                        <hr>
+                                        @if ($form && $form->anket_path)
+                                            <div>
+
+                                                <x-dropdown-link href="{{ url('/show-pdf/' . $form->anket_path) }}"
+                                                    target="_blank">Anket Formu</x-dropdown-link>
+                                            </div>
+                                        @endif
+                                </x-slot>
+                            </x-dropdown>
+
+
                         </td>
 
-                        <td class="border px-4 py-2">
-                            <a target="_blank"
-                                href="/formshow/{{ $form['researcher_informations']['student_no'] ?? '' }}"
-                                class="text-blue-400">Görüntüle/Show</a>
+                        <td class="border ">
+
+
+                            <div class="flex flex-col ">
+                                <a target="_blank"
+                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-100 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
+                                    href="/formshow/{{ $form['researcher_informations']['student_no'] ?? '' }}">Görüntüle/Show</a>
+                            </div>
+
 
                         </td>
                         <td>
@@ -109,13 +130,7 @@
         </tbody>
     </table>
 
-    <a href="#" id="toggleForms" data-value="{{ request()->query('onaylandi') === 'true' ? 'false' : 'true' }}">
-        @if (request()->query('onaylandi') === 'true')
-            Onay bekleyen formları görüntüle
-        @else
-            Onaylanmış formları görüntüle
-        @endif
-    </a>
+
 
     @if (
         $forms->count() !== 0 &&
@@ -145,10 +160,14 @@
 </style>
 <script>
     const myTable = $('#myTable').DataTable({
-        scrollY: 600,
+        scrollY: 550,
+        scrollCollapse: true,
         paging: true,
         lengthMenu: [10, 25, 50, 100],
         pageLength: 0,
+        order: [
+            [1, 'desc']
+        ], // Default sorting by the second column in descending order
         language: {
             "lengthMenu": '<select class="selectx2">' +
                 '<option value="10">10</option>' +
@@ -165,8 +184,5 @@
     myTable.on('draw', function() {
         toggleInputVisibility();
     });
+    $('#myTable').removeClass('hidden');
 </script>
-
-
-
-</html>

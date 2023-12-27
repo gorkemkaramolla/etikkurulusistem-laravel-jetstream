@@ -7,6 +7,8 @@ use App\Http\Controllers\DatabaseSeedController;
 use Illuminate\Support\Facades\Gate;
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DataVisualizationController;
+
 use App\Http\Controllers\AppliedFormController;
 use App\Http\Controllers\ExportController;
 
@@ -16,6 +18,7 @@ Route::middleware([
     'verified',
 ])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/visualize', [DataVisualizationController::class, 'index'])->name('visualize');
 
     Route::get('/formshow/{student_no}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
 
@@ -43,7 +46,15 @@ Route::middleware([
     Route::post('/forms/approve/{formid}', [FormsController::class, 'approveSekreterlik']);
     Route::get('/pdf/{slug}', [DashboardController::class, 'generatePdf']);
 });
+
+
+
+
+
+Route::get('/query-etikkurul/{student_no}', [FormsController::class, 'generateQueryStageForm'])->name('forms.get');
+
 Route::get('/form', [FormsController::class, 'index'])->name('forms.index');
+
 Route::view('/', 'root.index')->name('root.index');
 
 Route::post('store-form', [FormsController::class, 'store']);
