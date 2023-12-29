@@ -133,13 +133,13 @@ class FormsController extends Controller
                 'research_literature_review' => 'Araştırma Literatür Taraması',
 
             ];
-            $ccRecipients = User::pluck('email')->toArray();
+            $sekreterlikRecipients = User::where('role', 'sekreterlik')->pluck('email')->toArray();
 
-            // Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $ccRecipients) {
-            //     $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
-            //         ->subject('Application Confirmation')
-            //         ->cc($ccRecipients); // Add all user emails to CC
-            // });
+            Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $sekreterlikRecipients) {
+                $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
+                    ->subject('Application Confirmation')
+                    ->cc($sekreterlikRecipients); // Add all users with role "sekreterlik" to CC
+            });
             $linkPath = "/query-etikkurul/{$researcher->student_no}";
             $successMessage = 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.';
 
@@ -163,7 +163,7 @@ class FormsController extends Controller
 
     private function startSekreterlikApprovalProcess(Form $form, $decide, $decide_reason)
     {
-
+//SEKRETER ONAY DURUMU
         if ($decide === "onaylandi") {
             $form->stage = "etik_kurul";
             $form->save();
@@ -178,19 +178,27 @@ class FormsController extends Controller
 
                 $etikKurulOnayi->save();
             }
+            $etikKurulRecipients = User::where('role', 'etik_kurul')->pluck('email')->toArray();
+
+            $researcherEmail=$form->researcher_informations->email;
+            Mail::send('emails.form-sekreter-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $etikKurulRecipients) {
+                $message->to($researcherEmail)
+                    ->cc($etikKurulRecipients) // Add CC recipients
+                    ->subject('Başvurunuz Sekreterlik Tarafından Onaylanmıştır.');
+            });
         } else if ($decide === "duzeltme") {
             $ccRecipients = User::pluck('email')->toArray();
-
+//SEKRETER DUZELTME
             $form->stage = "duzeltme";
             $form->decide_reason = $decide_reason;
             $form->save();
             $researcherEmail = $form->researcher_informations->email;
 
-            // Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
-            //     $message->to($researcherEmail)
-            //         ->cc($ccRecipients) // Add CC recipients
-            //         ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
-            // });
+            Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
+                $message->to($researcherEmail)
+                    ->cc($ccRecipients) // Add CC recipients
+                    ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
+            });
             $form->delete();
         }
     }
@@ -209,6 +217,7 @@ class FormsController extends Controller
 
     private function startEtikkurulApprovalProcess(Form $form,  $decide, $decide_reason)
     {
+
         $etikKurulOnayi = $form->etik_kurul_onayi;
 
 
@@ -220,7 +229,7 @@ class FormsController extends Controller
         $ccRecipients = User::pluck('email')->toArray();
 
         if ($decide === "duzeltme" || $decide === "reddedildi") {
-
+//DUZELTME VEYA RED
             $form->stage = $decide;
             $form->decide_reason = $decide_reason;
             $form->save();
@@ -236,15 +245,15 @@ class FormsController extends Controller
             $form->delete();
         } else {
             if ($etikKurulOnayi->whereNotIn('onay_durumu', ['bekleme', 'duzeltme', 'reddedildi'])->count() === $etikKurulOnayi->count()) {
-
+//ONAYLANMA DURUMU
                 $form->stage = 'onaylandi';
                 $form->save();
                 $researcherEmail = $form->researcher_informations->email;
 
-                Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
+                Mail::send('emails.form-etik-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
                     $message->to($researcherEmail)
                         ->cc($ccRecipients) // Add CC recipients
-                        ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
+                        ->subject('Etik kurulu başvurunuz onaylandı.');
                 });
             }
         }
