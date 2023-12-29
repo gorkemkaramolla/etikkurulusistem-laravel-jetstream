@@ -13,8 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      *
      * @var array<class-string, class-string>
      */
-    protected $policies = [
-    ];
+    protected $policies = [];
 
     public function boot(): void
     {
@@ -22,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('access-dashboard', function ($user) {
-            return $user->hasAnyRole(['sekreterlik', 'etik_kurul']);
+            return $user->hasAnyRole(['sekreterlik', 'etik_kurul', "user"]);
         });
     }
 }
