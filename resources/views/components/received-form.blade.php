@@ -33,12 +33,12 @@
                         <td class="border ">
                             {{ \Carbon\Carbon::parse($form['created_at'])->format('d/m/Y') ?? 'N/A' }}
                         </td>
-                        <td class="border ">{{ $form['researcher_informations']['student_no'] ?? 'N/A' }}
+                        <td class="border ">{{ $form['student_no'] ?? 'N/A' }}
                         </td>
-                        <td class="border ">{{ $form['researcher_informations']['name'] ?? 'N/A' }}
-                            {{ $form['researcher_informations']['lastname'] ?? 'N/A' }}</td>
-                        <td class="border ">{{ $form['researcher_informations']['email'] ?? 'N/A' }}</td>
-                        <td class="border ">{{ $form['researcher_informations']['gsm'] ?? 'N/A' }}</td>
+                        <td class="border ">{{ $form['name'] ?? 'N/A' }}
+                            {{ $form['lastname'] ?? 'N/A' }}</td>
+                        <td class="border ">{{ $form['email'] ?? 'N/A' }}</td>
+                        <td class="border ">{{ $form['gsm'] ?? 'N/A' }}</td>
                         <td class="border ">
                             <x-dropdown align="left" width="60">
                                 <x-slot name="trigger">
@@ -92,7 +92,7 @@
                             <div class="flex flex-col ">
                                 <a target="_blank"
                                     class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-100 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
-                                    href="/formshow/{{ $form['researcher_informations']['student_no'] ?? '' }}">Görüntüle/Show</a>
+                                    href="/formshow/{{ $form['student_no'] ?? '' }}">Görüntüle/Show</a>
                             </div>
 
 

@@ -15,9 +15,11 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    <x-nav-link href="{{ route('visualize') }}" :active="request()->routeIs('visualize')">
-                        Visualize
-                    </x-nav-link>
+                    @if (!auth()->user()->hasRole('user'))
+                        <x-nav-link href="{{ route('visualize') }}" :active="request()->routeIs('visualize')">
+                            Visualize
+                        </x-nav-link>
+                    @endif
 
                 </div>
 
@@ -100,11 +102,20 @@
 
                                             </p>
                                             <p class="capitalize">
-                                                <span>Etik Kurulu</span>
                                                 <span class="text-red-500">
-                                                    {{ Auth::user()->role === 'sekreterlik'
-                                                        ? str_replace('_', ' ', Auth::user()->role)
-                                                        : str_replace('_', ' ', Auth::user()->role) . 'u ' . 'Üyesi' }}
+                                                    @if (Auth::user()->role === 'sekreterlik')
+                                                        <span>Etik Kurul</span>
+
+                                                        {{ str_replace('_', ' ', Auth::user()->role) }}
+                                                    @elseif(Auth::user()->role === 'etik_kurul')
+                                                        <span>Etik Kurul</span>
+                                                        {{ str_replace('_', ' ', Auth::user()->role) }} Üyesi
+                                                    @elseif(Auth::user()->role === 'admin')
+                                                        Admin
+                                                    @else
+                                                        Öğrenci
+                                                    @endif
+
                                                 </span>
 
                                             </p>
@@ -123,7 +134,8 @@
                         <x-slot name="content">
                             <!-- Account Management -->
                             <div class="block px-4 py-2 text-xs text-gray-400">
-                                Manage Account
+                                {{ __('Manage Account') }}
+
                             </div>
 
                             <x-dropdown-link href="{{ route('profile.show') }}">

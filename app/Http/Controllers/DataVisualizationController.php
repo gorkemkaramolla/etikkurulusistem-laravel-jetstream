@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\DB;
 
 use App\Models\Form;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class DataVisualizationController extends Controller
 {
@@ -19,6 +21,15 @@ class DataVisualizationController extends Controller
             ->orderBy('year')
             ->get(); // Use get() instead of pluck
 
-        return view("visualize.index", compact('formsByYear'));
+        if (Gate::allows('access-dashboard')) {
+            // return view('dashboard', compact('forms'));
+            if (Auth::user()->role === "user") {
+                abort(403, 'Unauthorized action.');
+            } else {
+                return view("visualize.index", compact('formsByYear'));
+            }
+        } else {
+            abort(403, 'Unauthorized action.');
+        }
     }
 }

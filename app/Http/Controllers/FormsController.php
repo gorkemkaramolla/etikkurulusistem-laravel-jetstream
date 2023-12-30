@@ -36,7 +36,6 @@ class FormsController extends Controller
             $validated = $request->validated();
             // Create form
             $form = new Form();
-            $form->save();
 
             // Create a directory based on the researcher's student number
             $studentNumber = $validated['student_no'];
@@ -58,48 +57,38 @@ class FormsController extends Controller
             }
 
             // Save the form after handling file uploads
-            $form->save();
             // //create researcher informations
-            $researcher = new ResearcherInformations();
-            $researcher->form_id = $form->id;
-            $researcher->name = trim($validated['name']);
-            $researcher->lastname = trim($validated['lastname']);
-            $researcher->advisor = trim($validated['advisor']);
-            $researcher->gsm = trim($validated['gsm']);
-            $researcher->email = trim($validated['email']);
-            $researcher->major = trim($validated['major']);
-            $researcher->department = trim($validated['department']);
-            $researcher->student_no = trim($validated['student_no']);
-            $researcher->save();
+            $form->name = trim($validated['name']);
+            $form->lastname = trim($validated['lastname']);
+            $form->advisor = trim($validated['advisor']);
+            $form->gsm = trim($validated['gsm']);
+            $form->email = trim($validated['email']);
+            $form->major = trim($validated['major']);
+            $form->department = trim($validated['department']);
+            $form->student_no = trim($validated['student_no']);
             // //create application informations
-            $applicationInfo = new ApplicationInformations();
-            $applicationInfo->form_id = $form->id;
-            $applicationInfo->application_semester = $validated['application_semester'];
-            $applicationInfo->temel_alan_bilgisi = trim($validated['temel_alan_bilgisi']);
-            $applicationInfo->academic_year = trim($validated['academic_year']);
-            $applicationInfo->application_type = trim($validated['application_type']);
-            $applicationInfo->work_qualification = trim($validated['work_qualification']);
-            $applicationInfo->research_type = trim($validated['research_type']);
-            $applicationInfo->institution_permission = trim($validated['institution_permission']);
-            $applicationInfo->research_end_date = $validated['research_end_date'];
-            $applicationInfo->research_start_date = $validated['research_start_date'];
-            $applicationInfo->save();
+            $form->application_semester = $validated['application_semester'];
+            $form->temel_alan_bilgisi = trim($validated['temel_alan_bilgisi']);
+            $form->academic_year = trim($validated['academic_year']);
+            $form->application_type = trim($validated['application_type']);
+            $form->work_qualification = trim($validated['work_qualification']);
+            $form->research_type = trim($validated['research_type']);
+            $form->institution_permission = trim($validated['institution_permission']);
+            $form->research_end_date = $validated['research_end_date'];
+            $form->research_start_date = $validated['research_start_date'];
             //create research informations
-            $research = new ResearchInformations();
-            $research->form_id = $form->id;
-            $research->research_title = trim($validated['research_title']);
-            $research->research_subject_purpose = trim($validated['research_subject_purpose']);
-            $research->research_unique_value = trim($validated['research_unique_value']);
-            $research->research_hypothesis = trim($validated['research_hypothesis']);
-            $research->research_method = trim($validated['research_method']);
-            $research->research_universe = trim($validated['research_universe']);
-            $research->research_forms = trim($validated['research_forms']);
-            $research->research_data_collection = trim($validated['research_data_collection']);
-            $research->research_restrictions = trim($validated['research_restrictions']);
-            $research->research_place_date = trim($validated['research_place_date']);
-            $research->research_literature_review = trim($validated['research_literature_review']);
-
-            $research->save();
+            $form->research_title = trim($validated['research_title']);
+            $form->research_subject_purpose = trim($validated['research_subject_purpose']);
+            $form->research_unique_value = trim($validated['research_unique_value']);
+            $form->research_hypothesis = trim($validated['research_hypothesis']);
+            $form->research_method = trim($validated['research_method']);
+            $form->research_universe = trim($validated['research_universe']);
+            $form->research_forms = trim($validated['research_forms']);
+            $form->research_data_collection = trim($validated['research_data_collection']);
+            $form->research_restrictions = trim($validated['research_restrictions']);
+            $form->research_place_date = trim($validated['research_place_date']);
+            $form->research_literature_review = trim($validated['research_literature_review']);
+            $form->save();
             DB::commit();
 
             $fieldNameMappings = [
@@ -135,12 +124,12 @@ class FormsController extends Controller
             ];
             $sekreterlikRecipients = User::where('role', 'sekreterlik')->pluck('email')->toArray();
 
-            Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($researcher, $sekreterlikRecipients) {
-                $message->to($researcher->email, $researcher->name . ' ' . $researcher->lastname)
-                    ->subject('Application Confirmation')
-                    ->cc($sekreterlikRecipients); // Add all users with role "sekreterlik" to CC
-            });
-            $linkPath = "/query-etikkurul/{$researcher->student_no}";
+            // Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($form, $sekreterlikRecipients) {
+            //     $message->to($form->email, $form->researcher->name . ' ' . $form->lastname)
+            //         ->subject('Application Confirmation')
+            //         ->cc($sekreterlikRecipients); // Add all users with role "sekreterlik" to CC
+            // });
+            $linkPath = "/query-etikkurul/{$form->student_no}";
             $successMessage = 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.';
 
             return redirect()->route('forms.index')->with('successMessage', $successMessage)->with('linkPath', $linkPath);
@@ -163,7 +152,7 @@ class FormsController extends Controller
 
     private function startSekreterlikApprovalProcess(Form $form, $decide, $decide_reason)
     {
-//SEKRETER ONAY DURUMU
+        //SEKRETER ONAY DURUMU
         if ($decide === "onaylandi") {
             $form->stage = "etik_kurul";
             $form->save();
@@ -180,7 +169,7 @@ class FormsController extends Controller
             }
             $etikKurulRecipients = User::where('role', 'etik_kurul')->pluck('email')->toArray();
 
-            $researcherEmail=$form->researcher_informations->email;
+            $researcherEmail = $form->researcher_informations->email;
             Mail::send('emails.form-sekreter-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $etikKurulRecipients) {
                 $message->to($researcherEmail)
                     ->cc($etikKurulRecipients) // Add CC recipients
@@ -188,7 +177,7 @@ class FormsController extends Controller
             });
         } else if ($decide === "duzeltme") {
             $ccRecipients = User::pluck('email')->toArray();
-//SEKRETER DUZELTME
+            //SEKRETER DUZELTME
             $form->stage = "duzeltme";
             $form->decide_reason = $decide_reason;
             $form->save();
@@ -229,7 +218,7 @@ class FormsController extends Controller
         $ccRecipients = User::pluck('email')->toArray();
 
         if ($decide === "duzeltme" || $decide === "reddedildi") {
-//DUZELTME VEYA RED
+            //DUZELTME VEYA RED
             $form->stage = $decide;
             $form->decide_reason = $decide_reason;
             $form->save();
@@ -245,7 +234,7 @@ class FormsController extends Controller
             $form->delete();
         } else {
             if ($etikKurulOnayi->whereNotIn('onay_durumu', ['bekleme', 'duzeltme', 'reddedildi'])->count() === $etikKurulOnayi->count()) {
-//ONAYLANMA DURUMU
+                //ONAYLANMA DURUMU
                 $form->stage = 'onaylandi';
                 $form->save();
                 $researcherEmail = $form->researcher_informations->email;

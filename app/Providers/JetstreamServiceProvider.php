@@ -29,10 +29,15 @@ class JetstreamServiceProvider extends ServiceProvider
     {
         $this->configurePermissions();
         Fortify::authenticateUsing(function (Request $request) {
+
             $userLoginField = $request->email;
-            $isEmail = filter_var($userLoginField, FILTER_VALIDATE_EMAIL);
-            if ($isEmail) {
-                $user = User::where('email', $userLoginField)->first();
+            $user = User::where('email', $userLoginField)
+                ->orWhere('student_no', $userLoginField)
+                ->first();
+
+
+            if ($user) {
+                $isEmail = filter_var($userLoginField, FILTER_VALIDATE_EMAIL);
                 if ($user) {
                     if (Hash::check($request->password, $user->password)) {
                         return $user;
@@ -51,22 +56,20 @@ class JetstreamServiceProvider extends ServiceProvider
                 $decodedData = json_decode($content, true);
 
 
-                if ($decodedData) {
 
-                    $name = $decodedData["name"];
-                    $lastname = $decodedData["lastname"];
-                    $email = $decodedData["email"];
+                $name = $decodedData["name"];
+                $lastname = $decodedData["lastname"];
+                $email = $decodedData["email"];
 
-                    $user = User::create([
-                        "name" => $name,
-                        "lastname" => $lastname,
-                        "email" =>  $email,
-                        'student_no' => $request['email'],
-                        'password' => Hash::make($request['password']),
-                        "role" => "user",
-                    ]);
-                    return $user;
-                }
+                $user = User::create([
+                    "name" => $name,
+                    "lastname" => $lastname,
+                    "email" =>  $email,
+                    'student_no' => $request['email'],
+                    'password' => Hash::make($request['password']),
+                    "role" => "user",
+                ]);
+                return $user;
             }
         });
         Jetstream::deleteUsersUsing(DeleteUser::class);

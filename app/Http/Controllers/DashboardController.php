@@ -18,19 +18,10 @@ class DashboardController extends Controller
         $whichForms = request()->query('onaylandi');
 
         if ($whichForms === null) {
-            $forms = Form::with([
-                'research_informations',
-                'application_informations',
-                'researcher_informations',
-                'etik_kurul_onayi'
-            ])
-                ->where('stage', Auth::user()->role)
-                ->get();
+            $forms = Form::all()
+                ->where('stage', Auth::user()->role);
         } elseif ($whichForms === "true") {
             $forms = Form::with([
-                'research_informations',
-                'application_informations',
-                'researcher_informations',
                 'etik_kurul_onayi'
             ])
                 ->where('stage', 'onaylandi')
@@ -52,22 +43,11 @@ class DashboardController extends Controller
     public function getFormSlug($studentNo)
     {
         try {
-            $form = Form::with([
-                'research_informations',
-                'application_informations',
-                'researcher_informations',
-            ])
+            $form = Form::all()
                 ->where('stage', Auth::user()->role)
-                ->whereHas('researcher_informations', function ($query) use ($studentNo) {
-                    $query->where('student_no', $studentNo);
-                })
+                ->where("student_no", $studentNo)
                 ->first();
-
-
-            // Format the created_at date for the URL
-
-            // Generate the URL using student_no and formatted created_at
-            $url = "/formshow/{$form->researcher_informations->student_no}";
+            $url = "/formshow/{$form->student_no}";
 
             // Check the 'access-dashboard' gate before showing the dashboard
             if (Gate::allows('access-dashboard')) {

@@ -83,8 +83,8 @@
                     <p class="font-bold"><i>Name </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['researcher_informations']['name'] }}
-                        {{ $form['researcher_informations']['lastname'] }}</p>
+                    <p> {{ $form['name'] }}
+                        {{ $form['lastname'] }}</p>
                 </td>
             </tr>
             <tr>
@@ -94,7 +94,7 @@
 
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['researcher_informations']['advisor'] }}
+                    <p> {{ $form['advisor'] }}
                     </p>
                 </td>
             </tr>
@@ -104,7 +104,7 @@
                     <p class="font-bold"><i>Student ID Number </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['researcher_informations']['student_no'] }}
+                    <p> {{ $form['student_no'] }}
                     </p>
                 </td>
             </tr>
@@ -114,7 +114,7 @@
                     <p class="font-bold"><i>Department </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['researcher_informations']['major'] }}
+                    <p> {{ $form['major'] }}
                     </p>
                 </td>
             </tr>
@@ -124,7 +124,7 @@
                     <p class="font-bold"><i>Department </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['researcher_informations']['department'] }}
+                    <p> {{ $form['department'] }}
                     </p>
                 </td>
             </tr>
@@ -136,10 +136,10 @@
                 <td class="w-8/12" colspan="3">
                     <p class="flex flex-col">
                         <span>
-                            {{ $form['researcher_informations']['gsm'] }}
+                            {{ $form['gsm'] }}
                         </span>
                         <span>
-                            {{ $form['researcher_informations']['email'] }}
+                            {{ $form['email'] }}
 
                         </span>
                     </p>
@@ -162,7 +162,7 @@
                     <p class="font-bold"><i>Term </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['application_informations']['application_semester'] }}
+                    <p> {{ $form['application_semester'] }}
                     </p>
                 </td>
             </tr>
@@ -172,7 +172,7 @@
                     <p class="font-bold"><i>Basic Domain Knowledge</i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['application_informations']['temel_alan_bilgisi'] }}
+                    <p> {{ $form['temel_alan_bilgisi'] }}
                     </p>
                 </td>
             </tr>
@@ -182,7 +182,7 @@
                     <i class="font-bold">Program Type</i>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['application_informations']['application_type'] }}
+                    <p> {{ $form['application_type'] }}
                     </p>
                 </td>
             </tr>
@@ -193,7 +193,7 @@
 
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['application_informations']['work_qualification'] }}
+                    <p> {{ $form['work_qualification'] }}
                     </p>
                 </td>
             </tr>
@@ -203,7 +203,7 @@
                     <p class="font-bold"><i>Research Type </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['application_informations']['research_type'] }}
+                    <p> {{ $form['research_type'] }}
                     </p>
                 </td>
             </tr>
@@ -213,7 +213,7 @@
                     <p class="font-bold"><i>Department </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['application_informations']['institution_permission'] }}
+                    <p> {{ $form['institution_permission'] }}
                     </p>
                 </td>
             </tr>
@@ -225,10 +225,10 @@
                 <td class="w-8/12" colspan="3">
                     <p class="flex flex-col">
                         <span>
-                            {{ $form['application_informations']['research_start_date'] }}
+                            {{ $form['research_start_date'] }}
                         </span>
                         <span>
-                            {{ $form['application_informations']['research_end_date'] }}
+                            {{ $form['research_end_date'] }}
 
                         </span>
                     </p>
@@ -251,7 +251,7 @@
                     <p class="font-bold"><i>Research Title </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['research_informations']['research_title'] }}
+                    <p> {{ $form['research_title'] }}
                     </p>
                 </td>
             </tr>
@@ -262,7 +262,7 @@
 
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['research_informations']['research_subject_purpose'] }}
+                    <p> {{ $form['research_subject_purpose'] }}
                     </p>
                 </td>
             </tr>
@@ -272,7 +272,7 @@
                     <p class="font-bold"><i>Unique value of Research</i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['research_informations']['research_unique_value'] }}
+                    <p> {{ $form['research_unique_value'] }}
                     </p>
                 </td>
             </tr>
@@ -282,7 +282,7 @@
                     <p class="font-bold"><i>Hypothesis</i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['research_informations']['research_hypothesis'] }}
+                    <p> {{ $form['research_hypothesis'] }}
                     </p>
                 </td>
             </tr>
@@ -292,7 +292,7 @@
                     <p class="font-bold"><i>Research Method </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['research_informations']['research_method'] }}
+                    <p> {{ $form['research_method'] }}
                     </p>
                 </td>
             </tr>
@@ -302,7 +302,7 @@
                     <p class="font-bold"><i>Research Universe and Sample </i></p>
                 </td>
                 <td class="w-8/12" colspan="3">
-                    <p> {{ $form['research_informations']['research_universe'] }}
+                    <p> {{ $form['research_universe'] }}
                     </p>
                 </td>
             </tr>
@@ -313,7 +313,7 @@
                 </td>
                 <td class="w-8/12" colspan="3">
                     <p>
-                        {{ $form['research_informations']['research_forms'] }}
+                        {{ $form['research_forms'] }}
 
                     </p>
                 </td>
@@ -325,7 +325,7 @@
                 </td>
                 <td class="w-8/12" colspan="3">
                     <p>
-                        {{ $form['research_informations']['research_data_collection'] }}
+                        {{ $form['research_data_collection'] }}
 
                     </p>
                 </td>
@@ -337,7 +337,7 @@
                 </td>
                 <td class="w-8/12" colspan="3">
                     <p>
-                        {{ $form['research_informations']['research_restrictions'] }}
+                        {{ $form['research_restrictions'] }}
 
                     </p>
                 </td>
@@ -349,7 +349,7 @@
                 </td>
                 <td class="w-8/12" colspan="3">
                     <p>
-                        {{ $form['research_informations']['research_place_date'] }}
+                        {{ $form['research_place_date'] }}
 
                     </p>
                 </td>
@@ -361,7 +361,7 @@
                 </td>
                 <td class="w-8/12" colspan="3">
                     <p>
-                        {{ $form['research_informations']['research_literature_review'] }}
+                        {{ $form['research_literature_review'] }}
 
                     </p>
                 </td>
