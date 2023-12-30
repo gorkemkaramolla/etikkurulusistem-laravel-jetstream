@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
 use App\Actions\Jetstream\DeleteUser;
+use App\Models\Form;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
 
@@ -69,63 +70,22 @@ class JetstreamServiceProvider extends ServiceProvider
                     'password' => Hash::make($request['password']),
                     "role" => "user",
                 ]);
-                return $user;
+                if ($user) {
+                    Form::all()->where("student_no", $user->student_no)->each(function ($form) use ($user) {
+                        $form->user_id = $user->id;
+                        $form->save();
+                    });
+                    return $user;
+                }
             }
         });
         Jetstream::deleteUsersUsing(DeleteUser::class);
     }
-    // public function getStudentInformation($university_id)
-    // {
-    //     $url = "https://ats.nisantasi.edu.tr/nisantasi-help";
-    //     $data = [
-    //         "ogrenci_no" => $university_id,
-    //         'name' => 'bilgi_getir'
-    //     ];
-    //     // Make the HTTP POST request
-    //     $response = Http::asForm()->post($url, $data);
 
-    //     // Access the form_bilgi key
-    //     $formBilgi = (string) $response->json()['form_bilgi'];
 
-    //     // Create a new Crawler instance
-    //     $crawler = new Crawler($formBilgi);
 
-    //     // Create an array to store values
-    //     $studentInfo = [
-    //         'name' => $crawler->filter('.adsoyad')->attr('value'),
-    //         'department' => $crawler->filter('.bolum')->attr('value'),
-    //         'class' => $crawler->filter('.sinif')->attr('value'),
-    //         'email' => $crawler->filter('.profil_eposta')->attr('value'),
-    //     ];
-    //     return $studentInfo;
-    // }
 
-    protected function configurePermissions(): void
-    {
-        Jetstream::defaultApiTokenPermissions(['read']);
 
-        Jetstream::permissions([
-            'create',
-            'read',
-            'update',
-            'delete',
-        ]);
-    }
-
-    // protected function loginToSanalkampus($credentials)
-    // {
-    //     $url = "https://sanalkampus.nisantasi.edu.tr/?returnUrl=%2FHome%2FIndex";
-    //     $data = [
-    //         'Password' => $credentials["password"],
-    //     ];
-    //     $cookies = [
-    //         "CookUserName" => $credentials["university_id"],
-    //     ];
-
-    //     $response = Http::withHeaders(['Cookie' => http_build_query($cookies, '', '; ')])->withoutRedirecting()->post($url, $data);
-    //     echo $response->json();
-    //     // return $response->header("Location") != "/";
-    // }
     protected function loginToSanalkampus($credentials)
     {
         try {
@@ -206,5 +166,16 @@ class JetstreamServiceProvider extends ServiceProvider
         } catch (Exception $e) {
             echo $e;
         }
+    }
+    protected function configurePermissions(): void
+    {
+        Jetstream::defaultApiTokenPermissions(['read']);
+
+        Jetstream::permissions([
+            'create',
+            'read',
+            'update',
+            'delete',
+        ]);
     }
 }

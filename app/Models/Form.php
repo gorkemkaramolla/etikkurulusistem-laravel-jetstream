@@ -3,6 +3,7 @@
 // app/Models/Form.php
 
 namespace App\Models;
+
 use Illuminate\Support\FacadesLog;
 
 use Illuminate\Database\Eloquent\Model;
@@ -11,22 +12,45 @@ use Illuminate\Support\Facades\Log;
 
 class Form extends Model
 {
-    // Define your relationships
-    public function research_informations()
+    protected $fillable = [
+        'stage',
+        'decide_reason',
+        'anket_path',
+        'onam_path',
+        'kurum_izinleri_path',
+        'application_semester',
+        'temel_alan_bilgisi',
+        'academic_year',
+        'application_type',
+        'work_qualification',
+        'research_type',
+        'institution_permission',
+        'research_start_date',
+        'research_end_date',
+        'name',
+        'lastname',
+        'advisor',
+        'gsm',
+        'email',
+        'major',
+        'department',
+        'student_no',
+        'research_title',
+        'research_subject_purpose',
+        'research_unique_value',
+        'research_hypothesis',
+        'research_method',
+        'research_universe',
+        'research_forms',
+        'research_data_collection',
+        'research_restrictions',
+        'research_place_date',
+        'research_literature_review',
+    ];
+    public function user()
     {
-        return $this->hasOne(ResearchInformations::class);
+        return $this->belongsTo(User::class);
     }
-
-    public function application_informations()
-    {
-        return $this->hasOne(ApplicationInformations::class);
-    }
-
-    public function researcher_informations()
-    {
-        return $this->hasOne(ResearcherInformations::class);
-    }
-
     public function etik_kurul_onayi()
     {
         return $this->hasMany(EtikKurulOnayi::class, 'form_id');
@@ -62,13 +86,10 @@ class Form extends Model
     // Add a method to delete the associated folder
     public function deleteAssociatedFolder()
     {
-        // Ensure the associated researcher_informations relationship is loaded
-        $this->load('researcher_informations');
 
-        // Check if researcher_informations relationship is loaded and not null
-        if ($this->researcher_informations) {
+        if ($this) {
             // Delete associated folder
-            $studentNumber = $this->researcher_informations->student_no;
+            $studentNumber = $this->student_no;
             $directory = "public/forms/{$studentNumber}";
 
             // Ensure the directory exists before attempting to delete
@@ -77,5 +98,4 @@ class Form extends Model
             }
         }
     }
-   
 }

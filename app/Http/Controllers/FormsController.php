@@ -58,6 +58,7 @@ class FormsController extends Controller
 
             // Save the form after handling file uploads
             // //create researcher informations
+            $form->user_id = Auth::user()->id;
             $form->name = trim($validated['name']);
             $form->lastname = trim($validated['lastname']);
             $form->advisor = trim($validated['advisor']);
@@ -169,7 +170,7 @@ class FormsController extends Controller
             }
             $etikKurulRecipients = User::where('role', 'etik_kurul')->pluck('email')->toArray();
 
-            $researcherEmail = $form->researcher_informations->email;
+            $researcherEmail = $form->email;
             Mail::send('emails.form-sekreter-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $etikKurulRecipients) {
                 $message->to($researcherEmail)
                     ->cc($etikKurulRecipients) // Add CC recipients
@@ -181,14 +182,14 @@ class FormsController extends Controller
             $form->stage = "duzeltme";
             $form->decide_reason = $decide_reason;
             $form->save();
-            $researcherEmail = $form->researcher_informations->email;
+            $researcherEmail = $form->email;
 
-            Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
-                $message->to($researcherEmail)
-                    ->cc($ccRecipients) // Add CC recipients
-                    ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
-            });
-            $form->delete();
+            // Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
+            //     $message->to($researcherEmail)
+            //         ->cc($ccRecipients) // Add CC recipients
+            //         ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
+            // });
+            // $form->delete();
         }
     }
     public function approveEtikkurul($formid, Request $request)
@@ -222,22 +223,22 @@ class FormsController extends Controller
             $form->stage = $decide;
             $form->decide_reason = $decide_reason;
             $form->save();
-            $researcherEmail = $form->researcher_informations->email;
+            $researcherEmail = $form->email;
 
 
-            // Use the Mail facade to send an email
-            Mail::send('emails.form-declined', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
-                // Set the recipient's email address and name
-                $message->to($researcherEmail)
-                    ->subject('Etik Kurulu Başvurunuz Reddedildi')->cc($ccRecipients);
-            });
-            $form->delete();
+            // // Use the Mail facade to send an email
+            // Mail::send('emails.form-declined', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
+            //     // Set the recipient's email address and name
+            //     $message->to($researcherEmail)
+            //         ->subject('Etik Kurulu Başvurunuz Reddedildi')->cc($ccRecipients);
+            // });
+            // $form->delete();
         } else {
             if ($etikKurulOnayi->whereNotIn('onay_durumu', ['bekleme', 'duzeltme', 'reddedildi'])->count() === $etikKurulOnayi->count()) {
                 //ONAYLANMA DURUMU
                 $form->stage = 'onaylandi';
                 $form->save();
-                $researcherEmail = $form->researcher_informations->email;
+                $researcherEmail = $form->email;
 
                 Mail::send('emails.form-etik-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
                     $message->to($researcherEmail)
@@ -251,20 +252,18 @@ class FormsController extends Controller
     public function generateQueryStageForm($studentNo)
     {
         try {
-            $form = Form::select('forms.created_at', 'forms.stage') // Include 'forms.stage' in the select statement
-                ->join('research_informations', 'forms.id', '=', 'research_informations.form_id')
-                ->join('researcher_informations', 'forms.id', '=', 'researcher_informations.form_id')
-                ->where('researcher_informations.student_no', $studentNo)
+            $form = Form::where('forms.student_no', $studentNo)
                 ->select(
                     'forms.created_at',
-                    'forms.stage', // Include 'forms.stage' here
-                    'research_informations.research_title',
-                    'researcher_informations.name',
-                    'researcher_informations.lastname',
-                    'researcher_informations.major',
-                    'researcher_informations.department'
+                    'forms.stage',
+                    'forms.research_title',
+                    'forms.name',
+                    'forms.lastname',
+                    'forms.major',
+                    'forms.department'
                 )
                 ->first();
+
 
 
             return view('forms.display-querystage', compact('form'));

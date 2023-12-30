@@ -12,6 +12,7 @@ return new class extends Migration
     {
         Schema::create('forms', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained();
             $table->string('stage')->default('sekreterlik'); // durum
             $table->text('decide_reason')->nullable()->default(null);
             $table->string('anket_path')->nullable()->default(null);
@@ -32,11 +33,12 @@ return new class extends Migration
             $table->string("name", 255); //isim
             $table->string("lastname", 255); //soyisim
             $table->string("advisor", 255); //danışman
-            $table->string("gsm", 10)->unique(); //telefon
-            $table->string('email')->unique();
+            $table->string("gsm", 10); //telefon
+            $table->string('email');
             $table->string('major', 100); //anabilim dalı
             $table->string('department', 255); //program
-            $table->string("student_no", 11)->unique(); //ogrenci_no
+            $table->string("student_no", 11); //ogrenci_no
+
             //research 
             $table->text("research_title"); //Araştırma başlığı
             $table->text("research_subject_purpose"); //Konu ve amaç

@@ -32,7 +32,9 @@ class DashboardController extends Controller
         if (Gate::allows('access-dashboard')) {
             // return view('dashboard', compact('forms'));
             if (Auth::user()->role === "user") {
-                return view('student_dashboard');
+                $forms = Form::all()
+                    ->where("student_no", Auth::user()->student_no);
+                return view('student_dashboard', compact('forms'));
             } else {
                 return view('dashboard', compact('forms'));
             }
@@ -43,10 +45,9 @@ class DashboardController extends Controller
     public function getFormSlug($studentNo)
     {
         try {
-            $form = Form::all()
-                ->where('stage', Auth::user()->role)
-                ->where("student_no", $studentNo)
+            $form = Form::where('student_no', $studentNo)
                 ->first();
+
             $url = "/formshow/{$form->student_no}";
 
             // Check the 'access-dashboard' gate before showing the dashboard

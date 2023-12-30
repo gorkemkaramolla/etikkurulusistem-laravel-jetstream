@@ -20,7 +20,11 @@
                             Visualize
                         </x-nav-link>
                     @endif
-
+                    @if (auth()->user()->hasRole('user'))
+                        <x-nav-link href="{{ route('forms.index') }}" :active="request()->routeIs('forms.index')">
+                            Başvuru Yap
+                        </x-nav-link>
+                    @endif
                 </div>
 
             </div>

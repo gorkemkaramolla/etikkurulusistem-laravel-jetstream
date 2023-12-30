@@ -54,4 +54,8 @@ class User extends Authenticatable
     {
         return in_array($this->role, $roles);
     }
+    public function forms()
+    {
+        return $this->hasMany(Form::class);
+    }
 }
