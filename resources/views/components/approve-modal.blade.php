@@ -10,7 +10,7 @@
         <div class="modal-overlay absolute w-full h-full bg-black z-50 opacity-70"></div>
         <div class="modal-container bg-white w-11/12 md:max-w-md mx-auto rounded shadow-lg z-50 overflow-y-auto">
 
-            <div
+            {{-- <div
                 class="modal-close absolute top-0 right-0 cursor-pointer flex flex-col items-center mt-4 mr-4 text-white text-sm z-50">
                 <svg class="fill-current text-white" xmlns="http://www.w3.org/2000/svg" width="18" height="18"
                     viewBox="0 0 18 18">
@@ -20,7 +20,7 @@
                 </svg>
                 <span class="text-sm">(Esc)</span>
 
-            </div>
+            </div> --}}
 
             <div class="modal-content py-4 text-left px-6">
                 <!--Title-->
@@ -122,3 +122,6 @@
 </script>
 
 </div>
+<style>
+
+</style>

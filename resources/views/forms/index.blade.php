@@ -53,6 +53,14 @@
         <a href="/dashboard" class="link-underline-primary">
 
             < Ana Sayfa </a>
+                @if (isset($formData))
+                    <div class="alert alert-warning">
+                        <ul>
+                            <li>Başvurunuzu düzeltmeniz gerekmektedir. Gerekli değişiklikleri yaptıktan sonra tekrar
+                                gönderiniz.</li>
+                        </ul>
+                    </div>
+                @endif
                 @if ($errors->any())
                     <div class="alert alert-danger">
                         <ul>
@@ -91,7 +99,8 @@
                         {{-- <a href="/form">Form Sayfasına geri Dönmek için tıkla</a> --}}
                     </div>
                 @else
-                    <form enctype="multipart/form-data" action="{{ url('store-form') }}" method="POST">
+                    <form enctype="multipart/form-data"
+                        action="{{ url('store-form/' . (isset($formData) ? $formData->id : '')) }}" method="POST">
                         @csrf
                         <div class="row d-flex justify-content-center mb-1">
                             <img src="/assets/images/logo-nisantasi.png" style="width:180px;">
@@ -120,7 +129,10 @@
                                 </h2>
                                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show m-2"
                                     aria-labelledby="panelsStayOpen-headingOne">
-                                    <x-forms.researcher-informations></x-forms.researcher-informations>
+                                    <x-forms.researcher-informations :formData="$formData ?? null" />
+
+
+
                                 </div>
                             </div>
 
@@ -132,10 +144,12 @@
                                         BAŞVURU BİLGİLERİ
                                     </button>
                                 </h2>
-                                <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse"
+                                <div id="panelsStayOpen-collapseTwo"
+                                    class="accordion-collapse collapse {{ isset($formData) ? 'show' : '' }}"
                                     aria-labelledby="panelsStayOpen-headingTwo">
                                     <div class="accordion-body">
-                                        <x-forms.application-informations></x-forms.application-informations>
+                                        <x-forms.application-informations
+                                            :formData="$formData ?? null"></x-forms.application-informations>
                                     </div>
                                 </div>
                             </div>
@@ -148,10 +162,12 @@
                                         ARAŞTIRMA BİLGİLERİ
                                     </button>
                                 </h2>
-                                <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse"
+                                <div id="panelsStayOpen-collapseThree"
+                                    class="accordion-collapse collapse {{ isset($formData) ? 'show' : '' }}"
                                     aria-labelledby="panelsStayOpen-headingThree">
                                     <div class="accordion-body">
-                                        <x-forms.research-informations></x-forms.research-informations>
+                                        <x-forms.research-informations
+                                            :formData="$formData ?? null"></x-forms.research-informations>
                                     </div>
                                 </div>
                             </div>
@@ -163,7 +179,8 @@
                                         EK DOSYALAR
                                     </button>
                                 </h2>
-                                <div id="panelsStayOpen-collapseFour" class="accordion-collapse collapse"
+                                <div id="panelsStayOpen-collapseFour"
+                                    class="accordion-collapse collapse {{ isset($formData) ? 'show' : '' }}"
                                     aria-labelledby="panelsStayOpen-headingFour">
                                     <div class="accordion-body">
                                         <div
@@ -190,7 +207,8 @@
                                                     Kurum İzni
                                                     (Varsa)</label>
                                                 <input class="form-control" type="file" name="kurum_izinleri_path"
-                                                    accept="application/pdf " value="{{ old('kurum_izinleri_path') }}"
+                                                    accept="application/pdf "
+                                                    value="{{ old('kurum_izinleri_path') }}"
                                                     id="kurum_izinleri_path">
                                             </div>
                                         </div>
