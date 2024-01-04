@@ -10,11 +10,15 @@ export default {
         "./storage/framework/views/*.php",
         "./resources/views/**/*.blade.php",
     ],
+    important: true,
 
     theme: {
         extend: {
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
+            },
+            animation: {
+                wiggle: "wiggle 1s ease-in-out infinite",
             },
         },
     },

@@ -82,6 +82,13 @@ class DatabaseSeeder extends Seeder
                 'email' => "demet.ovelek@nisantasi.edu.tr",
                 'password' => Hash::make('password'),
             ],
+            [
+                'name' => "Etik Kurul",
+                "lastname" => "Admin",
+                "role" => "admin",
+                'email' => "admin@hotmail.com",
+                'password' => Hash::make('admin123456'),
+            ],
         ];
 
         foreach ($usersData as $userData) {
