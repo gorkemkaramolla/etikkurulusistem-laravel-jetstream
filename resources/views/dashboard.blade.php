@@ -1,4 +1,4 @@
-<x-app-layout>
+<x-datatables-layout>
 
     <head>
         <title>{{ auth()->user()->role === 'sekreterlik' ? 'Sekreterlik Üyesi' : 'Etik Kurulu Üyesi' }}</title>
@@ -12,4 +12,4 @@
     @endif
     </div>
     <script></script>
-</x-app-layout>
+</x-datatables-layout>

@@ -12,21 +12,23 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    public function index()
+    public function index($formStatus = null)
     {
-        // Check if the 'onaylandi' parameter is present in the query string
-        $whichForms = request()->query('onaylandi');
+        if ($formStatus === "duzeltme") {
+            $forms = Form::all()
+                ->where('stage', "duzeltme");
+        } else if ($formStatus === "reddedildi") {
+            $forms = Form::all()
+                ->where('stage', "reddedildi");
+        } else if (Auth::user()->role === "admin") {
 
-        if ($whichForms === null) {
+            $forms = Form::all();
+        } else {
+
             $forms = Form::all()
                 ->where('stage', Auth::user()->role);
-        } elseif ($whichForms === "true") {
-            $forms = Form::with([
-                'etik_kurul_onayi'
-            ])
-                ->where('stage', 'onaylandi')
-                ->get();
         }
+
 
         // Check the 'access-dashboard' gate before showing the dashboard
         if (Gate::allows('access-dashboard')) {
@@ -35,6 +37,8 @@ class DashboardController extends Controller
                 $forms = Form::all()
                     ->where("student_no", Auth::user()->student_no);
                 return view('student_dashboard', compact('forms'));
+            } else if (Auth::user()->role === "admin") {
+                return view('admin_dashboard', compact('forms'));
             } else {
                 return view('dashboard', compact('forms'));
             }
@@ -42,13 +46,13 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized action.');
         }
     }
-    public function getFormSlug($studentNo)
+    public function getFormSlug($studentNo, $createdAt)
     {
         try {
-            $form = Form::where('student_no', $studentNo)
+            $form = Form::where('student_no', $studentNo)->where('created_at', $createdAt)
                 ->first();
 
-            $url = "/formshow/{$form->student_no}";
+            $url = "/formshow/{$form->student_no}/{$form->created_at}";
 
             // Check the 'access-dashboard' gate before showing the dashboard
             if (Gate::allows('access-dashboard')) {
