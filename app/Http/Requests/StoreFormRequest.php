@@ -21,11 +21,7 @@ class StoreFormRequest extends FormRequest
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */   public function messages(): array
     {
-        return [
-            'gsm.unique' => 'Girilen telefon numarasıyla daha önce başvuru yapılmıştır.',
-            'email.unique' => 'Girilen e-posta adresiyle daha önce başvuru yapılmıştır.',
-            'student_no.unique' => 'Girilen öğrenci numarasıyla daha önce başvuru yapılmıştır.',
-        ];
+        return [];
     }
     public function rules(): array
     {
@@ -63,10 +59,10 @@ class StoreFormRequest extends FormRequest
             'name' => 'required|string|max:255',
             'lastname' => 'required|string|max:255',
             'advisor' => 'required|string|max:255',
-            'gsm' => 'required|string|max:10|unique:forms,gsm',
-            'student_no' => 'required|string|max:11|unique:forms,student_no',
+            'gsm' => 'required|string|max:10',
+            'student_no' => 'required|string|max:11',
 
-            'email' => 'required|email|unique:forms,email',
+            'email' => 'required|email',
 
             'major' => 'required|string|max:100',
             'department' => 'required|string|max:255',

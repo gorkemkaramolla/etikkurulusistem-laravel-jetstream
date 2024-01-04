@@ -22,12 +22,28 @@ use Illuminate\Support\Facades\LOG;
 
 class FormsController extends Controller
 {
-    public function index()
+    public function index($formId = null)
     {
+        // Check if a form ID is provided
+        if ($formId) {
+            // Retrieve form data based on $formId
+            $formData = Form::findOrFail($formId);
+            if ($formData->user_id != Auth::user()->id) {
+                return redirect()->route('dashboard');
+            }
+            // Return the form view with data
+            return view('forms.index')->with('formData', $formData);
+        }
+
+        // Regular form submission, return just the index view
         return view('forms.index');
     }
+
+
+
+
     // /FORMS SUBMIT REQUEST CONTROLLER
-    public function store(StoreFormRequest $request)
+    public function store(StoreFormRequest $request, $formid = null)
     {
 
         try {
@@ -35,19 +51,30 @@ class FormsController extends Controller
 
             $validated = $request->validated();
             // Create form
-            $form = new Form();
+            if ($formid) {
+                $form = Form::find($formid);
+                $directory = dirname(Storage::url($form->onam_path));
+            } else {
+                $form = new Form();
+                // Create a directory based on the researcher's student number
+                $studentNumber = $validated['student_no'];
+                $timestamp = now()->timestamp;
+                $directory = "public/forms/{$studentNumber}/{$timestamp}";
+            }
 
-            // Create a directory based on the researcher's student number
-            $studentNumber = $validated['student_no'];
-            $directory = "public/forms/{$studentNumber}";
+            // Create the directory with 755 permissions if it doesn't exist
+            if (!Storage::exists($directory)) {
+                Storage::makeDirectory($directory, 0755, true);
+                // Explicitly set the permissions for the created directory
+                chmod(storage_path("app/{$directory}"), 0755);
+            }
 
-            // Create the directory with 755 permissions
-            Storage::makeDirectory($directory, 0755, true);
+            // Delete the existing files if they exist
 
-            // Explicitly set the permissions for the created directory
-            chmod(storage_path("app/{$directory}"), 0755);
+            $pathsToDelete = array_filter([$form->onam_path, $form->anket_path, $form->kurum_izinleri_path]);
+            Storage::delete($pathsToDelete);
 
-            // Save the files in the specified directories
+            // Save the new files in the specified directories
             $form->onam_path = Storage::putFileAs($directory, $validated["onam_path"], 'onam.pdf', 'public');
             $form->anket_path = Storage::putFileAs($directory, $validated["anket_path"], 'anket.pdf', 'public');
 
@@ -56,8 +83,9 @@ class FormsController extends Controller
                 $form->kurum_izinleri_path = Storage::putFileAs($directory, $validated["kurum_izinleri_path"], 'kurum_izinleri.pdf', 'public');
             }
 
-            // Save the form after handling file uploads
-            // //create researcher informations
+            if ($form->stage === 'duzeltme') {
+                $form->stage = 'sekreterlik';
+            }
             $form->user_id = Auth::user()->id;
             $form->name = trim($validated['name']);
             $form->lastname = trim($validated['lastname']);
@@ -90,6 +118,7 @@ class FormsController extends Controller
             $form->research_place_date = trim($validated['research_place_date']);
             $form->research_literature_review = trim($validated['research_literature_review']);
             $form->save();
+
             DB::commit();
 
             $fieldNameMappings = [
