@@ -51,7 +51,7 @@ return new class extends Migration
             $table->text("research_restrictions"); //Sınırlar ve kısıtlar
             $table->text("research_place_date"); //Araştırma tarih ve yeri
             $table->text("research_literature_review"); //Faydalanıcak kaynaklar
-
+            $table->boolean('is_modified')->default(false);
             $table->timestamps();
         });
     }

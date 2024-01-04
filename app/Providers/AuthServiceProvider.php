@@ -21,7 +21,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         Gate::define('access-dashboard', function ($user) {
-            return $user->hasAnyRole(['sekreterlik', 'etik_kurul', "user"]);
+            return $user->hasAnyRole(['sekreterlik', 'etik_kurul', "user", "admin"]);
         });
     }
 }

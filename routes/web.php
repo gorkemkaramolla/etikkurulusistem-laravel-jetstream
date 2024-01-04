@@ -20,10 +20,10 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/dashboard/{formStatus?}', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/visualize', [DataVisualizationController::class, 'index'])->name('visualize');
 
-    Route::get('/formshow/{student_no}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
+    Route::get('/formshow/{student_no}/{created_at}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
 
     Route::get('/export-to-excel', 'YourController@exportToExcel')->name('export.to.excel');
 
@@ -37,7 +37,7 @@ Route::middleware([
 
 
     Route::get('/show-pdf/{path}', function ($path) {
-        $filePath = base_path("storage/app/{$path}");
+        $filePath = storage_path("app/{$path}");
 
         if (file_exists($filePath)) {
             return response()->file($filePath);
@@ -55,12 +55,12 @@ Route::middleware([
 
 
 Route::get('/query-etikkurul/{student_no}', [FormsController::class, 'generateQueryStageForm'])->name('forms.get');
+Route::get('/form/{formId?}', [FormsController::class, 'index'])->name('forms.index');
 
-Route::get('/form', [FormsController::class, 'index'])->name('forms.index');
 
 Route::view('/', 'root.index')->name('root.index');
 
-Route::post('store-form', [FormsController::class, 'store']);
+Route::post('store-form/{formId?}', [FormsController::class, 'store'])->name('forms.store');
 Route::get('/seed-database', [DatabaseSeedController::class, 'seed']);
 Route::get('generate', function () {
     \Illuminate\Support\Facades\Artisan::call('storage:link');
