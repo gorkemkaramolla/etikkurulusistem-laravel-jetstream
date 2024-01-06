@@ -25,5 +25,6 @@
         src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.print.min.js"></script>
     <script type="text/javascript" language="javascript"
         src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.colVis.min.js"></script>
+    <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.js"></script>
     {{ $slot }}
 </x-app-layout>

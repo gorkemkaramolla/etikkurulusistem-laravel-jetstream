@@ -1,51 +1,11 @@
 <x-datatables-layout>
 
     <div class="overflow-x-scroll px-4 sm:px-6 lg:px-8 py-8">
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <div class="editable-area" contenteditable="true" id="editableArea"></div>
-                <button class="save-button">Save</button>
-            </div>
-        </div>
+        <button class="delete-button"> delete</button>
+        <table id="myTable" class="divide-gray-200 mx-auto">
 
-        <table id="myTable" class="min-w-full divide-y divide-gray-200">
-            <thead>
-                <tr>
-                    @foreach (\Schema::getColumnListing($forms->first()->getTable()) as $columnName)
-                        <th>{{ $columnName }}</th>
-                    @endforeach
-                    <th>Formu düzenle</th>
-
-                </tr>
-            </thead>
-            <tbody>
-                @forelse ($forms as $form)
-                    <tr>
-                        @foreach ($form->getAttributes() as $columnName => $value)
-                            <td class="transition-colors truncate-text" data-column="{{ $columnName }}">
-                                {{ $value ?? '' }}
-
-                            </td>
-                        @endforeach
-                        <td>
-                            <a target="_blank"
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
-                                href="/formshow/{{ $form->student_no ?? '' }}/{{ $form->created_at }}">
-                                Tüm Başvuruyu Görüntüle
-                            </a>
-                        </td>
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="{{ count(\Schema::getColumnListing($forms->first()->getTable())) }}">No data
-                            available</td>
-                    </tr>
-                @endforelse
-            </tbody>
         </table>
     </div>
-
 
 
 </x-datatables-layout>
@@ -103,76 +63,163 @@
 </script>
 
 <script type="text/javascript" class="init">
-    $.fx.off = true
+    $.fx.off = true;
+
     $(document).ready(function() {
+        var jsonData = @json($forms); // Laravel Blade directive for JSON encoding
+        function formatDate(date) {
+            var formatter = new Intl.DateTimeFormat('en', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+            });
+            return formatter.format(date);
+        }
+        jsonData = jsonData.map(function(form) {
+            var created_at = new Date(form.created_at);
+            var updated_at = new Date(form.updated_at);
+            form.created_at = formatDate(created_at);
+            form.updated_at = formatDate(updated_at);
+
+            return form;
+        });
+
+        var columnNames = Object.keys(jsonData[0]);
+
+        // Create thead with automatically generated column names
+        var theadHtml = '<thead ><tr>';
+        columnNames.forEach(function(columnName) {
+            theadHtml += '<th class="bg-indigo-600 ">' + columnName + '</th>';
+        });
+        theadHtml += '</tr></thead>';
+
+        $('#myTable').append(theadHtml);
+
         var dataTable = $('#myTable').DataTable({
+            data: jsonData,
             dom: 'Bfrtip',
             responsive: true,
+            select: {
+                style: 'multi',
+                blurable: false,
+                event: 'click',
+            },
+            columns: columnNames.map(function(column) {
+                return {
+                    data: column
+                };
+            }),
             buttons: [{
                     extend: 'copyHtml5',
+                    text: "Kopyala",
                     exportOptions: {
-                        columns: [0, ':visible']
-                    }
+                        columns: [0, ':visible'],
+                        modifier: {
+                            selected: true,
+                        },
+                    },
                 },
                 {
                     extend: 'excelHtml5',
+                    text: 'Excel\'\e Aktar',
                     exportOptions: {
-                        columns: ':visible'
+                        columns: ':visible',
+
+                        modifier: {
+                            selected: true,
+                        },
                     },
-                    action: function(e, dt, button, config) {
-                        var selectedColumns = dt.columns(':visible').indexes().toArray();
-                        if (selectedColumns.length === 0) {
-                            alert('Please select at least one column for export.');
-                        } else {
-                            $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt,
-                                button, config);
-                        }
-                    }
-                },
-                {
-                    extend: 'pdfHtml5',
-                    exportOptions: {
-                        columns: ':visible'
-                    },
-                    action: function(e, dt, button, config) {
-                        var selectedColumns = dt.columns(':visible').indexes().toArray();
-                        if (selectedColumns.length === 0) {
-                            alert('Please select at least one column for export.');
-                        } else {
-                            $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button,
-                                config);
-                        }
-                    }
                 },
 
-                {
-                    extend: 'colvis',
-                    text: "Sütun Görünürlüğü",
-                    columnText: function(dt, idx, title) {
-                        return (idx + 1) + '- ' + title;
-                    },
-
-
-                }
             ],
-
-
             scrollX: true,
         });
-    });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function() {
-        var maxLength = 32; // Change this to your desired character limit
 
-        var tdElements = document.querySelectorAll('tbody .truncate-text');
-        tdElements.forEach(function(td) {
-            td.style.maxWidth = maxLength + 'ch';
+        var selectAllButton = new $.fn.dataTable.Buttons(dataTable, {
+            buttons: [{
+                    extend: 'colvis',
+                    text: 'Sütun Seç',
+                    className: 'custom-colvis-btn',
+                },
+                {
+                    text: 'Tüm Sütunları Seç/Seçimi Kaldır',
+                    action: function(e, dt, node, config) {
+
+                        // Toggle between showing and hiding all columns
+                        var allColumnsVisible = dt.columns().visible().toArray().every(
+                            function(visible) {
+                                return visible;
+                            });
+                        dt.columns().visible(!allColumnsVisible);
+
+                    },
+                    className: 'custom-select-all-btn', // Initial class
+                },
+                {
+                    text: 'Tüm Satırları Seç/Seçimi Kaldır',
+                    action: function(e, dt, node, config) {
+                        var allRowsSelected = dt.rows({
+                            selected: true
+                        }).count() === dt.rows().count();
+                        dt.rows().select(!allRowsSelected); // Toggle selection for all rows
+                    },
+                    className: 'custom-select-all-rows-btn',
+                },
+            ],
+        }).container().appendTo($('#myTable_wrapper .dt-buttons'));
+
+
+        // Delete button functionality
+        $('.delete-button').on('click', function() {
+            var selectedRows = dataTable.rows({
+                selected: true
+            }).indexes().toArray();
+
+            if (selectedRows.length > 0) {
+                var confirmDelete = confirm('Are you sure you want to delete the selected rows?');
+                if (confirmDelete) {
+                    // Iterate through selected rows and perform delete action
+                    selectedRows.forEach(function(rowIndex) {
+                        var rowData = dataTable.row(rowIndex).data();
+                        console.log(rowData);
+                        var formId = rowData.id;
+                        alert(formId);
+                    });
+
+                    // Redraw the table after deleting rows
+                    dataTable.draw();
+                }
+            } else {
+                alert('Please select at least one row to delete.');
+            }
         });
     });
 </script>
 
+
+
+
 <style>
+    /* Add this CSS to your existing styles */
+    .custom-select-all-btn {
+        background-color: green;
+        color: white;
+    }
+
+
+    #myTable_wrapper {
+        /* margin: 0 auto; */
+
+        height: 100vh;
+        padding: 20px;
+    }
+
+    #myTable {
+        /* margin: 0 auto; */
+        width: 100%;
+        min-width: 90vw;
+    }
+
     .buttons-colvis {
         background-color: #e44d26;
         color: #fff;
@@ -209,6 +256,9 @@
     div[role="menu"] {
         position: absolute;
         margin-top: 1rem;
+        max-height: 350px;
+        overflow-y: auto;
+        /* Enable vertical scrolling if needed */
 
         display: grid;
         grid-template-columns: repeat(1, 1fr);
@@ -220,6 +270,14 @@
 
     }
 
+    div[role="menu"]::-webkit-scrollbar {
+        width: 0.5em;
+    }
+
+    div[role="menu"]::-webkit-scrollbar-thumb {
+        background-color: transparent;
+    }
+
     a.dt-button.dt-button-active {
         border-radius: 10px;
         color: #28a745;
@@ -229,22 +287,36 @@
 
     .dt-buttons {
         display: flex;
+        flex-direction: column;
         gap: 1em;
     }
 
+    /* Media query for larger screens (flex row) */
+    @media (min-width: 768px) {
+        .dt-buttons {
+            flex-direction: row;
+        }
+    }
+
     .dt-buttons .btn {
-        background: #092635;
-        padding: 6px 12px;
-        color: white;
-        border-radius: 20px;
+        background-color: #3498db;
+        color: #ffffff;
+        padding: 3px 6px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
 
-
+    .dt-buttons .btn:hover {
+        background-color: #2980b9;
     }
 
     /* Customize the colvis button */
     .buttons-colvis {
         transition: opacity 0.5s ease;
         /* Change the transition properties as needed */
+        width: 100%;
     }
 
     .buttons-colvis:hover {
@@ -297,18 +369,30 @@
     }
 </style>
 <style>
-    th,
-    td {
-        border: 1px solid black;
-        border-collapse: collapse
+    th {
+        white-space: nowrap;
+        overflow: hidden;
+        color: white;
+        text-overflow: ellipsis;
+        border: 1px solid #ddd;
+        /* Set a maximum width for the headers */
     }
 
-    .truncate-text {
-        max-width: 0;
+    td {
+
+        background-color: #f5f5f5;
+        border: 1px solid #ddd;
+
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        cursor: pointer;
+        /* Set a maximum width for the cells */
+    }
+
+
+    .truncate-text {
+        max-width: 100%;
+        /* Allow the content to determine the width */
     }
 
     .modal {

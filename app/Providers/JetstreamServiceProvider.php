@@ -36,47 +36,51 @@ class JetstreamServiceProvider extends ServiceProvider
                 ->orWhere('student_no', $userLoginField)
                 ->first();
 
+            try {
 
-            if ($user) {
-                $isEmail = filter_var($userLoginField, FILTER_VALIDATE_EMAIL);
                 if ($user) {
-                    if (Hash::check($request->password, $user->password)) {
+                    $isEmail = filter_var($userLoginField, FILTER_VALIDATE_EMAIL);
+                    if ($user) {
+                        if (Hash::check($request->password, $user->password)) {
+                            return $user;
+                        }
+                    }
+                } else {
+
+
+                    $data = [
+                        'university_id' => $request->email,
+                        'password' => $request->password,
+                    ];
+                    $authInformations = JetstreamServiceProvider::loginToSanalKampus($data);
+
+                    $content = $authInformations->getContent();
+                    $decodedData = json_decode($content, true);
+
+
+
+                    $name = $decodedData["name"];
+                    $lastname = $decodedData["lastname"];
+                    $email = $decodedData["email"];
+
+                    $user = User::create([
+                        "name" => $name,
+                        "lastname" => $lastname,
+                        "email" =>  $email,
+                        'student_no' => $request['email'],
+                        'password' => Hash::make($request['password']),
+                        "role" => "user",
+                    ]);
+                    if ($user) {
+                        Form::all()->where("student_no", $user->student_no)->each(function ($form) use ($user) {
+                            $form->user_id = $user->id;
+                            $form->save();
+                        });
                         return $user;
                     }
                 }
-            } else {
-
-
-                $data = [
-                    'university_id' => $request->email,
-                    'password' => $request->password,
-                ];
-                $authInformations = JetstreamServiceProvider::loginToSanalKampus($data);
-
-                $content = $authInformations->getContent();
-                $decodedData = json_decode($content, true);
-
-
-
-                $name = $decodedData["name"];
-                $lastname = $decodedData["lastname"];
-                $email = $decodedData["email"];
-
-                $user = User::create([
-                    "name" => $name,
-                    "lastname" => $lastname,
-                    "email" =>  $email,
-                    'student_no' => $request['email'],
-                    'password' => Hash::make($request['password']),
-                    "role" => "user",
-                ]);
-                if ($user) {
-                    Form::all()->where("student_no", $user->student_no)->each(function ($form) use ($user) {
-                        $form->user_id = $user->id;
-                        $form->save();
-                    });
-                    return $user;
-                }
+            } catch (Exception $e) {
+                return null;
             }
         });
         Jetstream::deleteUsersUsing(DeleteUser::class);

@@ -1,4 +1,7 @@
 @props(['form'])
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"
+    integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 @if (Auth::user()->role == 'admin')
 @endif
 <style>
@@ -371,62 +374,63 @@
             </td>
         </tr>
     </table>
-    <x-button class="my-3" id="editButton" onclick="makeEditable()">Edit</x-button>
+    @if (Auth::user()->role === 'admin')
+        <x-button class="my-3" id="editButton" onclick="makeEditable()">Edit</x-button>
+    @endif
+
     <script>
         function makeEditable() {
             // Check if the user is an admin (you can replace this condition based on your authentication logic)
             @if (Auth::user()->role == 'admin')
-                var cells = document.querySelectorAll('td:not(.not-editable)');
-                var saveButton = document.createElement('button');
-                saveButton.innerText = 'Save';
-                saveButton.onclick = saveChanges;
-
-                // Add "contenteditable" attribute to make cells editable
-                cells.forEach(function(cell) {
-                    cell.contentEditable = true;
-
-                    cell.style.border =
-                        '1pt solid rgb(191, 191, 191)'; // Optional: Add a border to indicate edit mode
+                var cells = $('td:not(.not-editable)');
+                var saveButton = $('<button>', {
+                    id: 'editButton',
+                    text: 'Save',
+                    click: saveChanges
                 });
 
+                // Add "contenteditable" attribute to make cells editable
+                cells.attr('contenteditable', true).css('border', '1pt solid rgb(191, 191, 191)');
+
+                // Optional: Add a border to indicate edit mode
                 // Append the "Save" button
-                document.querySelector('.pdf-render').appendChild(saveButton);
+                $('.pdf-render').append(saveButton);
             @endif
         }
 
         function saveChanges() {
-            var cells = document.querySelectorAll('td[contenteditable="true"]');
+            var cells = $('td[contenteditable="true"]');
             var data = {};
 
             // Collect the updated data from editable cells
-            cells.forEach(function(cell) {
-                var columnName = cell.getAttribute('data-column-name');
-                var cellValue = cell.innerText;
+            cells.each(function() {
+                var columnName = $(this).data('column-name');
+                var cellValue = $(this).text();
                 data[columnName] = cellValue;
             });
-            console.log(data)
+
+            console.log(data);
             // Send the data to the server for saving (you need to implement the server-side logic)
-            // Example using fetch API:
-            // fetch('/save-changes-endpoint', {
+            // Example using the jQuery.ajax() method:
+            // $.ajax({
+            //     url: '/save-changes-endpoint',
             //     method: 'POST',
+            //     data: JSON.stringify(data),
+            //     contentType: 'application/json',
             //     headers: {
-            //         'Content-Type': 'application/json',
             //         'X-CSRF-TOKEN': '{{ csrf_token() }}', // Laravel CSRF token
             //     },
-            //     body: JSON.stringify(data),
-            // }).then(function(response) {
-            //     // Handle the response (success or error)
-            //     console.log(response);
+            //     success: function(response) {
+            //         // Handle the response (success or error)
+            //         console.log(response);
+            //     },
             // });
 
             // Disable editing and remove the "Save" button
-            cells.forEach(function(cell) {
-                cell.contentEditable = false;
-                cell.style.border = '1px solid #ccc'; // Remove the border
-            });
+            cells.attr('contenteditable', false).css('border', '1px solid #ccc');
 
-            var saveButton = document.getElementById('editButton');
-            saveButton.parentNode.removeChild(saveButton);
+            var saveButton = $('#editButton');
+            saveButton.remove();
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
