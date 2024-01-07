@@ -48,13 +48,13 @@ class DashboardController extends Controller
             abort(403, 'Unauthorized action.');
         }
     }
-    public function getFormSlug($studentNo, $createdAt)
+    public function getFormSlug($formid)
     {
         try {
-            $form = Form::where('student_no', $studentNo)->where('created_at', $createdAt)
+            $form = Form::where("id", $formid)
                 ->first();
 
-            $url = "/formshow/{$form->student_no}/{$form->created_at}";
+            $url = "/formshow/{$form->id}";
 
             // Check the 'access-dashboard' gate before showing the dashboard
             if (Gate::allows('access-dashboard')) {

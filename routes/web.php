@@ -23,18 +23,19 @@ Route::middleware([
     Route::get('/dashboard/{formStatus?}', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/visualize', [DataVisualizationController::class, 'index'])->name('visualize');
 
-    Route::get('/formshow/{student_no}/{created_at}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
+    Route::get('/formshow/{formid}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
 
     Route::get('/export-to-excel', 'YourController@exportToExcel')->name('export.to.excel');
 
     Route::get('export/array', [ExportController::class, 'array'])->name('export.array');
-
+    Route::get("/send-mail", [ExportController::class, 'sendMail'])->name('send.mail');
 
     Route::post('/approve-sekreterlik/{formid}', [FormsController::class, 'approveSekreterlik'])->name('approve.sekreterlik');
     Route::post('/approve-etikkurul/{formid}', [FormsController::class, 'approveEtikkurul'])->name('approve.etikkurul');
 
     Route::get('/dil-degistir', [DashboardController::class, 'changeLanguageToTurkish']);
 
+    Route::delete('/delete-form/{formid}', [FormsController::class, 'deleteFormById']);
 
     Route::get('/show-pdf/{path}', function ($path) {
         $filePath = storage_path("app/{$path}");
@@ -148,7 +149,7 @@ Route::get('tken', function () {
             ]);
             $content = $respons->getContent();
             $decodedData = json_decode($content, true);
-            return $decodedData["lastname"];
+            return $decodedToken;
         } else {
             echo "Error decoding token";
         }

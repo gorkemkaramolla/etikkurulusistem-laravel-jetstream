@@ -121,7 +121,7 @@
                 <p class="font-bold"><i>Department </i></p>
             </th>
             <td class="w-8/12" colspan="3">
-                <p> {{ $form['major'] }}
+                <p> {{ $form['ana_bilim_dali'] }}
                 </p>
             </td>
         </tr>
@@ -131,7 +131,7 @@
                 <p class="font-bold"><i>Department </i></p>
             </th>
             <td class="w-8/12" colspan="3">
-                <p> {{ $form['department'] }}
+                <p> {{ $form['program'] }}
                 </p>
             </td>
         </tr>

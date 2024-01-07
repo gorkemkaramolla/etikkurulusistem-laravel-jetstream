@@ -87,7 +87,7 @@
                             <div class="flex flex-col ">
                                 <a target="_blank"
                                     class="inline-flex items-center px-3 py-2  -transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-100 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
-                                    href="/formshow/{{ $form['student_no'] ?? '' }}/{{ $form['created_at'] }}">Görüntüle/Show</a>
+                                    href="/formshow/{{ $form['id'] ?? '' }}">Görüntüle/Show</a>
                             </div>
 
 
@@ -137,8 +137,7 @@
         @endif
 
         @if (request()->segment(2) !== 'duzeltme')
-            <a href="{{ route('dashboard', ['formStatus' => 'duzeltme']) }}"
-                class="text-blue-500 hover:underline ml-4">
+            <a href="{{ route('dashboard', ['formStatus' => 'duzeltme']) }}" class="text-blue-500 hover:underline ml-4">
                 Düzeltmeye Gönderilen Başvuruları Görüntüle
             </a>
         @endif
