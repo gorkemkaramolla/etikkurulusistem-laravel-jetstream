@@ -64,8 +64,8 @@ class StoreFormRequest extends FormRequest
 
             'email' => 'required|email',
 
-            'major' => 'required|string|max:100',
-            'department' => 'required|string|max:255',
+            'ana_bilim_dali' => 'required|string|max:255',
+            'program' => 'required|string|max:255',
 
 
 

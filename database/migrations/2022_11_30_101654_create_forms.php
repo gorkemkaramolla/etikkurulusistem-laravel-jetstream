@@ -4,6 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 use PharIo\Manifest\Email;
+use Illuminate\Support\Facades\Config;
 
 return new class extends Migration
 {
@@ -19,11 +20,15 @@ return new class extends Migration
             $table->string("name", 255); //isim
             $table->string("lastname", 255); //soyisim
             $table->string("gsm", 10); //telefon
-            //researcher 
+            //researcher
             $table->string("advisor", 255); //danışman
             $table->string('email');
-            $table->string('major', 100); //anabilim dalı
-            $table->string('department', 255); //program
+
+            // Change 'ana_bilim_dali' to enum with provided values
+            $table->enum('ana_bilim_dali', Config::get('enums'));
+
+            $table->enum('program', ['HAREKET VE ANTRENMAN BİLİMLERİ', 'HAREKET VE ANTRENMAN BİLİMLERİ (DOKTORA)', 'BESLENME VE DİYETETİK', 'BİLGİ TEKNOLOJİLERİ', 'BİLGİSAYAR MÜHENDİSLİĞİ', 'MÜHENDİSLİK YÖNETİMİ', 'FİNANS VE BANKACILIK', 'FİNANS VE BANKACILIK (DOKTORA)', 'FİNANS VE BANKACILIK (UZAKTAN ÖĞRETİM)', 'KAYROPRAKTİK', 'GASTRONOMİ VE MUTFAK SANATLARI', 'BİYOTEKNOLOJİ', 'REKLAMCILIK VE MARKA İLETİŞİMİ', 'STRATEJİK PAZARLAMA VE MARKA YÖNETİMİ', 'İNŞAAT MÜHENDİSLİĞİ', 'İNSAN KAYNAKLARI YÖNETİMİ', 'İŞLETME YÖNETİMİ', 'İŞLETME YÖNETİMİ (DOKTORA)', 'İŞLETME YÖNETİMİ (İNGİLİZCE)', 'İŞLETME YÖNETİMİ (İNGİLİZCE) (DOKTORA)', 'İŞLETME YÖNETİMİ (UZAKTAN ÖĞRETİM)', 'ULUSLARARASI İŞLETMECİLİK', 'MİMARİ TASARIM', 'MUHASEBE VE DENETİM', 'MUHASEBE VE DENETİM (UZAKTAN EĞİTİM)', 'ULUSLARARASI FİNANSAL RAPORLAMA VE DENETİM', 'MÜZİK VE SAHNE SANATLARI', 'KLİNİK PSİKOLOJİ', 'PSİKOLOJİ', 'RADYO TELEVİZYON VE SİNEMA', 'SAĞLIK YÖNETİMİ', 'SİYASET BİLİMİ VE ULUSLARARASI İLİŞKİLER', 'SİYASET BİLİMİ VE ULUSLARARASI İLİŞKİLER (DOKTORA)', 'YEREL YÖNETİMLER (TEZLİ)', 'SPOR YÖNETİCİLİĞİ', 'TEKSTİL VE MODA TASARIMI', 'ULUSLARARASI TİCARET VE FİNANSMAN', 'YAPAY ZEKA MÜHENDİSLİĞİ', 'YENİ MEDYA VE GAZETECİLİK', 'BÜYÜK VERİ ANALİTİĞİ VE YÖNETİMİ']);
+
             $table->string("student_no", 11); //ogrenci_no
 
             $table->string('stage')->default('sekreterlik'); // durum
@@ -44,7 +49,7 @@ return new class extends Migration
 
 
 
-            //research 
+            //research
             $table->text("research_title"); //Araştırma başlığı
             $table->text("research_subject_purpose"); //Konu ve amaç
             $table->text("research_unique_value"); //Özgün değer
