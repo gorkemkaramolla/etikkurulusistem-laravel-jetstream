@@ -13,20 +13,13 @@ class DataVisualizationController extends Controller
 {
     public function index()
     {
-        $formsByYear = Form::select(
-            DB::raw('YEAR(created_at) as year'), // Extract year from the created_at column
-            DB::raw('COUNT(id) as count') // Count the number of forms for each year
-        )
-            ->groupBy('year') // Group by year
-            ->orderBy('year')
-            ->get(); // Use get() instead of pluck
-
+        $forms = Form::all();
         if (Gate::allows('access-dashboard')) {
             // return view('dashboard', compact('forms'));
             if (Auth::user()->role === "user") {
                 abort(403, 'Unauthorized action.');
             } else {
-                return view("visualize.index", compact('formsByYear'));
+                return view("visualize.index", compact('forms'));
             }
         } else {
             abort(403, 'Unauthorized action.');

@@ -38,16 +38,58 @@
                 value="{{ $formData ? $formData->advisor : old('advisor') }}">
         </div>
         <div class="col-md-4">
-            <label for="department" class="form-label">Anabilim Dalı<br><span
+            <label for="ana_bilim_dali" class="form-label">Anabilim Dalı<br><span
                     class="pt-0 small">Department</span></label>
-            <input type="text" name="department" class="form-control" id="department" placeholder=""
-                value="{{ $formData ? $formData->department : old('department') }}">
+            <select class="form-control" name="ana_bilim_dali" id="ana_bilim_dali" onchange="updateProgramOptions()"
+                required>
+                <option value="" disabled selected>Ana Bilim Dalı Seçiniz</option>
+                @foreach (config('enums') as $anabilimDali)
+                    <option value="{{ $anabilimDali }}">{{ $anabilimDali }}</option>
+                @endforeach
+            </select>
+        </div>
 
-        </div>
+
         <div class="col-md-4">
-            <label for="program" class="form-label">Program<br><span class="pt-0 small">Department</span></label>
-            <input type="text" name="major" class="form-control" id="program"
-                value="{{ $formData ? $formData->major : old('major') }}">
+            <label for="program" class="form-label">Program Adı<br><span class="pt-0 small">Program</span></label>
+            <select disabled class="form-control" name="program" id="program" required>
+                <!-- Options will be dynamically updated using JavaScript -->
+            </select>
         </div>
+
     </div>
+    <script>
+        function updateProgramOptions() {
+            var anabilimDaliSelect = document.getElementById('ana_bilim_dali');
+            var programSelect = document.getElementById('program');
+            var selectedAnabilimDali = anabilimDaliSelect.value;
+
+            programSelect.innerHTML = '';
+
+            // Disable the program select if no Anabilim Dalı is selected
+            programSelect.disabled = !selectedAnabilimDali;
+
+            if (selectedAnabilimDali) {
+                // Retrieve program options from the program_enums config file
+                var programs = {!! json_encode(config('program_enums')) !!}[selectedAnabilimDali] || [];
+
+                // Add new program options based on the selected Anabilim Dalı
+                programs.forEach(function(program) {
+                    addProgramOption(programSelect, program);
+                });
+            }
+        }
+
+        function addProgramOption(select, value) {
+            var option = document.createElement('option');
+            option.value = value;
+            option.text = value;
+            select.add(option);
+        }
+    </script>
+
+
+
+
+
 </div>

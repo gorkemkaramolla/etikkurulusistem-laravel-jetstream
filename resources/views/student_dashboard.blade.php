@@ -71,7 +71,7 @@
                         <div class="px-4 py-4 flex justify-between bg-gray-100">
                             <a target="_blank"
                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
-                                href="/formshow/{{ $form->student_no ?? '' }}/{{ $form->created_at }}">
+                                href="/formshow/{{ $form->id ?? '' }}">
                                 Tüm Başvuruyu Görüntüle
                             </a>
                             <x-forms.form-status :formid="$form->id" :stage="$form->stage" :decide_reason="$form->decide_reason" />

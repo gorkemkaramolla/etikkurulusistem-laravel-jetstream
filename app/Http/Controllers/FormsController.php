@@ -92,8 +92,8 @@ class FormsController extends Controller
             $form->advisor = trim($validated['advisor']);
             $form->gsm = trim($validated['gsm']);
             $form->email = trim($validated['email']);
-            $form->major = trim($validated['major']);
-            $form->department = trim($validated['department']);
+            $form->ana_bilim_dali = trim($validated['ana_bilim_dali']);
+            $form->program = trim($validated['program']);
             $form->student_no = trim($validated['student_no']);
             // //create application informations
             $form->application_semester = $validated['application_semester'];
@@ -127,8 +127,8 @@ class FormsController extends Controller
                 'advisor' => 'Danışman Adı',
                 'gsm' => 'Araştırmacı GSM',
                 'email' => 'Araştırmacı Email',
-                'major' => 'Araştırmacı Ana Bilim Dalı',
-                'department' => 'Araştırmacı Departman',
+                'ana_bilim_dali' => 'Araştırmacı Ana Bilim Dalı',
+                'program' => 'Araştırmacı Departman',
                 'student_no' => 'Araştırmacı Öğrenci Numarası',
                 'application_semester' => 'Başvuru Dönemi',
                 'temel_alan_bilgisi' => 'Temel Alan Bilgisi',
@@ -278,6 +278,24 @@ class FormsController extends Controller
         }
     }
 
+    public function deleteFormById($formIds)
+    {
+        $formIds = explode(',', $formIds);
+        $user = auth()->user();
+
+        if ($user && $user->role === 'admin') {
+            $forms = Form::whereIn('id', $formIds)->get();
+
+            if (!$forms->isEmpty()) {
+                Form::destroy($formIds);
+                return redirect()->route('dashboard')->with('success', 'Form(s) successfully deleted.');
+            } else {
+                return redirect()->route('dashboard')->with('error', 'Form(s) not found.');
+            }
+        } else {
+            return redirect()->route('dashboard')->with('error', 'You do not have permission to perform this operation.');
+        }
+    }
     public function generateQueryStageForm($studentNo)
     {
         try {
@@ -288,8 +306,8 @@ class FormsController extends Controller
                     'forms.research_title',
                     'forms.name',
                     'forms.lastname',
-                    'forms.major',
-                    'forms.department'
+                    'forms.ana_bilim_dali',
+                    'forms.program'
                 )
                 ->first();
 
