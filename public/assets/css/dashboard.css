@@ -86,30 +86,38 @@ a.dt-button.dt-button-active {
         flex-direction: row;
     }
 }
-
 .dt-buttons .btn {
-    background-color: #3498db;
-    color: #ffffff;
-    padding: 3px 6px;
+    background-color: #6366f1; /* Green background */
     border: none;
-    border-radius: 5px;
+    color: white; /* White text */
+    padding: 8px 16px; /* Some padding */
+    text-align: center; /* Centered text */
+    text-decoration: none; /* No underline */
+    display: inline-block;
+    font-size: 14px; /* Change the font size */
+    margin: 4px 2px;
     cursor: pointer;
-    transition: background-color 0.3s ease;
+    border-radius: 12px; /* Rounded corners */
 }
 
 .dt-buttons .btn:hover {
-    background-color: #2980b9;
+    background-color: #3730a3; /* Green background on hover */
+}
+
+.dt-buttons .btn:active {
+    box-shadow: var(--tw-ring-inset) 0 0 0
+        calc(2px + var(--tw-ring-offset-width)) #6366f1;
 }
 
 /* Customize the colvis button */
 .buttons-colvis {
-    transition: opacity 0.5s ease;
+    transition: opacity 0.2s ease;
     /* Change the transition properties as needed */
     width: 100%;
 }
 
 .buttons-colvis:hover {
-    opacity: 0.8;
+    opacity: 0.9;
     /* Change the opacity value for the hover effect */
 }
 

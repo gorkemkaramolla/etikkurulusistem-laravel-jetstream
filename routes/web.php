@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Gate;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataVisualizationController;
 
-use App\Http\Controllers\AppliedFormController;
 use App\Http\Controllers\TestController;
 
 use App\Http\Controllers\ExportController;
@@ -22,10 +21,14 @@ Route::middleware([
 ])->group(function () {
     Route::get('/dashboard/{formStatus?}', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/visualize', [DataVisualizationController::class, 'index'])->name('visualize');
+    Route::post('store-form/{formId?}', [FormsController::class, 'store'])->name('forms.store');
+    Route::post('/fix-form/{formId}', [FormsController::class, 'fixForm'])->name('fixForm');
 
     Route::get('/formshow/{formid}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
 
     Route::get('/export-to-excel', 'YourController@exportToExcel')->name('export.to.excel');
+    Route::get('/getEtikKuruluOnayiByFormId/{id}', [FormsController::class, 'getEtikKuruluOnayiByFormId']);
+
 
     Route::get('export/array', [ExportController::class, 'array'])->name('export.array');
     Route::get("/send-mail", [ExportController::class, 'sendMail'])->name('send.mail');
@@ -61,7 +64,6 @@ Route::get('/form/{formId?}', [FormsController::class, 'index'])->name('forms.in
 
 Route::view('/', 'root.index')->name('root.index');
 
-Route::post('store-form/{formId?}', [FormsController::class, 'store'])->name('forms.store');
 Route::get('/seed-database', [DatabaseSeedController::class, 'seed']);
 Route::get('generate', function () {
     \Illuminate\Support\Facades\Artisan::call('storage:link');

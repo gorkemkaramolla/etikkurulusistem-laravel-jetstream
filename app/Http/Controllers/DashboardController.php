@@ -22,7 +22,7 @@ class DashboardController extends Controller
                 ->where('stage', "reddedildi");
         } else if (Auth::user()->role === "admin") {
 
-            $forms = Form::all();
+            $forms = Form::with('etik_kurul_onayi')->get();
         } else {
 
             $forms = Form::all()

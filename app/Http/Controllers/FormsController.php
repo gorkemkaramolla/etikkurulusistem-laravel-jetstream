@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema; // Add this line
 
 use App\Http\Requests\StoreFormRequest;
 use App\Models\ApplicationInformations;
@@ -19,6 +20,7 @@ use App\Mail\FormDeclined;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\LOG;
+use Illuminate\Support\Facades\Validator;
 
 class FormsController extends Controller
 {
@@ -41,7 +43,60 @@ class FormsController extends Controller
 
 
 
+    public function fixForm($formId, Request $request)
+    {
+        if (auth::user()->role === "admin") {
+            try {
+                $form = Form::find($formId);
 
+                if (!$form) {
+                    return response()->json(['error' => 'Form not found.'], 404);
+                }
+
+                $changes = $request->all(); // Get all the request data
+
+                // Check if the changes are provided
+                if (!$changes) {
+                    return response()->json(['error' => 'No changes provided.'], 400);
+                }
+
+                foreach ($changes as $columnName => $newValue) {
+                    // Check if the column exists
+                    if (!Schema::hasColumn('forms', $columnName)) {
+                        return response()->json(['error' => 'Invalid column: ' . $columnName], 400);
+                    }
+
+                    // Define validation rules for each column
+                    $rules = [
+                        'research_end_date' => 'date_format:Y-m-d',
+
+
+                        // Add other columns and their validation rules here
+                    ];
+                    $messages = [
+                        'research_end_date.date_format' => 'Tarih formatında girilmelidir (Yıl-Ay-Gün)',
+
+                    ];
+                    $validator = Validator::make([$columnName => $newValue], [$columnName => $rules[$columnName] ?? ''], $messages);
+
+
+                    if ($validator->fails()) {
+                        throw new Exception($validator->errors()->first());
+                    }
+
+                    $form->$columnName = $newValue;
+                }
+
+                $form->save();
+
+                return response()->json(['success' => 'Changes saved successfully.']);
+            } catch (Exception $e) {
+                return response()->json(['error' => $e->getMessage()], 400);
+            }
+        } else {
+            return response()->json(['error' => "yetkisiz"], 401);
+        }
+    }
     // /FORMS SUBMIT REQUEST CONTROLLER
     public function store(StoreFormRequest $request, $formid = null)
     {
@@ -200,11 +255,11 @@ class FormsController extends Controller
             $etikKurulRecipients = User::where('role', 'etik_kurul')->pluck('email')->toArray();
 
             $researcherEmail = $form->email;
-            Mail::send('emails.form-sekreter-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $etikKurulRecipients) {
-                $message->to($researcherEmail)
-                    ->cc($etikKurulRecipients) // Add CC recipients
-                    ->subject('Başvurunuz Sekreterlik Tarafından Onaylanmıştır.');
-            });
+            // Mail::send('emails.form-sekreter-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $etikKurulRecipients) {
+            //     $message->to($researcherEmail)
+            //         ->cc($etikKurulRecipients) // Add CC recipients
+            //         ->subject('Başvurunuz Sekreterlik Tarafından Onaylanmıştır.');
+            // });
         } else if ($decide === "duzeltme") {
             $ccRecipients = User::pluck('email')->toArray();
             //SEKRETER DUZELTME
@@ -269,15 +324,52 @@ class FormsController extends Controller
                 $form->save();
                 $researcherEmail = $form->email;
 
-                Mail::send('emails.form-etik-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
-                    $message->to($researcherEmail)
-                        ->cc($ccRecipients) // Add CC recipients
-                        ->subject('Etik kurulu başvurunuz onaylandı.');
-                });
+                // Mail::send('emails.form-etik-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
+                //     $message->to($researcherEmail)
+                //         ->cc($ccRecipients) // Add CC recipients
+                //         ->subject('Etik kurulu başvurunuz onaylandı.');
+                // });
             }
         }
     }
+    public function getEtikKuruluOnayiByFormId($formId)
+    {
+        try {
+            $form = Form::with('etik_kurul_onayi')->where("id", $formId)->first();
 
+            if (!$form) {
+                return response()->json(['error' => 'Form not found.'], 404);
+            }
+
+            $etikKurulOnaylari = $form->etik_kurul_onayi;
+
+            if (!$etikKurulOnaylari) {
+                return response()->json(['error' => 'Etik kurul onayı not found.'], 404);
+            }
+
+            $response = [];
+
+            foreach ($etikKurulOnaylari as $etikKurulOnayi) {
+                $user = User::find($etikKurulOnayi->user_id);
+
+                if (!$user) {
+                    return response()->json(['error' => 'User not found.'], 404);
+                }
+
+                $response[] = [
+
+                    'username' => $user->name,
+                    'lastname' => $user->lastname,
+                    'onay_durumu' => $etikKurulOnayi->onay_durumu,
+                    'decide_reason' => $etikKurulOnayi->decide_reason
+                ];
+            }
+
+            return response()->json($response);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
     public function deleteFormById($formIds)
     {
         $formIds = explode(',', $formIds);

@@ -1,31 +1,38 @@
 <x-datatables-layout>
     <div class="overflow-x-scroll px-4 sm:px-6 lg:px-8 py-8 flex flex-col ">
-
         <table id="myTable" class="divide-gray-200 mx-auto">
         </table>
-        <div class="flex gap-4">
-            <div id="emailModal" class="modal">
-                <div class="modal-content">
-                    <h4>Send Email</h4>
-                    <form id="emailForm" method="POST" action="/send-email">
-                        @csrf
-                        <input type="hidden" id="emailAddresses" name="emailAddresses" value="">
-                        <div class="input-field">
-                            <input id="emailMessage" type="text" name="emailMessage">
-                            <label for="emailMessage">Email Message</label>
-                        </div>
-                        <button type="submit" class="btn">Send</button>
-                    </form>
+        <div class="flex gap-4 m-5">
+            <div style="display: flex; align-items:center; justify-content:center;" id="emailModal"
+                class="modal absolute inset-0 bg-black bg-opacity-50 ">
+
+                <div class="bg-white flex items-center justify-center p-6 rounded shadow-lg relative transform ">
+                    <button class="close absolute right-4 text-2xl top-2">×</button>
+
+                    <div>
+                        <form id="emailForm" class="p-4">
+                            @csrf
+                            <label id="emailAddresses">Email Addresses:
+                            </label>
+                            <textarea name="email-content" class="w-full h-16 p-2  resize-none"></textarea>
+                            <button type="submit" class="mt-4 bg-indigo-600 text-white p-2 rounded">Send Email</button>
+                        </form>
+                    </div>
                 </div>
             </div>
-            <button class="send-mail-button hidden">Seçilenlere Mail Gönder</button>
-            <a class="delete-button hidden">Seçilenleri Sil</a>
+
+            <x-button class="send-mail-button hidden">Seçilenlere Mail Gönder</x-button>
+            <x-button class="delete-button hidden">Seçilenleri Sil</x-button>
             <form id="deleteForm" method="POST" style="display: none;">
                 @csrf
                 @method('DELETE')
             </form>
-            <a class="show-edit-button hidden">Show/Edit</a>
+            <a
+                class="show-edit-button hidden  items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Düzenle</a>
         </div>
+        <div class="etik_kurul_onaylari flex gap-2 w-full flex-wrap md:flex-row flex-col items-center justify-center">
+            Etik Kurulu Onayları</div>
+
     </div>
 
 </x-datatables-layout>
@@ -79,6 +86,7 @@
 </script>
 
 <script type="text/javascript" class="init">
+    $("#emailModal").hide();
     $.fx.off = true;
 
     $(document).ready(function() {
@@ -97,24 +105,40 @@
             form.created_at = formatDate(created_at);
             form.updated_at = formatDate(updated_at);
 
+            delete form.etik_kurul_onayi; // Remove the etik_kurul_onayi field
+
             return form;
         });
 
         var columnNames = Object.keys(jsonData[0]);
 
         // Create thead with automatically generated column names
-        var theadHtml = '<thead ><tr>';
+        var theadHtml = '<thead class="bg-indigo-500 text-white divide-y divide-indigo-700"><tr>';
         columnNames.forEach(function(columnName) {
-            theadHtml += '<th class="bg-indigo-600 ">' + columnName + '</th>';
+            theadHtml += '<th>' + columnName + '</th>';
         });
         theadHtml += '</tr></thead>';
 
+        var tbodyHtml = '<tbody class="divide-y divide-gray-200">';
+        jsonData.forEach(function(rowData, index) {
+            tbodyHtml += '<tr class="' + (index % 2 === 0 ? 'bg-white' : 'bg-gray-50') + '">';
+            columnNames.forEach(function(columnName) {
+                tbodyHtml += '<td>' + rowData[columnName] + '</td>';
+            });
+            tbodyHtml += '</tr>';
+        });
+        tbodyHtml += '</tbody>';
+
         $('#myTable').append(theadHtml);
+        $('#myTable').append(tbodyHtml);
+
 
         var dataTable = $('#myTable').DataTable({
             data: jsonData,
             dom: 'Bfrtip',
+            colReorder: true,
             responsive: true,
+            stateSave: true,
             select: {
                 style: 'multi',
                 blurable: false,
@@ -150,6 +174,8 @@
             ],
             scrollX: true,
         });
+
+
         dataTable.on('select deselect', function() {
             var selectedRows = dataTable.rows({
                 selected: true
@@ -159,13 +185,42 @@
 
             if (selectedRows.count() === 1) {
                 var id = selectedRows.data()[0].id;
-
+                var stage = selectedRows.data()[0].stage;
+                $('.etik_kurul_onaylari').toggleClass('hidden', false);
                 $('.show-edit-button').toggleClass('hidden', false);
                 $('.show-edit-button').attr('href',
                     `/formshow` + '/' + id);
+                if (stage === "etik_kurul" || stage === "reddedildi" || stage === "onaylandi") {
 
+                    $.ajax({
+                        url: `/getEtikKuruluOnayiByFormId` + '/' + id,
+                        type: 'GET',
+                        success: function(response) {
+                            var html =
+                                '<div class="w-screen block flex justify-center items-center text-lg font-bold mb-2">Form ID: ' +
+                                id +
+                                '</div>';
+                            html += $.map(response, function(value, key) {
+                                return '<div class="flex flex-col  bg-white shadow-md rounded-lg p-4 mb-4 w-64 ">' +
+                                    '<h3 class="text-sm font-bold mb-2 truncate">' +
+                                    value.username + ' ' + value.lastname +
+                                    '</h3>' +
+                                    '<p class="text-xs text-gray-700">Onay Durumu: <span class="font-semibold">' +
+                                    value.onay_durumu + '</span></p>' +
+                                    '</div>';
+                            }).join('');
+                            $('.etik_kurul_onaylari').empty().html(html);
+                        },
+                        error: function(error) {
+                            alert(JSON.stringify(error));
+                        }
+                    });
+                }
             } else {
                 $('.show-edit-button').toggleClass('hidden', true);
+                $('.etik_kurul_onaylari').toggleClass('hidden', true);
+
+                $('.etik_kurul_onaylari').empty();
 
             }
 
@@ -208,7 +263,11 @@
                 },
             ],
         }).container().appendTo($('#myTable_wrapper .dt-buttons'));
-
+        // MAIL MODAL
+        $(document).on('click', '.close', function() {
+            $('#emailModal').hide();
+            document.getElementById('emailModal').style.display = 'none!important';
+        });
         $('.send-mail-button').on('click', function() {
             var selectedRows = dataTable.rows({
                 selected: true
@@ -216,10 +275,10 @@
             var emailAddresses = selectedRows.map(function(row) {
                 return row.email;
             }).join(',');
-
-            $('#emailAddresses').val(emailAddresses);
-            $('#emailModal').modal('open');
+            $('#emailAddresses').html("Email Adresleri : " + emailAddresses);
+            $('#emailModal').show();
         });
+
         // Delete button functionality
         $('.delete-button').on('click', function() {
             var selectedRows = dataTable.rows({
@@ -227,7 +286,8 @@
             }).indexes().toArray();
 
             if (selectedRows.length > 0) {
-                var confirmDelete = confirm('Are you sure you want to delete the selected rows?');
+                var confirmDelete = confirm(
+                    'Seçilen Başvuruları Silmek İstediğinize Emin Misiniz? Bu İşlem Geri Alınamaz.');
                 if (confirmDelete) {
                     var formIds = selectedRows.map(function(rowIndex) {
                         return dataTable.row(rowIndex).data().id;
@@ -242,6 +302,7 @@
         });
     });
 </script>
+
 
 @if (session('success'))
     <script>

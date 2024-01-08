@@ -60,12 +60,13 @@ class StoreFormRequest extends FormRequest
             'lastname' => 'required|string|max:255',
             'advisor' => 'required|string|max:255',
             'gsm' => 'required|string|max:10',
-            'student_no' => 'required|string|max:11',
+            'student_no' => 'required|string|size:11',
+
 
             'email' => 'required|email',
 
-            'ana_bilim_dali' => 'required|string|max:255',
-            'program' => 'required|string|max:255',
+            'ana_bilim_dali' => 'required|string',
+            'program' => 'required|string',
 
 
 

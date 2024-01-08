@@ -55,10 +55,17 @@
             < Ana Sayfa </a>
                 @if (isset($formData))
                     <div class="alert alert-warning">
-                        <ul>
-                            <li>Başvurunuzu düzeltmeniz gerekmektedir. Gerekli değişiklikleri yaptıktan sonra tekrar
-                                gönderiniz.</li>
-                        </ul>
+                        <p class="m-3">
+                            Başvurunuzu düzeltmeniz gerekmektedir. Gerekli değişiklikleri yaptıktan sonra tekrar
+                            gönderiniz.
+                        </p>
+                        <p class="m-3">
+                            You need to fix your application. Please fix the errors and submit again.
+                        </p>
+                        <p class=" m-3 underline text-danger ">
+                            Etik Kurul Düzeltme Nedeni: {{ $formData['decide_reason'] }}
+
+                        </p>
                     </div>
                 @endif
                 @if ($errors->any())
@@ -71,7 +78,9 @@
                     </div>
                 @endif
                 @if (session('successMessage'))
-                    <div
+                    <div class="alert alert-success">
+                        {!! session('successMessage') !!}
+                        {{-- <div
                         class="alert alert-success d-flex flex-column w-100 justify-content-center text-center items-center">
                         {!! session('successMessage') !!}
                         <a class="link-opacity-100" href="{{ url(session('linkPath')) }}">Başvuru aşamalarınızı takip
@@ -96,155 +105,156 @@
                                 correctLevel: QRCode.CorrectLevel.H
                             });
                         </script>
-                        {{-- <a href="/form">Form Sayfasına geri Dönmek için tıkla</a> --}}
-                    </div>
-                @else
-                    <form enctype="multipart/form-data"
-                        action="{{ url('store-form/' . (isset($formData) ? $formData->id : '')) }}" method="POST">
-                        @csrf
-                        <div class="row d-flex justify-content-center mb-1">
-                            <img src="/assets/images/logo-nisantasi.png" style="width:180px;">
-                        </div>
-                        <h1 style="font-size: 1.2em" class=" text-center ">
-                            T.C.
-                            <br>
-                            İSTANBUL NİŞANTAŞI ÜNİVERSİTESİ<br>
-                            <span style="font-size: 1em"> ETİK KURUL BAŞVURU FORMU</span><br>
-                            <span>
-                                ETHICS COMMITTEE APPLICATION FORM
-                            </span>
-                        </h1>
-
-
-                        <x-forms.form-informations></x-forms.form-informations>
-                        <div class="accordion" id="accordionPanelsStayOpenExample">
-
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                                        aria-controls="panelsStayOpen-collapseOne">
-                                        ARAŞTIRMACI BİLGİLERİ
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show m-2"
-                                    aria-labelledby="panelsStayOpen-headingOne">
-                                    <x-forms.researcher-informations :formData="$formData ?? null" />
-
-
-
-                                </div>
+                    </div> --}}
+                    @else
+                        <form enctype="multipart/form-data"
+                            action="{{ url('store-form/' . (isset($formData) ? $formData->id : '')) }}" method="POST">
+                            @csrf
+                            <div class="row d-flex justify-content-center mb-1">
+                                <img src="/assets/images/logo-nisantasi.png" style="width:180px;">
                             </div>
+                            <h1 style="font-size: 1.2em" class=" text-center ">
+                                T.C.
+                                <br>
+                                İSTANBUL NİŞANTAŞI ÜNİVERSİTESİ<br>
+                                <span style="font-size: 1em"> ETİK KURUL BAŞVURU FORMU</span><br>
+                                <span>
+                                    ETHICS COMMITTEE APPLICATION FORM
+                                </span>
+                            </h1>
 
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
-                                        aria-controls="panelsStayOpen-collapseTwo">
-                                        BAŞVURU BİLGİLERİ
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseTwo"
-                                    class="accordion-collapse collapse {{ isset($formData) ? 'show' : '' }}"
-                                    aria-labelledby="panelsStayOpen-headingTwo">
-                                    <div class="accordion-body">
-                                        <x-forms.application-informations
-                                            :formData="$formData ?? null"></x-forms.application-informations>
+
+                            <x-forms.form-informations></x-forms.form-informations>
+                            <div class="accordion" id="accordionPanelsStayOpenExample">
+
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
+                                        <button class="accordion-button" type="button" data-bs-toggle="collapse"
+                                            data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
+                                            aria-controls="panelsStayOpen-collapseOne">
+                                            ARAŞTIRMACI BİLGİLERİ
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show m-2"
+                                        aria-labelledby="panelsStayOpen-headingOne">
+                                        <x-forms.researcher-informations :formData="$formData ?? null" />
+
+
+
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="panelsStayOpen-headingThree">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
-                                        aria-controls="panelsStayOpen-collapseThree">
-                                        ARAŞTIRMA BİLGİLERİ
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseThree"
-                                    class="accordion-collapse collapse {{ isset($formData) ? 'show' : '' }}"
-                                    aria-labelledby="panelsStayOpen-headingThree">
-                                    <div class="accordion-body">
-                                        <x-forms.research-informations
-                                            :formData="$formData ?? null"></x-forms.research-informations>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="accordion-item">
-                                <h2 class="accordion-header" id="panelsStayOpen-headingFour">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#panelsStayOpen-collapseFour" aria-expanded="false"
-                                        aria-controls="panelsStayOpen-collapseFour">
-                                        EK DOSYALAR
-                                    </button>
-                                </h2>
-                                <div id="panelsStayOpen-collapseFour"
-                                    class="accordion-collapse collapse {{ isset($formData) ? 'show' : '' }}"
-                                    aria-labelledby="panelsStayOpen-headingFour">
-                                    <div class="accordion-body">
-                                        <div
-                                            class="d-flex flex-column gap-2 pt-5 justify-content-center align-items-center ">
-                                            <div class="custom-file-input">
-
-                                                <label id="path_gonullu_onam_form_label" for="onam_path"> Gönüllü Onam
-                                                    Formu</label>
-                                                <input class="form-control" value="{{ old('onam_path') }}"
-                                                    type="file" name="onam_path" accept="application/pdf"
-                                                    id="onam_path" required>
-                                            </div>
-                                            <div class="custom-file-input">
-
-                                                <label id="path_gonullu_onam_form_label" for="anket_path"> Anket
-                                                    Formu</label>
-                                                <input class="form-control" type="file" name="anket_path"
-                                                    accept="application/pdf" value="{{ old('anket_path') }}"
-                                                    id="anket_path" required>
-                                            </div>
-                                            <div class="custom-file-input">
-
-                                                <label id="path_gonullu_onam_form_label" for="kurum_izinleri_path">
-                                                    Kurum İzni
-                                                    (Varsa)</label>
-                                                <input class="form-control" type="file" name="kurum_izinleri_path"
-                                                    accept="application/pdf "
-                                                    value="{{ old('kurum_izinleri_path') }}"
-                                                    id="kurum_izinleri_path">
-                                            </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingTwo">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseTwo"
+                                            aria-expanded="false" aria-controls="panelsStayOpen-collapseTwo">
+                                            BAŞVURU BİLGİLERİ
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseTwo"
+                                        class="accordion-collapse collapse {{ isset($formData) ? 'show' : '' }}"
+                                        aria-labelledby="panelsStayOpen-headingTwo">
+                                        <div class="accordion-body">
+                                            <x-forms.application-informations
+                                                :formData="$formData ?? null"></x-forms.application-informations>
                                         </div>
-
                                     </div>
                                 </div>
+
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingThree">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseThree"
+                                            aria-expanded="false" aria-controls="panelsStayOpen-collapseThree">
+                                            ARAŞTIRMA BİLGİLERİ
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseThree"
+                                        class="accordion-collapse collapse {{ isset($formData) ? 'show' : '' }}"
+                                        aria-labelledby="panelsStayOpen-headingThree">
+                                        <div class="accordion-body">
+                                            <x-forms.research-informations
+                                                :formData="$formData ?? null"></x-forms.research-informations>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="panelsStayOpen-headingFour">
+                                        <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseFour"
+                                            aria-expanded="false" aria-controls="panelsStayOpen-collapseFour">
+                                            EK DOSYALAR
+                                        </button>
+                                    </h2>
+                                    <div id="panelsStayOpen-collapseFour"
+                                        class="accordion-collapse collapse {{ isset($formData) ? 'show' : '' }}"
+                                        aria-labelledby="panelsStayOpen-headingFour">
+                                        <div class="accordion-body">
+                                            <div
+                                                class="d-flex flex-column gap-2 pt-5 justify-content-center align-items-center ">
+                                                <div class="custom-file-input">
+
+                                                    <label id="path_gonullu_onam_form_label" for="onam_path"> Gönüllü
+                                                        Onam
+                                                        Formu</label>
+                                                    <input class="form-control" value="{{ old('onam_path') }}"
+                                                        type="file" name="onam_path" accept="application/pdf"
+                                                        id="onam_path" required>
+                                                </div>
+                                                <div class="custom-file-input">
+
+                                                    <label id="path_gonullu_onam_form_label" for="anket_path"> Anket
+                                                        Formu</label>
+                                                    <input class="form-control" type="file" name="anket_path"
+                                                        accept="application/pdf" value="{{ old('anket_path') }}"
+                                                        id="anket_path" required>
+                                                </div>
+                                                <div class="custom-file-input">
+
+                                                    <label id="path_gonullu_onam_form_label"
+                                                        for="kurum_izinleri_path">
+                                                        Kurum İzni
+                                                        (Varsa)</label>
+                                                    <input class="form-control" type="file"
+                                                        name="kurum_izinleri_path" accept="application/pdf "
+                                                        value="{{ old('kurum_izinleri_path') }}"
+                                                        id="kurum_izinleri_path">
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+
                             </div>
 
-                        </div>
-
-                        <!-- PDF DOCUMENTS -->
+                            <!-- PDF DOCUMENTS -->
 
 
-                        {{-- <div class="col-md-12 mt-3 pb-3 text-center">
+                            {{-- <div class="col-md-12 mt-3 pb-3 text-center">
                 <a href="https://www.nisantasi.edu.tr/Uploads/LE_FR.17%20et%C4%B0k%20kurul%20ba%C5%9Evuru%20formu.docx">Gönüllü
                     Onam Formuna ulaşmak için tıklayınız</a>
             </div> --}}
 
-                        <div class="container pb-4 text-center my-3 ">
-                            <input type="submit" value="Başvuruyu Tamamla" class="btn btn-primary">
-                        </div>
+                            <div class="container pb-4 text-center my-3 ">
+                                <input type="submit" value="Başvuruyu Tamamla" class="btn btn-primary">
+                            </div>
 
-                    </form>
-    </div>
-    @endif
+                        </form>
+                    </div>
+                @endif
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
-            var popoverList = popoverTriggerList.map(function(element) {
-                return new bootstrap.Popover(element);
-            });
-        });
-        const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-        const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-    </script>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function() {
+                        var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+                        var popoverList = popoverTriggerList.map(function(element) {
+                            return new bootstrap.Popover(element);
+                        });
+                    });
+                    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+                    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+                </script>
 </body>
 
 </html>

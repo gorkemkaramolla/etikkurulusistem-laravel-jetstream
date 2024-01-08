@@ -40,7 +40,7 @@
         @endif
 
         <!-- Page Content -->
-        <main class=" flex  justify-center w-[100vw] ">
+        <main class=" flex  justify-center ">
             {{ $slot }}
         </main>
     </div>
