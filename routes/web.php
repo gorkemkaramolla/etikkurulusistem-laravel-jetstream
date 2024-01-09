@@ -81,8 +81,8 @@ use Symfony\Component\DomCrawler\Crawler;
 
 Route::get('tken', function () {
     $loginData = [
-        'university_id' => "20202022043",
-        'password' => "Gorkemdabbeosman33*",
+        'university_id' => "h25514327122",
+        'password' => "25514327122",
     ];
     $url = "https://sanalkampus.nisantasi.edu.tr/?returnUrl=%2FHome%2FIndex";
     $data = [

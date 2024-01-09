@@ -1,8 +1,8 @@
 <x-datatables-layout>
-    <div class="overflow-x-scroll px-4 sm:px-6 lg:px-8 py-8 flex flex-col ">
+    <div class="overflow-x-hidden w-full  px-4 sm:px-6 lg:px-8 py-8 flex flex-col ">
         <table id="myTable" class="divide-gray-200 mx-auto">
         </table>
-        <div class="flex gap-4 m-5">
+        <div class="flex w-full gap-4 ">
             <div style="display: flex; align-items:center; justify-content:center;" id="emailModal"
                 class="modal absolute inset-0 bg-black bg-opacity-50 ">
 
@@ -28,10 +28,10 @@
                 @method('DELETE')
             </form>
             <a
-                class="show-edit-button hidden  items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Düzenle</a>
+                class="show-edit-button hidden  flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Düzenle</a>
         </div>
-        <div class="etik_kurul_onaylari flex gap-2 w-full flex-wrap md:flex-row flex-col items-center justify-center">
-            Etik Kurulu Onayları</div>
+        <div class="etik_kurul_onaylari  flex gap-2 w-full flex-wrap md:flex-row flex-col items-center justify-center">
+        </div>
 
     </div>
 
@@ -113,7 +113,7 @@
         var columnNames = Object.keys(jsonData[0]);
 
         // Create thead with automatically generated column names
-        var theadHtml = '<thead class="bg-indigo-500 text-white divide-y divide-indigo-700"><tr>';
+        var theadHtml = '<thead class="bg-indigo-500 w-full text-white divide-y divide-indigo-700"><tr>';
         columnNames.forEach(function(columnName) {
             theadHtml += '<th>' + columnName + '</th>';
         });
@@ -197,7 +197,7 @@
                         type: 'GET',
                         success: function(response) {
                             var html =
-                                '<div class="w-screen block flex justify-center items-center text-lg font-bold mb-2">Form ID: ' +
+                                '<div class="w-full block flex justify-center items-center text-lg font-bold mb-2">Form ID: ' +
                                 id +
                                 '</div>';
                             html += $.map(response, function(value, key) {
@@ -229,6 +229,7 @@
             } else {
                 $('.delete-button').toggleClass('hidden', true);
             }
+
         });
         var selectAllButton = new $.fn.dataTable.Buttons(dataTable, {
             buttons: [{
