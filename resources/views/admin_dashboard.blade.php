@@ -90,7 +90,9 @@
     $.fx.off = true;
 
     $(document).ready(function() {
-        var jsonData = @json($forms); // Laravel Blade directive for JSON encoding
+        var jsonData = @json($forms);
+
+        console.log(jsonData); // Laravel Blade directive for JSON encoding
         function formatDate(date) {
             var formatter = new Intl.DateTimeFormat('en', {
                 day: '2-digit',
@@ -118,8 +120,11 @@
             theadHtml += '<th>' + columnName + '</th>';
         });
         theadHtml += '</tr></thead>';
-
+        $('#myTable').append(theadHtml);
         var tbodyHtml = '<tbody class="divide-y divide-gray-200">';
+
+
+
         jsonData.forEach(function(rowData, index) {
             tbodyHtml += '<tr class="' + (index % 2 === 0 ? 'bg-white' : 'bg-gray-50') + '">';
             columnNames.forEach(function(columnName) {
@@ -129,9 +134,7 @@
         });
         tbodyHtml += '</tbody>';
 
-        $('#myTable').append(theadHtml);
         $('#myTable').append(tbodyHtml);
-
 
         var dataTable = $('#myTable').DataTable({
             data: jsonData,
@@ -149,6 +152,9 @@
                     data: column
                 };
             }),
+            autoWidth: true,
+
+            paging: true,
             buttons: [{
                     extend: 'copyHtml5',
                     text: "Kopyala",
@@ -173,7 +179,52 @@
 
             ],
             scrollX: true,
+
+            initComplete: function() {
+                var api = this.api();
+
+                api.columns().every(function() {
+                    var column = this;
+                    var columnIndex = column.index();
+                    var title = $(column.header()).text();
+
+                    // Create a container for the search input and button
+                    var container = $('<div class="column-search-container"></div>');
+
+                    // Create the search input
+                    var input = $('<input class="w-24" type="text" placeholder="' +
+                            title +
+                            '" />')
+                        .on('click', function(e) {
+                            e
+                                .stopPropagation(); // Prevent click propagation to the th element
+                        })
+                        .on('keyup change', function() {
+                            if (column.search() !== this.value) {
+                                column.search(this.value).draw();
+                            }
+                        });
+
+                    // Create a button for sorting
+                    var sortButton = $('<button class="sort-button">Sort</button>')
+                        .on('click', function() {
+                            // Add your custom sorting logic here if needed
+                            column.order(column.order() === 'asc' ? 'desc' : 'asc')
+                                .draw();
+                        });
+
+                    // Append the input and button to the container
+                    container.append(input);
+
+                    // Append the container to the column header
+                    $(column.header()).empty().append(container);
+                });
+            }
+
         });
+        dataTable.order(["0", 'asc']).draw();
+
+
 
 
         dataTable.on('select deselect', function() {

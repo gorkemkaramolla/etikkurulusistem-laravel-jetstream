@@ -79,10 +79,11 @@ Route::get('migrate', function () {
 use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
+//h25514327122
 Route::get('tken', function () {
     $loginData = [
-        'university_id' => "h25514327122",
-        'password' => "25514327122",
+        'university_id' => "20202022043",
+        'password' => "Gorkemdabbeosman33*",
     ];
     $url = "https://sanalkampus.nisantasi.edu.tr/?returnUrl=%2FHome%2FIndex";
     $data = [
@@ -151,7 +152,7 @@ Route::get('tken', function () {
             ]);
             $content = $respons->getContent();
             $decodedData = json_decode($content, true);
-            return $decodedToken;
+            return $decodedData;
         } else {
             echo "Error decoding token";
         }

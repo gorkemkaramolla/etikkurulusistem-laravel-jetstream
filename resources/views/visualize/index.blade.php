@@ -13,20 +13,22 @@
                     class="absolute z-10 mt-2 w-56 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5"
                     style="height: 400px; overflow-y: auto;">
                     <div class="py-1" role="menu" aria-orientation="vertical" aria-labelledby="options-menu">
-                        @foreach ($forms->first()->getAttributes() as $column => $value)
-                            <div class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
-                                role="menuitem">
-                                <label>
-                                    <input type="checkbox" id="{{ $column }}_checkbox">
-                                    {{ ucfirst($column) }}
-                                    <select id="{{ $column }}_chart_type">
-                                        <option value="bar">Bar</option>
-                                        <option value="pie">Pie</option>
-                                        <!-- Add more chart types as needed -->
-                                    </select>
-                                </label>
-                            </div>
-                        @endforeach
+                        @if ($forms && $forms->first())
+                            @foreach ($forms->first()->getAttributes() as $column => $value)
+                                <div class="px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                                    role="menuitem">
+                                    <label>
+                                        <input type="checkbox" id="{{ $column }}_checkbox">
+                                        {{ ucfirst($column) }}
+                                        <select id="{{ $column }}_chart_type">
+                                            <option value="bar">Bar</option>
+                                            <option value="pie">Pie</option>
+                                            <!-- Add more chart types as needed -->
+                                        </select>
+                                    </label>
+                                </div>
+                            @endforeach
+                        @endif
                     </div>
                 </div>
             </div>
@@ -54,22 +56,24 @@
                 // Clear the charts container
                 document.getElementById('chartsContainer').innerHTML = '';
 
-                // Dynamically check which checkboxes are checked and create a chart for each
-                @foreach ($forms->first()->getAttributes() as $column => $value)
-                    if (document.getElementById('{{ $column }}_checkbox').checked) {
-                        createChart('{{ $column }}', document.getElementById(
-                            '{{ $column }}_chart_type').value);
-                        if (!selectedColumns.includes('{{ $column }}')) {
-                            selectedColumns.push('{{ $column }}');
-                        }
-                    } else {
-                        const index = selectedColumns.indexOf('{{ $column }}');
-                        if (index > -1) {
-                            selectedColumns.splice(index, 1);
-                        }
-                    }
-                @endforeach
+                // Dynamically check which checkboxes are checked and create a chart for
+                @if ($forms && $forms->first())
 
+                    @foreach ($forms->first()->getAttributes() as $column => $value)
+                        if (document.getElementById('{{ $column }}_checkbox').checked) {
+                            createChart('{{ $column }}', document.getElementById(
+                                '{{ $column }}_chart_type').value);
+                            if (!selectedColumns.includes('{{ $column }}')) {
+                                selectedColumns.push('{{ $column }}');
+                            }
+                        } else {
+                            const index = selectedColumns.indexOf('{{ $column }}');
+                            if (index > -1) {
+                                selectedColumns.splice(index, 1);
+                            }
+                        }
+                    @endforeach
+                @endif
                 // Save selected columns to localStorage
                 localStorage.setItem('selectedColumns', JSON.stringify(selectedColumns));
 
