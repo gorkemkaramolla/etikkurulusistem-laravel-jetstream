@@ -14,6 +14,9 @@ export default {
 
     theme: {
         extend: {
+            colors: {
+                "custom-red": "#dc3545", // Use a unique key for your custom color
+            },
             fontFamily: {
                 sans: ["Figtree", ...defaultTheme.fontFamily.sans],
             },
@@ -22,6 +25,5 @@ export default {
             },
         },
     },
-
     plugins: [forms, typography],
 };
