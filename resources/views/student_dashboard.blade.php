@@ -2,7 +2,7 @@
     <div class="w-full h-full  flex-col flex justify-center items-center">
         <div class="w-full announcement">
             <div
-                class="slide-down my-1  w-full flex items-center justify-between gap-4 bg-indigo-600 px-4 py-3 text-white">
+                class="slide-down my-1  w-full flex items-center justify-between gap-4 bg-custom-red px-4 py-3 text-white">
                 <p class="text-sm font-medium">
                     Etik Kurul Sistemi Yenilendi!&nbsp;
                     <a href="/info" class="inline-block underline"> Bilgi için tıklayınız</a>

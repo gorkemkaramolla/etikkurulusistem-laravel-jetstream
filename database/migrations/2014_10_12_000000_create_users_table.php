@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('lastname')->nullable();
-            $table->string('student_no')->unique()->nullable();
+            $table->string('username')->unique()->nullable();
 
             $table->string('email')->unique();
             $table->string('role')->default('sekreterlik');

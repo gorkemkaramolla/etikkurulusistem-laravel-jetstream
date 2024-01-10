@@ -14,9 +14,11 @@ class DataVisualizationController extends Controller
     public function index()
     {
         $forms = Form::all();
+
         if (Gate::allows('access-dashboard')) {
+
             // return view('dashboard', compact('forms'));
-            if (Auth::user()->role === "user") {
+            if (Auth::user()->role === "student" || Auth::user()->role === "academic") {
                 abort(403, 'Unauthorized action.');
             } else {
                 return view("visualize.index", compact('forms'));

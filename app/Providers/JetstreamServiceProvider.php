@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Facades\LOG;
+
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -33,7 +35,7 @@ class JetstreamServiceProvider extends ServiceProvider
 
             $userLoginField = $request->email;
             $user = User::where('email', $userLoginField)
-                ->orWhere('student_no', $userLoginField)
+                ->orWhere('username', $userLoginField)
                 ->first();
 
             try {
@@ -62,17 +64,26 @@ class JetstreamServiceProvider extends ServiceProvider
                     $name = $decodedData["name"];
                     $lastname = $decodedData["lastname"];
                     $email = $decodedData["email"];
+                    $role = $decodedData["role"];
+                    $userRole = $role === "8" ? "student" : "academic";
 
+                    if (User::where("email", $email)->exists()) {
+                        $user = User::where("email", $email)->first();
+                        $user->username = $request['email'];
+                        $user->password = Hash::make($request['password']);
+                        $user->save();
+                        return $user;
+                    }
                     $user = User::create([
                         "name" => $name,
                         "lastname" => $lastname,
                         "email" =>  $email,
-                        'student_no' => $request['email'],
+                        'username' => $request['email'],
                         'password' => Hash::make($request['password']),
-                        "role" => "user",
+                        "role" => $userRole,
                     ]);
                     if ($user) {
-                        Form::all()->where("student_no", $user->student_no)->each(function ($form) use ($user) {
+                        Form::all()->where("username", $user->username)->each(function ($form) use ($user) {
                             $form->user_id = $user->id;
                             $form->save();
                         });
@@ -80,7 +91,7 @@ class JetstreamServiceProvider extends ServiceProvider
                     }
                 }
             } catch (Exception $e) {
-                return null;
+                Log::error('Giriş patladı: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
             }
         });
         Jetstream::deleteUsersUsing(DeleteUser::class);
@@ -152,11 +163,13 @@ class JetstreamServiceProvider extends ServiceProvider
                     $name = isset($decodedToken['name']) ? $decodedToken['name'] : null;
                     $familyName = isset($decodedToken['familyname']) ? $decodedToken['familyname'] : null;
                     $emailAddress = isset($decodedToken['emailaddress']) ? $decodedToken['emailaddress'] : null;
+                    $role = isset($decodedToken['Role']) ? $decodedToken['Role'] : null;
 
                     return response()->json([
                         'name' => $name,
                         'lastname' => $familyName,
                         'email' => $emailAddress,
+                        "role" => $role,
                     ]);
                 } else {
                     echo "Error decoding token";

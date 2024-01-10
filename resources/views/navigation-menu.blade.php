@@ -15,7 +15,9 @@
                     <x-nav-link href="{{ route('dashboard') }}" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
-                    @if (!auth()->user()->hasRole('user'))
+                    @if (
+                        !auth()->user()->hasRole('student') ||
+                            !auth()->user()->hasRole('academic'))
                         <x-nav-link href="{{ route('visualize') }}" :active="request()->routeIs('visualize')">
                             Visualize
                         </x-nav-link>
