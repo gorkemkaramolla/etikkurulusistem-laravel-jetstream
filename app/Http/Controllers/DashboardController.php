@@ -35,7 +35,7 @@ class DashboardController extends Controller
             // return view('dashboard', compact('forms'));
             if (Auth::user()->role === "student" || Auth::user()->role === "academic") {
                 $forms = Form::all()
-                    ->where("student_no", Auth::user()->student_no);
+                    ->where("student_no", Auth::user()->username);
                 return view('student_dashboard', compact('forms'));
             } else if (Auth::user()->role === "admin") {
 

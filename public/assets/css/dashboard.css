@@ -22,6 +22,7 @@ th {
         "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     border: 1px solid #dee2e6;
+    width: 100%;
 }
 
 td {
@@ -33,13 +34,15 @@ td {
     border: 1px solid #dee2e6;
     overflow: hidden;
     text-align: center;
+    width: 100%;
+    width: 100%;
 }
 #myTable tr.even td {
     background-color: #ffffff !important; /* or any color for odd rows */
 }
 
 #myTable tr.odd td {
-    background-color: #f0ebeb !important; /* or any color for odd rows */
+    background-color: #f0eeee !important; /* or any color for odd rows */
 }
 #myTable_filter {
     padding: 20px 0px;

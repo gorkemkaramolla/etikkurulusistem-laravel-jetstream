@@ -384,8 +384,8 @@
 
     @if (Auth::user()->role === 'admin')
         <div class="flex gap-3 my-4">
-            <x-tw-button id="editButton" onclick="makeEditable()">Edit</x-tw-button>
-            <x-tw-button id="saveButton" onclick="saveChanges()" style="display: none;">Save</x-tw-button>
+            <x-tw-button id="editButton" onclick="makeEditable()">Düzenle</x-tw-button>
+            <x-tw-button id="saveButton" onclick="saveChanges()" style="display: none;">Kaydet</x-tw-button>
         </div>
     @endif
 

@@ -1,6 +1,6 @@
 <x-datatables-layout>
     <div class="overflow-x-hidden w-full  px-4 sm:px-6 lg:px-8 py-8 flex flex-col ">
-        <table id="myTable" class="divide-gray-200 mx-auto">
+        <table id="myTable" class="divide-gray-200 ">
         </table>
         <div class="flex w-full gap-4 ">
             <div style="display: flex; align-items:center; justify-content:center;" id="emailModal"
@@ -27,7 +27,7 @@
                 @csrf
                 @method('DELETE')
             </form>
-            <a
+            <a target="_blank"
                 class="show-edit-button hidden  flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Düzenle</a>
         </div>
         <div class="etik_kurul_onaylari  flex gap-2 w-full flex-wrap md:flex-row flex-col items-center justify-center">
@@ -142,6 +142,17 @@
             colReorder: true,
             responsive: true,
             stateSave: true,
+            stateLoadParams: function(settings, data) {
+                // Update each search input with the saved search value
+                this.api().columns().every(function() {
+                    var column = this;
+                    var columnIndex = column.index();
+                    var searchValue = data.columns[columnIndex].search.search;
+
+                    // Update the search input for this column
+                    $(column.header()).find('input').val(searchValue);
+                });
+            },
             select: {
                 style: 'multi',
                 blurable: false,
@@ -152,7 +163,7 @@
                     data: column
                 };
             }),
-            autoWidth: true,
+            autoWidth: false,
 
             paging: true,
             buttons: [{
@@ -182,17 +193,16 @@
 
             initComplete: function() {
                 var api = this.api();
-
                 api.columns().every(function() {
                     var column = this;
                     var columnIndex = column.index();
                     var title = $(column.header()).text();
 
                     // Create a container for the search input and button
-                    var container = $('<div class="column-search-container"></div>');
+                    var container = $('<div class="column-search-container w-full"></div>');
 
                     // Create the search input
-                    var input = $('<input class="w-24" type="text" placeholder="' +
+                    var input = $('<input class="" type="text" placeholder="' +
                             title +
                             '" />')
                         .on('click', function(e) {
@@ -201,7 +211,7 @@
                         })
                         .on('keyup change', function() {
                             if (column.search() !== this.value) {
-                                column.search(this.value).draw();
+                                column.search(this.value.trim()).draw();
                             }
                         });
 

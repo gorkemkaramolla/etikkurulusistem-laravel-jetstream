@@ -22,7 +22,8 @@
                             Visualize
                         </x-nav-link>
                     @endif
-                    @if (auth()->user()->hasRole('user'))
+                    @if (auth()->user()->hasRole('student') ||
+                            auth()->user()->hasRole('academic'))
                         <x-nav-link href="{{ route('forms.index') }}" :active="request()->routeIs('forms.index')">
                             Başvuru Yap
                         </x-nav-link>
@@ -118,8 +119,10 @@
                                                         {{ str_replace('_', ' ', Auth::user()->role) }} Üyesi
                                                     @elseif(Auth::user()->role === 'admin')
                                                         Admin
-                                                    @else
+                                                    @elseif(Auth::user()->role === 'student')
                                                         Öğrenci
+                                                    @elseif(Auth::user()->role === 'academic')
+                                                        Akademisyen
                                                     @endif
 
                                                 </span>
