@@ -10,7 +10,7 @@ class AdminFeaturesController extends Controller
 {
     public function index()
     {
-        $users = User::where("role", "sekreterlik")->get();
+        $users = User::all();
 
         return view('adminfeatures.index', compact('users'));
     }

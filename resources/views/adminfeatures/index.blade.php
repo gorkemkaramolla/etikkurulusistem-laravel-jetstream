@@ -1,7 +1,7 @@
 <x-app-layout class="">
 
-    <div class="w-full flex  md:flex-row flex-col mx-auto container  gap-3">
-        <div class="md:w-2/6 px-6  w-full bg-white my-4 py-8 shadow-xl rounded-xl ">
+    <div class="w-full flex  lg:flex-row flex-col mx-auto container  gap-3">
+        <div class="lg:w-2/6 px-6 relative w-full bg-white my-4 py-8 shadow-xl rounded-xl ">
             <h1 class="text-2xl text-center font-extrabold">Yeni Kullanıcı Oluştur</h1>
             <form action="" id="create-user-form" class=" flex flex-col gap-3 ">
                 @csrf
@@ -12,8 +12,6 @@
                     <option value="academic">Akademisyen</option>
                     <option value="sekreterlik">Sekreter</option>
                     <option value="etik_kurul">Etik Kurul Üyesi</option>
-
-
                 </select>
                 <label for="username">Kullanıcı Adı</label>
                 <x-input required type="text" id="username" name="username" />
@@ -42,18 +40,19 @@
             </form>
         </div>
 
-        <div class="md:w-2/6 px-6  w-full">
+        <div class="lg:w-2/6 px-6  w-full">
             <div class="bg-white my-4 py-8 shadow-xl rounded-xl ">
                 <h1 class="text-2xl text-center font-extrabold">Kullanıcılar</h1>
-                <select name="" id="userRole">
+                <select name="" id="filterUserRole">
                     <option value="etik_kurul">Etik Kurul Üyeleri</option>
                     <option value="student">Öğrenciler</option>
                     <option value="academic">Akademisyenler</option>
-                    <option value="sekreter">Sekreterler</option>
+                    <option value="sekreterlik">Sekreterler</option>
                 </select>
-                <div class="flex flex-col gap-3">
+                <div class=" ">
                     @foreach ($users as $user)
-                        <div id="userData" class="flex flex-row justify-between items-center px-4 py-2  rounded-xl">
+                        <div data-role="{{ $user->role }}"
+                            class=" flex flex-row userData flex-wrap justify-between items-center px-4 py-2 rounded-xl">
                             <div class="flex flex-col gap-1">
                                 <span class="font-bold">{{ $user->name }} {{ $user->lastname }}</span>
                                 <span class="text-sm">{{ $user->email }}</span>
@@ -67,23 +66,16 @@
                 </div>
             </div>
         </div>
-        <div class="md:w-1/6 px-6 w-full"></div>
+        <div class="lg:w-1/6 px-6 w-full"></div>
 
     </div>
     <script>
         $(document).ready(function() {
-            $('#userRole').change(function() {
-                var userRole = $(this).val();
-                $.ajax({
-                    url: '/getUsers/' + userRole,
-                    type: 'GET',
-                    success: function(data) {
-                        alert(data);
-                    },
-                    error: function(e) {
-                        console.log(e);
-                    }
-                });
+            $('#filterUserRole').change(function() {
+                var selectedRole = $(this).val();
+                $('.userData').attr('style', 'display: none !important');
+
+                $('.userData[data-role="' + selectedRole + '"]').show();
             });
         });
     </script>
