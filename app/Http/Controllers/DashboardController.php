@@ -34,8 +34,7 @@ class DashboardController extends Controller
         if (Gate::allows('access-dashboard')) {
             // return view('dashboard', compact('forms'));
             if (Auth::user()->role === "student" || Auth::user()->role === "academic") {
-                $forms = Form::all()
-                    ->where("student_no", Auth::user()->username);
+                $forms = Auth::user()->forms;
                 return view('student_dashboard', compact('forms'));
             } else if (Auth::user()->role === "admin") {
 

@@ -1,8 +1,22 @@
 <x-datatables-layout>
-    <div class="overflow-x-hidden w-full  px-4 sm:px-6 lg:px-8 py-8 flex flex-col ">
+    <div class="w-full   flex flex-col ">
+        <div class="p-4 flex md:flex-row flex-col">
+            <div class="px-4">
+                Sekreterlik Onayı Bekleyen Başvuru sayısı: {{ $forms->where('stage', 'sekreterlik')->count() }}
+            </div>
+            <div class="px-4">
+                Etik Kurul Onayı Bekleyen Başvuru sayısı: {{ $forms->where('stage', 'etik_kurul')->count() }}
+            </div>
+            <div class="px-4">
+                Reddedilmiş Başvuru sayısı: {{ $forms->where('stage', 'reddedildi')->count() }}
+            </div>
+            <div class="px-4">
+                Onaylanan Başvuru sayısı: {{ $forms->where('stage', 'onaylandi')->count() }}
+            </div>
+        </div>
         <table id="myTable" class="divide-gray-200 ">
         </table>
-        <div class="flex w-full gap-4 ">
+        <div class="flex  gap-4 px-5">
             <div style="display: flex; align-items:center; justify-content:center;" id="emailModal"
                 class="modal absolute inset-0 bg-black bg-opacity-50 ">
 
@@ -21,14 +35,14 @@
                 </div>
             </div>
 
-            <x-button class="send-mail-button hidden">Seçilenlere Mail Gönder</x-button>
-            <x-button class="delete-button hidden">Seçilenleri Sil</x-button>
+            <x-button class=" px-4 send-mail-button hidden">Seçilenlere Mail Gönder</x-button>
+            <x-button class=" delete-button hidden">Seçilenleri Sil</x-button>
             <form id="deleteForm" method="POST" style="display: none;">
                 @csrf
                 @method('DELETE')
             </form>
             <a target="_blank"
-                class="show-edit-button hidden  flex items-center px-4 py-2 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Düzenle</a>
+                class="show-edit-button hidden  flex items-center  px-4 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Düzenle</a>
         </div>
         <div class="etik_kurul_onaylari  flex gap-2 w-full flex-wrap md:flex-row flex-col items-center justify-center">
         </div>
@@ -91,8 +105,17 @@
 
     $(document).ready(function() {
         var jsonData = @json($forms);
+        var columnNamesTurkish = @json(config('columnnames'));
+        jsonData = jsonData.map(function(item) {
+            var newItem = {};
+            for (var key in item) {
+                if (item.hasOwnProperty(key) && columnNamesTurkish.hasOwnProperty(key)) {
+                    newItem[columnNamesTurkish[key]] = item[key];
+                }
+            }
+            return newItem;
+        });
 
-        console.log(jsonData); // Laravel Blade directive for JSON encoding
         function formatDate(date) {
             var formatter = new Intl.DateTimeFormat('en', {
                 day: '2-digit',
@@ -101,18 +124,20 @@
             });
             return formatter.format(date);
         }
-        jsonData = jsonData.map(function(form) {
-            var created_at = new Date(form.created_at);
-            var updated_at = new Date(form.updated_at);
-            form.created_at = formatDate(created_at);
-            form.updated_at = formatDate(updated_at);
 
-            delete form.etik_kurul_onayi; // Remove the etik_kurul_onayi field
+        jsonData = jsonData.map(function(form) {
+            var created_at = new Date(form['Oluşturulma Tarihi']);
+            var updated_at = new Date(form['Güncelleme Tarihi']);
+            form['Oluşturulma Tarihi'] = formatDate(created_at);
+            form['Güncelleme Tarihi'] = formatDate(updated_at);
+
+            delete form['etik_kurul_onayi']; // Remove the etik_kurul_onayi field
 
             return form;
         });
 
         var columnNames = Object.keys(jsonData[0]);
+        console.log(columnNames);
 
         // Create thead with automatically generated column names
         var theadHtml = '<thead class="bg-indigo-500 w-full text-white divide-y divide-indigo-700"><tr>';
@@ -134,11 +159,36 @@
         });
         tbodyHtml += '</tbody>';
 
+        // Append tbody to the existing table
         $('#myTable').append(tbodyHtml);
+
 
         var dataTable = $('#myTable').DataTable({
             data: jsonData,
             dom: 'Bfrtip',
+            language: {
+                info: "_TOTAL_ kayıttan _START_ - _END_ arası gösteriliyor",
+                infoEmpty: "Gösterilecek hiç kayıt yok.",
+                infoFiltered: "(toplamda _MAX_ kayıttan filtrelenmiş)",
+                lengthMenu: "_MENU_ kayıt göster",
+                loadingRecords: "Yükleniyor...",
+                processing: "İşleniyor...",
+                search: "Ara:",
+                zeroRecords: "Eşleşen kayıt bulunamadı",
+                paginate: {
+                    first: "İlk",
+                    last: "Son",
+                    next: "Sonraki",
+                    previous: "Önceki"
+                },
+                select: {
+                    rows: {
+                        _: " %d satır seçildi",
+                        0: "Satır seçmek için satıra tıklayınız",
+                    }
+                }
+
+            },
             colReorder: true,
             responsive: true,
             stateSave: true,
@@ -157,12 +207,16 @@
                 style: 'multi',
                 blurable: false,
                 event: 'click',
+
             },
             columns: columnNames.map(function(column) {
                 return {
-                    data: column
+                    data: column,
+                    width: '100px', // Set your desired fixed width here
                 };
             }),
+
+
             autoWidth: false,
 
             paging: true,
@@ -173,6 +227,7 @@
                         columns: [0, ':visible'],
                         modifier: {
                             selected: true,
+
                         },
                     },
                 },
@@ -180,8 +235,24 @@
                     extend: 'excelHtml5',
                     text: 'Seçilenleri Excel\'\e Aktar',
                     exportOptions: {
-                        columns: ':visible',
+                        format: {
+                            header: function(data, columnIdx) {
+                                var html = $.parseHTML(data);
+                                var text = $(html).find('input').remove().end().text().trim();
+                                return text;
+                            },
 
+
+                            body: function(data, row, column, node) {
+                                // Exclude columns with input elements
+                                if ($(node).find('input').length > 0) {
+                                    return '';
+                                } else {
+                                    return data;
+                                }
+                            }
+                        },
+                        columns: ':visible',
                         modifier: {
                             selected: true,
                         },
@@ -199,10 +270,12 @@
                     var title = $(column.header()).text();
 
                     // Create a container for the search input and button
-                    var container = $('<div class="column-search-container w-full"></div>');
+                    var container = $(
+                        '<div class="gap-3 w-full flex flex-col items-center" ></div>'
+                    );
 
                     // Create the search input
-                    var input = $('<input class="" type="text" placeholder="' +
+                    var input = $('<input class="w-48" type="text" placeholder="' +
                             title +
                             '" />')
                         .on('click', function(e) {
@@ -215,21 +288,16 @@
                             }
                         });
 
-                    // Create a button for sorting
-                    var sortButton = $('<button class="sort-button">Sort</button>')
-                        .on('click', function() {
-                            // Add your custom sorting logic here if needed
-                            column.order(column.order() === 'asc' ? 'desc' : 'asc')
-                                .draw();
-                        });
-
                     // Append the input and button to the container
-                    container.append(input);
+                    container.append('<span class="">' + title + '</span>').append(
+                        input);
 
                     // Append the container to the column header
                     $(column.header()).empty().append(container);
                 });
             }
+
+
 
         });
         dataTable.order(["0", 'asc']).draw();
@@ -245,7 +313,7 @@
 
 
             if (selectedRows.count() === 1) {
-                var id = selectedRows.data()[0].id;
+                var id = selectedRows.data()[0].ID;
                 var stage = selectedRows.data()[0].stage;
                 $('.etik_kurul_onaylari').toggleClass('hidden', false);
                 $('.show-edit-button').toggleClass('hidden', false);
@@ -352,7 +420,7 @@
                     'Seçilen Başvuruları Silmek İstediğinize Emin Misiniz? Bu İşlem Geri Alınamaz.');
                 if (confirmDelete) {
                     var formIds = selectedRows.map(function(rowIndex) {
-                        return dataTable.row(rowIndex).data().id;
+                        return dataTable.row(rowIndex).data().ID;
                     });
                     // Set the action of the form and submit it
                     $('#deleteForm').attr('action', '/delete-form/' + formIds).submit();

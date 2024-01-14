@@ -16,7 +16,7 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                     @if (
-                        !auth()->user()->hasRole('student') ||
+                        !auth()->user()->hasRole('student') &&
                             !auth()->user()->hasRole('academic'))
                         <x-nav-link href="{{ route('visualize') }}" :active="request()->routeIs('visualize')">
                             Visualize
@@ -146,7 +146,11 @@
                                 {{ __('Manage Account') }}
 
                             </div>
-
+                            @if (Auth::user()->role === 'admin')
+                                <x-dropdown-link href="{{ route('adminfeatures.index') }}" :active="request()->routeIs('adminfeatures.index')">
+                                    Ayarlar <span class="text-custom-red">Admin</span>
+                                </x-dropdown-link>
+                            @endif
                             <x-dropdown-link href="{{ route('profile.show') }}">
                                 {{ __('Profile') }}
                             </x-dropdown-link>
@@ -224,7 +228,6 @@
                         {{ __('API Tokens') }}
                     </x-responsive-nav-link>
                 @endif
-
                 <!-- Authentication -->
                 <form method="POST" action="{{ route('logout') }}" x-data>
                     @csrf

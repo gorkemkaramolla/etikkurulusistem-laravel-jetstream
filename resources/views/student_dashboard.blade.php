@@ -18,7 +18,7 @@
                 </button>
             </div>
         </div>
-        <h2 class="text-xl  self-start font-extrabold">Tüm Başvuruların</h2>
+        <h2 class="text-xl  self-center  border-b-2 font-extrabold">Tüm Başvuruların</h2>
         <div
             class="w-full h-full my-4 flex   flex-col  gap-4 p-4  items-center md:items-center flex-wrap justify-start">
             @if (count($forms) !== 0)
@@ -72,21 +72,27 @@
                         <div class="flex gap-2 justify-center flex-col p-2 rounded-md bg-gray-100  mb-3">
                             <h3 class="text-center text-lg font-bold text-gray-900">Ek Dosyalarınız</h3>
                             <a target="_blank"
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
+                                class="inline-flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
                                 href="{{ url('/show-pdf/' . $form->onam_path) }}">
                                 Gönüllü Onam Formu
+                                <x-svg.download />
+
                             </a>
                             <a target="_blank"
-                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
+                                class="inline-flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
                                 href="{{ url('/show-pdf/' . $form->anket_path) }}">
                                 Anket Formu
+                                <x-svg.download />
+
                             </a>
                             @if ($form->kurum_izinleri_path)
-                                <a target="_blank"
-                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
+                                <a target="_download"
+                                    class="flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
                                     href="{{ url('/show-pdf/' . $form->kurum_izinleri_path) }}">
 
                                     Kurum İzinleri
+                                    <x-svg.download />
+
                                 </a>
                             @endif
                         </div>

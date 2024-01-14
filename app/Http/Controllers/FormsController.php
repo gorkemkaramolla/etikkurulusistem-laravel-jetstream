@@ -390,20 +390,10 @@ class FormsController extends Controller
             return redirect()->route('dashboard')->with('error', 'You do not have permission to perform this operation.');
         }
     }
-    public function generateQueryStageForm($studentNo)
+    public function generateQueryStageForm($formid)
     {
         try {
-            $form = Form::where('forms.student_no', $studentNo)
-                ->select(
-                    'forms.created_at',
-                    'forms.stage',
-                    'forms.research_title',
-                    'forms.name',
-                    'forms.lastname',
-                    'forms.ana_bilim_dali',
-                    'forms.program'
-                )
-                ->first();
+            $form = Form::where('id', $formid)->first();
 
 
 
