@@ -68,7 +68,7 @@ Route::get("/info", function () {
     return view('info.index');
 });
 
-Route::get('/query-etikkurul/{formid}', [FormsController::class, 'generateQueryStageForm'])->name('forms.get');
+Route::get('/query-etikkurul/{formid}', [FormsController::class, 'generateQueryStageForm'])->name('forms.getx');
 Route::get('/form/{formId?}', [FormsController::class, 'index'])->name('forms.index');
 
 
