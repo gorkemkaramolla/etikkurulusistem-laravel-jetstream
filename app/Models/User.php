@@ -43,7 +43,10 @@ class User extends Authenticatable
     protected $appends = [
         'profile_photo_url',
     ];
-
+    public function isMemberEtikKurul()
+    {
+        return $this->role == 'admin' || $this->role == 'sekreterlik' || $this->role == 'etik_kurul';
+    }
     public function hasRole($role)
     {
         return $this->role === $role;
