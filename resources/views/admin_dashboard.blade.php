@@ -5,11 +5,11 @@
         </table>
         <div class="flex  gap-4 px-5">
             <div style="display: flex; align-items:center; justify-content:center;" id="emailModal"
-                class="modal absolute inset-0 bg-black bg-opacity-50 ">
+                class="modal hidden absolute inset-0 bg-black bg-opacity-50 ">
 
                 <div class="bg-white flex items-center justify-center p-6 rounded shadow-lg relative transform ">
                     <button class="close absolute right-4 text-2xl top-2">×</button>
-
+                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
                     <div>
                         <form id="emailForm" class="p-4">
                             @csrf
@@ -300,7 +300,7 @@
                             '" value="' + searchValue + '" />')
                         .on('click', function(e) {
                             e
-                        .stopPropagation(); // Prevent click propagation to the th element
+                                .stopPropagation(); // Prevent click propagation to the th element
                         })
                         .on('keyup change', function() {
                             if (column.search() !== this.value) {
@@ -416,21 +416,105 @@
                 },
             ],
         }).container().appendTo($('#myTable_wrapper .dt-buttons'));
-        // MAIL MODAL
-        $(document).on('click', '.close', function() {
-            $('#emailModal').hide();
-            document.getElementById('emailModal').style.display = 'none!important';
-        });
+
+
+
+        // EMAIL MODAL
+        let emailContent;
+
+        function openEmailModal(emailAddresses) {
+            Swal.fire({
+                title: 'Send Email',
+                html: `
+            <form id="emailForm" class="text-start space-y-4">
+                <p class="text-sm text-gray-500">${emailAddresses}</p>
+                <label for="email-subject" class="block text-sm font-medium text-gray-700">Konu</label>
+                <input type="text" id="email-subject" name="email-subject" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" placeholder="Subject">
+                <label for="email-content" class="block text-sm font-medium text-gray-700">Mesaj</label>
+                <textarea id="email-content" name="email-content" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"></textarea>
+            </form>
+        `,
+                confirmButtonText: 'Send Email',
+                showCloseButton: true,
+                focusConfirm: false,
+                allowOutsideClick: false,
+                allowEscapeKey: false,
+                allowEnterKey: false,
+                preConfirm: () => {
+                    let emailSubject = Swal.getPopup().querySelector('#email-subject').value;
+                    let emailContent = Swal.getPopup().querySelector('#email-content').value;
+                    if (!emailSubject || !emailContent) {
+                        Swal.showValidationMessage(`Please enter both subject and content.`);
+                    }
+                    return {
+                        emailSubject: emailSubject,
+                        emailContent: emailContent
+                    };
+                },
+                onClose: () => {
+                    emailContent = '';
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    let emailSubject = result.value.emailSubject;
+                    let emailContent = result.value.emailContent;
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: "You won't be able to revert this!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Yes, send it!'
+                    }).then((result) => {
+
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/api/send-email',
+                                type: 'POST',
+                                headers: {
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                },
+                                data: {
+                                    emails: emailAddresses,
+                                    subject: emailSubject,
+                                    message: emailContent
+                                },
+                                success: function(response) {
+                                    console.log(response);
+                                    Swal.fire(
+                                        'Success!',
+                                        'Emails have been sent successfully.',
+                                        'success'
+                                    );
+                                },
+                                error: function(jqXHR, textStatus, errorThrown) {
+                                    Swal.fire(
+                                        'Error!',
+                                        'An error occurred while sending emails.',
+                                        'error'
+                                    );
+                                }
+                            });
+                        } else {
+                            openEmailModal(emailAddresses);
+                        }
+                    });
+                }
+            });
+        }
+
         $('.send-mail-button').on('click', function() {
             var selectedRows = dataTable.rows({
                 selected: true
             }).data().toArray();
             var emailAddresses = selectedRows.map(function(row) {
-                return row.email;
+                return row.Email;
             }).join(',');
-            $('#emailAddresses').html("Email Adresleri : " + emailAddresses);
-            $('#emailModal').show();
+
+            openEmailModal(emailAddresses);
         });
+
+
+
 
         // Delete button functionality
         $('.delete-button').on('click', function() {
@@ -439,18 +523,25 @@
             }).indexes().toArray();
 
             if (selectedRows.length > 0) {
-                var confirmDelete = confirm(
-                    'Seçilen Başvuruları Silmek İstediğinize Emin Misiniz? Bu İşlem Geri Alınamaz.');
-                if (confirmDelete) {
-                    var formIds = selectedRows.map(function(rowIndex) {
-                        return dataTable.row(rowIndex).data().ID;
-                    });
-                    // Set the action of the form and submit it
-                    $('#deleteForm').attr('action', '/delete-form/' + formIds).submit();
-
-                }
+                Swal.fire({
+                    title: "Seçilen Başvuruları Silmek İstediğinize Emin Misiniz?",
+                    text: "Bu İşlem Geri Alınamaz.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: 'Evet, sil!',
+                    cancelButtonText: 'Hayır, iptal!',
+                    dangerMode: true,
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        var formIds = selectedRows.map(function(rowIndex) {
+                            return dataTable.row(rowIndex).data().ID;
+                        });
+                        // Set the action of the form and submit it
+                        $('#deleteForm').attr('action', '/delete-form/' + formIds).submit();
+                    }
+                });
             } else {
-                alert('Please select at least one row to delete.');
+                Swal.fire("Hata!", "Lütfen silmek için en az bir satır seçin.", "error");
             }
         });
     });
@@ -459,13 +550,23 @@
 
 @if (session('success'))
     <script>
-        alert('{{ session('success') }}');
+        Swal.fire({
+            title: "Başarılı",
+            text: "{{ session('success') }}",
+            icon: "success",
+            confirmButtonText: 'Tamam',
+        });
     </script>
 @endif
 
 @if (session('error'))
     <script>
-        alert('{{ session('error') }}');
+        Swal.fire({
+            title: "Hata",
+            text: "{{ session('error') }}",
+            icon: "error",
+            confirmButtonText: 'Tamam',
+        });
     </script>
 @endif
 
