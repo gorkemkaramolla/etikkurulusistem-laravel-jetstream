@@ -37,7 +37,6 @@
                         </svg>
                     </div>
                 </div>
-                {{ $formid }}
 
                 <form
                     action="{{ !Auth::user()->hasRole('sekreterlik') ? route('approve.etikkurul', ['formid' => $formid]) : route('approve.sekreterlik', ['formid' => $formid]) }}"
