@@ -458,46 +458,74 @@
             });
 
             // Show an alert with the names of the edited columns
-            var confirmEdit = confirm('Are you sure you want to edit the following columns: ' + Object.keys(changes).join(
-                ', '));
-            if (!confirmEdit) {
-                return;
-            }
+            Swal.fire({
+                title: "Emin misiniz?",
+                text: 'Aşağıdaki sütunları düzenlemek istediğinizden emin misiniz: ' + Object.keys(changes).join(
+                    ', '),
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Evet, düzenle!',
+                cancelButtonText: 'Hayır, iptal!',
+                dangerMode: true,
+            }).then((willEdit) => {
+                if (!willEdit) {
+                    return;
+                }
 
-            $.ajax({
-                url: '/fix-form/' + {{ $form['id'] }},
-                method: 'POST',
-                data: JSON.stringify(changes),
-                contentType: 'application/json',
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                },
-                success: function(response) {
-                    if (response.success) {
-                        alert(response.success);
-                    } else if (response.error) {
-                        alert(response.error);
-                    } else {
-                        console.log(response);
-                    }
+                // AJAX request
+                $.ajax({
+                    url: '/fix-form/' + {{ $form['id'] }},
+                    method: 'POST',
+                    data: JSON.stringify(changes),
+                    contentType: 'application/json',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            Swal.fire({
+                                title: "Success",
+                                text: response.success,
+                                icon: "success",
+                                confirmButtonText: 'OK',
+                            });
+                        } else if (response.error) {
+                            Swal.fire({
+                                title: "Error",
+                                text: response.error,
+                                icon: "error",
+                                confirmButtonText: 'OK',
+                            });
+                        } else {
+                            console.log(response);
+                        }
+                    },
+                    error: function(jqXHR, textStatus, errorThrown) {
+                        if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
+                            Swal.fire({
+                                title: "Hata",
+                                text: 'Bir Hata Oluştu: ' + jqXHR.responseJSON.error,
+                                icon: "error",
+                                confirmButtonText: 'Tamam',
+                            });
+                        } else {
+                            Swal.fire({
+                                title: "Hata",
+                                text: 'Bir Hata Oluştu: ' + textStatus + ' - ' + errorThrown,
+                                icon: "error",
+                                confirmButtonText: 'Tamam',
+                            });
+                        }
+                        location.reload(); // Refresh the page
+                    },
+                });
 
-                },
-                error: function(jqXHR, textStatus, errorThrown) {
-                    if (jqXHR.responseJSON && jqXHR.responseJSON.error) {
-                        alert('Bir Hata Oluştu: ' + jqXHR.responseJSON.error);
-                    } else {
-                        alert('Bir Hata Oluştu: ' + textStatus + ' - ' + errorThrown);
-                    }
-                    location.reload(); // Refresh the page
+                cells.attr('contenteditable', false).css('border', '1px solid #ccc');
 
-                },
+                // Remove the "Save" button
+                $('#saveButton').hide();
+                $('#editButton').show();
             });
-            cells.attr('contenteditable', false).css('border', '1px solid #ccc');
-
-            // Remove the "Save" button
-            $('#saveButton').hide();
-            $('#editButton').show();
-
         }
     </script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
@@ -514,7 +542,7 @@
         }
 
         50% {
-            background-color: #faecec;
+            background-color: #f5f1f1;
             /* background color in the middle of the animation */
         }
     }

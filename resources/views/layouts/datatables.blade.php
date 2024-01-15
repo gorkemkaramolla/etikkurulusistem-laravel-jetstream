@@ -29,6 +29,7 @@
     <script src="https://cdn.datatables.net/select/1.7.0/js/dataTables.select.js"></script>
     <!-- Add these lines to include ColReorder extension -->
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
     {{ $slot }}

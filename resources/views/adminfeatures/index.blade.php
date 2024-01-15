@@ -106,39 +106,88 @@
                 },
                 success: function(data) {
                     if (data.error) {
-                        alert(data.error);
+                        Swal.fire({
+                            title: "Hata",
+                            text: data.error,
+                            icon: "error",
+                            confirmButtonText: 'Tamam',
+                        });
                     } else {
-                        alert(data.success);
-                        location.reload(); // Reload the page to fetch the updated user list
+                        Swal.fire({
+                            title: "Başarılı",
+                            text: data.success,
+                            icon: "success",
+                            confirmButtonText: 'Tamam',
+                        }).then(function() {
+                            location.reload(); // Reload the page to fetch the updated user list
+                        });
                     }
                 },
                 error: function(error) {
-                    console.error('Error:', error);
+                    var errorMessage = '';
+                    $.each(error.responseJSON.errors, function(key, value) {
+                        errorMessage += value + '\n';
+                    });
+
+                    Swal.fire({
+                        title: "Hata",
+                        text: 'Bir Hata Oluştu: ' + errorMessage,
+                        icon: "error",
+                        confirmButtonText: 'Tamam',
+                    });
                 }
             });
         });
         $('.delete-user-form').on('submit', function(event) {
             event.preventDefault(); // Prevent the form from causing a page reload
 
-            $.ajax({
-                url: this.action,
-                method: 'POST',
-                data: new FormData(this),
-                processData: false,
-                contentType: false,
-                headers: {
-                    'X-CSRF-TOKEN': $('input[name="_token"]').val()
-                },
-                success: function(data) {
-                    if (data.error) {
-                        alert(data.error);
-                    } else {
-                        alert(data.success);
-                        location.reload(); // Reload the page to fetch the updated user list
-                    }
-                },
-                error: function(error) {
-                    console.error('Error:', error);
+            var actionUrl = $(this).attr('action');
+            var userId = actionUrl.split('/').pop(); // Extract the user id from the action URL
+
+            Swal.fire({
+                title: "ID'si " + userId + " olan kullanıcıyı silmek istediğinize emin misiniz?",
+                text: "Bu işlem geri alınamaz.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'Evet, sil!',
+                cancelButtonText: 'Hayır, iptal!',
+                dangerMode: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var formData = new FormData(this);
+                    $.ajax({
+                        url: this.action,
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                        },
+                        success: function(data) {
+                            if (data.error) {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: data.error,
+                                    icon: "error",
+                                    confirmButtonText: 'OK',
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Success",
+                                    text: data.success,
+                                    icon: "success",
+                                    confirmButtonText: 'OK',
+                                }).then(function() {
+                                    location
+                                .reload(); // Reload the page to fetch the updated user list
+                                });
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Error:', error);
+                        }
+                    });
                 }
             });
         });

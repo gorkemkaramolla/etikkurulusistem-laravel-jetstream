@@ -187,7 +187,12 @@
                     action: function(e, dt, button, config) {
                         var selectedColumns = dt.columns(':visible').indexes().toArray();
                         if (selectedColumns.length === 0) {
-                            alert('Please select at least one column for export.');
+                            Swal.fire({
+                                title: "Hata",
+                                text: "Lütfen excel'e aktarım için en az bir sütun seçin.",
+                                icon: "error",
+                                confirmButtonText: 'Tamam',
+                            });
                         } else {
                             $.fn.dataTable.ext.buttons.excelHtml5.action.call(this, e, dt,
                                 button, config);
@@ -202,7 +207,12 @@
                     action: function(e, dt, button, config) {
                         var selectedColumns = dt.columns(':visible').indexes().toArray();
                         if (selectedColumns.length === 0) {
-                            alert('Please select at least one column for export.');
+                            Swal.fire({
+                                title: "Hata",
+                                text: "Lütfen pdf'e aktarım için en az bir sütun seçin.",
+                                icon: "error",
+                                confirmButtonText: 'Tamam',
+                            });
                         } else {
                             $.fn.dataTable.ext.buttons.pdfHtml5.action.call(this, e, dt, button,
                                 config);
