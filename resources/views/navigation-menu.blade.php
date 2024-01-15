@@ -212,11 +212,47 @@
                 @endif
 
                 <div>
-                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-                </div>
-            </div>
 
+                    <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}
+                        <span class="capitalize text-red-500">
+                            @if (Auth::user()->role === 'sekreterlik')
+                                <span>Etik Kurul</span>
+                                {{ str_replace('_', ' ', Auth::user()->role) }}
+                            @elseif(Auth::user()->role === 'etik_kurul')
+                                <span>Etik Kurul</span>
+                                {{ str_replace('_', ' ', Auth::user()->role) }} Üyesi
+                            @elseif(Auth::user()->role === 'admin')
+                                <span>Admin</span>
+                            @elseif(Auth::user()->role === 'student')
+                                <span>Öğrenci</span>
+                            @elseif(Auth::user()->role === 'academic')
+                                <span>Akademisyen</span>
+                            @endif
+
+                        </span>
+
+                    </div>
+                    <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
+
+
+                </div>
+
+            </div>
+            <div class="mt-3 space-y-1">
+                @if (auth()->user()->hasRole('student') ||
+                        auth()->user()->hasRole('academic'))
+                    <x-responsive-nav-link href="{{ route('forms.index') }}" :active="request()->routeIs('forms.index')">
+                        Yeni Başvuru
+                    </x-responsive-nav-link>
+                @endif
+            </div>
+            <div class="mt-3 space-y-1">
+                @if (Auth::user()->role === 'admin')
+                    <x-responsive-nav-link href="{{ route('adminfeatures.index') }}" :active="request()->routeIs('adminfeatures.index')">
+                        Ayarlar <span class="text-custom-red">Admin</span>
+                    </x-responsive-nav-link>
+                @endif
+            </div>
             <div class="mt-3 space-y-1">
                 <!-- Account Management -->
                 <x-responsive-nav-link href="{{ route('profile.show') }}" :active="request()->routeIs('profile.show')">
