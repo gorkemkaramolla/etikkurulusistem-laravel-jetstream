@@ -427,20 +427,83 @@
                     ],
                 }).container().appendTo($('#myTable_wrapper .dt-buttons'));
                 // MAIL MODAL
-                $(document).on('click', '.close', function() {
-                    $('#emailModal').hide();
-                    document.getElementById('emailModal').style.display = 'none!important';
-                });
+
+                let emailContent;
+
+                function openEmailModal(emailAddresses) {
+                    Swal.fire({
+                        title: 'Send Email',
+                        html: `
+            <form id="emailForm">
+                <label for="email-content">Email Addresses: ${emailAddresses}</label>
+                <textarea class="w-full p-3" id="email-content" name="email-content" class="swal2-textarea">${emailContent || ''}</textarea>
+            </form>
+        `,
+                        confirmButtonText: 'Send Email',
+                        showCloseButton: true,
+                        focusConfirm: false,
+                        allowOutsideClick: false,
+                        allowEscapeKey: false,
+                        allowEnterKey: false,
+                        preConfirm: () => {
+                            emailContent = Swal.getPopup().querySelector('#email-content').value;
+                            if (!emailContent) {
+                                Swal.showValidationMessage(`Please enter email content.`);
+                            }
+                            return {
+                                emailContent: emailContent
+                            };
+                        },
+                        onClose: () => {
+                            emailContent = '';
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            Swal.fire({
+                                title: 'Are you sure?',
+                                text: "You won't be able to revert this!",
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes, send it!'
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    $.ajax({
+                                        url: '/path/to/your/api', // replace with your API endpoint
+                                        type: 'POST',
+                                        data: {
+                                            emailAddresses: emailAddresses,
+                                            emailContent: emailContent
+                                        },
+                                        success: function(response) {
+                                            Swal.fire('Success', 'Email sent successfully',
+                                                'success');
+                                            emailContent = '';
+                                        },
+                                        error: function(jqXHR, textStatus, errorThrown) {
+                                            Swal.fire('Error',
+                                                'There was an error sending the email',
+                                                'error');
+                                        }
+                                    });
+                                } else {
+                                    openEmailModal(emailAddresses);
+                                }
+                            });
+                        }
+                    });
+                }
+
                 $('.send-mail-button').on('click', function() {
                     var selectedRows = dataTable.rows({
                         selected: true
                     }).data().toArray();
                     var emailAddresses = selectedRows.map(function(row) {
-                        return row.email;
+                        return row.Email;
                     }).join(',');
-                    $('#emailAddresses').html("Email Adresleri : " + emailAddresses);
-                    $('#emailModal').show();
+
+                    openEmailModal(emailAddresses);
                 });
+
 
                 // Delete button functionality
                 // $('.delete-button').on('click', function() {
@@ -469,13 +532,23 @@
 
         @if (session('success'))
             <script>
-                alert('{{ session('success') }}');
+                Swal.fire({
+                    title: "Başarılı",
+                    text: "{{ session('success') }}",
+                    icon: "success",
+                    confirmButtonText: 'Tamam',
+                });
             </script>
         @endif
 
         @if (session('error'))
             <script>
-                alert('{{ session('error') }}');
+                Swal.fire({
+                    title: "Hata",
+                    text: "{{ session('error') }}",
+                    icon: "error",
+                    confirmButtonText: 'Tamam',
+                });
             </script>
         @endif
 
