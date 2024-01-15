@@ -52,20 +52,20 @@ class FormsController extends Controller
                 $form = Form::find($formId);
 
                 if (!$form) {
-                    return response()->json(['error' => 'Form not found.'], 404);
+                    return response()->json(['error' => 'Başvuru bulunamadı.'], 404);
                 }
 
                 $changes = $request->all(); // Get all the request data
 
                 // Check if the changes are provided
                 if (!$changes) {
-                    return response()->json(['error' => 'No changes provided.'], 400);
+                    return response()->json(['error' => 'Herhangi bir değişiklik yapmadınız.'], 400);
                 }
 
                 foreach ($changes as $columnName => $newValue) {
                     // Check if the column exists
                     if (!Schema::hasColumn('forms', $columnName)) {
-                        return response()->json(['error' => 'Invalid column: ' . $columnName], 400);
+                        return response()->json(['error' => 'Hatalı sütun: ' . $columnName], 400);
                     }
 
                     // Define validation rules for each column
@@ -91,7 +91,7 @@ class FormsController extends Controller
 
                 $form->save();
 
-                return response()->json(['success' => 'Changes saved successfully.']);
+                return response()->json(['success' => 'Değişiklikler başarıyla kaydedildi.']);
             } catch (Exception $e) {
                 return response()->json(['error' => $e->getMessage()], 400);
             }
@@ -235,7 +235,7 @@ class FormsController extends Controller
         $decide = $request->input('decide');
 
         $this->startSekreterlikApprovalProcess($form, $decide, $decide_reason);
-        return redirect()->route('dashboard')->with('success', 'Redirected to the dashboard successfully.');
+        return redirect()->route('dashboard')->with('success', 'Talebiniz Başarıyla Onaylandı.');
     }
 
     private function startSekreterlikApprovalProcess(Form $form, $decide, $decide_reason)
@@ -289,7 +289,7 @@ class FormsController extends Controller
         // Use $decide_reason as needed in your approval process
         $this->startEtikkurulApprovalProcess($form, $decide, $decide_reason);
 
-        return redirect()->route('dashboard')->with('success', 'Redirected to the dashboard successfully.');
+        return redirect()->route('dashboard')->with('success', 'Talebiniz Başarıyla Onaylandı.');
     }
 
     private function startEtikkurulApprovalProcess(Form $form,  $decide, $decide_reason)
@@ -341,13 +341,13 @@ class FormsController extends Controller
             $form = Form::with('etik_kurul_onayi')->where("id", $formId)->first();
 
             if (!$form) {
-                return response()->json(['error' => 'Form not found.'], 404);
+                return response()->json(['error' => 'Başvuru bulunamadı.'], 404);
             }
 
             $etikKurulOnaylari = $form->etik_kurul_onayi;
 
             if (!$etikKurulOnaylari) {
-                return response()->json(['error' => 'Etik kurul onayı not found.'], 404);
+                return response()->json(['error' => 'Etik kurul onayı bulunamadı.'], 404);
             }
 
             $response = [];
@@ -356,7 +356,7 @@ class FormsController extends Controller
                 $user = User::find($etikKurulOnayi->user_id);
 
                 if (!$user) {
-                    return response()->json(['error' => 'User not found.'], 404);
+                    return response()->json(['error' => 'Kullanıcı bulunamadı'], 404);
                 }
 
                 $response[] = [
@@ -383,12 +383,12 @@ class FormsController extends Controller
 
             if (!$forms->isEmpty()) {
                 Form::destroy($formIds);
-                return redirect()->route('dashboard')->with('success', 'Form(s) successfully deleted.');
+                return redirect()->route('dashboard')->with('success', 'Başvurular başarıyla silindi.');
             } else {
-                return redirect()->route('dashboard')->with('error', 'Form(s) not found.');
+                return redirect()->route('dashboard')->with('error', 'Başvuru bulunamadı.');
             }
         } else {
-            return redirect()->route('dashboard')->with('error', 'You do not have permission to perform this operation.');
+            return redirect()->route('dashboard')->with('error', 'Bu işlemi yapmaya yetkiniz yok.');
         }
     }
     public function generateQueryStageForm($formid)
