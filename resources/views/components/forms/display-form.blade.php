@@ -380,6 +380,40 @@
                 </p>
             </td>
         </tr>
+        @if (Auth::user()->role === 'sekreterlik' || Auth::user()->role === 'etik_kurul')
+            <tr>
+                <td colspan="2" class="text-center">
+                    @if (auth()->user()->hasRole('sekreterlik') &&
+                            $form &&
+                            $form->stage === 'sekreterlik')
+                        <x-approve-modal :formid="$form->id"></x-approve-modal>
+                    @elseif(auth()->user()->hasRole('etik_kurul'))
+                        @php
+                            // Check if there is an ethics committee approval for the specific form and user
+                            $etikKurulOnayi = $form->etik_kurul_onayi
+                                ->where('form_id', $form->id) // Check form_id
+                                ->where('user_id', auth()->user()->id) // Check user_id
+                                ->first();
+                        @endphp
+
+                        @if ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'onaylandi')
+                            <span class="text-green-600">Etik kurulu onay oyu verdiniz.</span>
+                        @elseif ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'reddedildi')
+                            <span class="text-red-600">Etik kurulu red oyu verdiniz.</span>
+                        @elseif ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'duzeltme')
+                            <span class="text-yellow-500">Etik kurulu düzeltme oyu verdiniz.</span>
+                        @else
+                            <x-approve-modal :formid="$form->id"></x-approve-modal>
+                        @endif
+                    @elseif (request()->segment(2) === 'duzeltme')
+                        <p class="text-orange-500">Düzeltilmesi Bekleniyor</p>
+                    @elseif (request()->segment(2) === 'reddedildi')
+                        <p class="text-red-500">Reddedildi</p>
+                    @endif
+                </td>
+            </tr>
+
+        @endif
     </table>
 
     @if (Auth::user()->role === 'admin')

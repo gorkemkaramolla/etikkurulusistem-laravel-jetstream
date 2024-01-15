@@ -80,6 +80,11 @@
                 @if (session('successMessage'))
                     <div class="alert alert-success">
                         {!! session('successMessage') !!}
+                        <script>
+                            setTimeout(function() {
+                                window.location.href = '/dashboard';
+                            }, 3000);
+                        </script>
                         {{-- <div
                         class="alert alert-success d-flex flex-column w-100 justify-content-center text-center items-center">
                         {!! session('successMessage') !!}

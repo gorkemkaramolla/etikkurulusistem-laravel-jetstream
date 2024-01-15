@@ -3,9 +3,8 @@
     <div class="w-full flex  lg:flex-row flex-col mx-auto container  gap-3">
         <div class="lg:w-2/6 px-6 relative w-full bg-white my-4 py-8 shadow-xl rounded-xl ">
             <h1 class="text-2xl text-center font-extrabold">Yeni Kullanıcı Oluştur</h1>
-            <form action="" id="create-user-form" class=" flex flex-col gap-3 ">
+            <form action="/add-new-user" method="POST" id="create-user-form" class=" flex flex-col gap-3 ">
                 @csrf
-
                 <label for="role">Yetki</label>
                 <select name="role" id="role">
                     <option value="student">Öğrenci</option>
@@ -41,10 +40,10 @@
         </div>
 
         <div class="lg:w-2/6 px-6  w-full">
-            <div class="bg-white my-4 py-8 shadow-xl rounded-xl ">
+            <div class="bg-white my-4 py-8 px-4 shadow-xl rounded-xl ">
                 <h1 class="text-2xl text-center font-extrabold">Kullanıcılar</h1>
                 <select name="" id="filterUserRole">
-                    <option value="etik_kurul">Etik Kurul Üyeleri</option>
+                    <option selected value="etik_kurul">Etik Kurul Üyeleri</option>
                     <option value="student">Öğrenciler</option>
                     <option value="academic">Akademisyenler</option>
                     <option value="sekreterlik">Sekreterler</option>
@@ -52,13 +51,17 @@
                 <div class=" ">
                     @foreach ($users as $user)
                         <div data-role="{{ $user->role }}"
-                            class=" flex flex-row userData flex-wrap justify-between items-center px-4 py-2 rounded-xl">
+                            class="flex flex-row userData flex-wrap justify-between items-center px-4 py-2 rounded-xl">
                             <div class="flex flex-col gap-1">
                                 <span class="font-bold">{{ $user->name }} {{ $user->lastname }}</span>
                                 <span class="text-sm">{{ $user->email }}</span>
                             </div>
                             <div class="flex flex-row gap-2">
-                                <button class="bg-custom-red text-white px-2 py-1 rounded-xl">Sil</button>
+                                <form class="delete-user-form" method="POST" action="/delete-user/{{ $user->id }}">
+                                    @csrf
+                                    <button type="submit"
+                                        class="bg-custom-red text-white px-2 py-1 rounded-xl">Sil</button>
+                                </form>
                                 <button class="bg-blue-500 text-white px-2 py-1 rounded-xl">Düzenle</button>
                             </div>
                         </div>
@@ -69,6 +72,7 @@
         <div class="lg:w-1/6 px-6 w-full"></div>
 
     </div>
+
     <script>
         $(document).ready(function() {
             $('#filterUserRole').change(function() {
@@ -76,6 +80,66 @@
                 $('.userData').attr('style', 'display: none !important');
 
                 $('.userData[data-role="' + selectedRole + '"]').show();
+            });
+        });
+    </script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#filterUserRole').change(function() {
+                var selectedRole = $(this).val();
+                $('.userData').attr('style', 'display: none !important');
+                $('.userData[data-role="' + selectedRole + '"]').show();
+            }).change(); // Trigger the change event manually
+        });
+        $('#create-user-form').on('submit', function(event) {
+            event.preventDefault();
+
+            $.ajax({
+                url: '/add-new-user',
+                method: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                },
+                success: function(data) {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert(data.success);
+                        location.reload(); // Reload the page to fetch the updated user list
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        });
+        $('.delete-user-form').on('submit', function(event) {
+            event.preventDefault(); // Prevent the form from causing a page reload
+
+            $.ajax({
+                url: this.action,
+                method: 'POST',
+                data: new FormData(this),
+                processData: false,
+                contentType: false,
+                headers: {
+                    'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                },
+                success: function(data) {
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        alert(data.success);
+                        location.reload(); // Reload the page to fetch the updated user list
+                    }
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
             });
         });
     </script>

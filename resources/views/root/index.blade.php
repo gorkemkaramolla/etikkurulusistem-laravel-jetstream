@@ -29,7 +29,9 @@
             </div>
 
             <div class="col-md-8 mt-4 m-auto">
+
                 <div class="col-md-12 col-lg-10 m-auto mt-3">
+
                     <a href="/login"
                         class="btn btn-secondary text-white w-100 d-flex align-items-center justify-content-center text-uppercase fw-semibold h-60px"
                         role="button">Etik Kurul Girişi</a>

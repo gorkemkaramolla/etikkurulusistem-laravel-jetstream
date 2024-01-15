@@ -18,7 +18,7 @@
                 </button>
             </div>
         </div>
-        <h2 class="text-xl  self-center  border-b-2 font-extrabold">Tüm Başvuruların</h2>
+        <h2 class="text-xl  self-center  border-b-2 font-extrabold">Tüm Başvurularım</h2>
         <div
             class="w-full h-full my-4 flex   flex-col  gap-4 p-4  items-center md:items-center flex-wrap justify-start">
             @if (count($forms) !== 0)
@@ -63,7 +63,8 @@
                                 Gönderilme Tarihi: {{ $form->created_at->format('d-m-Y') }}
                             </p>
                         </div>
-                        <div class="bg-gray-100  mb-3   rounded-md px-3 py-2 text-sm font-semibold text-gray-700 mr-2">
+                        <div
+                            class="bg-gray-100 text mb-3  break-words rounded-md px-3 py-2 text-sm font-semibold text-gray-700 mr-2">
                             <span>
                                 Araştırma Başlığı :
                             </span>
@@ -110,8 +111,11 @@
                     </div>
                 @endforeach
             @else
-                <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div class="absolute flex flex-col left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
                     Hiç başvurunuz bulunmamaktadır.
+                    <a href="/form"
+                        class="items-center text-center py-2 px-4 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">
+                        Yeni Başvuru Yap</a>
 
                 </div>
             @endif

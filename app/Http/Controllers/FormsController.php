@@ -110,35 +110,14 @@ class FormsController extends Controller
             // Create form
             if ($formid) {
                 $form = Form::find($formid);
-                $directory = dirname(Storage::url($form->onam_path));
+
+                $form->is_modified = true;
             } else {
                 $form = new Form();
                 // Create a directory based on the researcher's student number
-                $studentNumber = $validated['student_no'];
-                $timestamp = now()->timestamp;
-                $directory = "public/forms/{$studentNumber}/{$timestamp}";
             }
 
-            // Create the directory with 755 permissions if it doesn't exist
-            if (!Storage::exists($directory)) {
-                Storage::makeDirectory($directory, 0755, true);
-                // Explicitly set the permissions for the created directory
-                chmod(storage_path("app/{$directory}"), 0755);
-            }
 
-            // Delete the existing files if they exist
-
-            $pathsToDelete = array_filter([$form->onam_path, $form->anket_path, $form->kurum_izinleri_path]);
-            Storage::delete($pathsToDelete);
-
-            // Save the new files in the specified directories
-            $form->onam_path = Storage::putFileAs($directory, $validated["onam_path"], 'onam.pdf', 'public');
-            $form->anket_path = Storage::putFileAs($directory, $validated["anket_path"], 'anket.pdf', 'public');
-
-            // Check if 'kurum_izinleri_path' is present and not empty before attempting to save it
-            if ($request->hasFile('kurum_izinleri_path') && $request->file('kurum_izinleri_path')->isValid()) {
-                $form->kurum_izinleri_path = Storage::putFileAs($directory, $validated["kurum_izinleri_path"], 'kurum_izinleri.pdf', 'public');
-            }
 
             if ($form->stage === 'duzeltme') {
                 $form->stage = 'sekreterlik';
@@ -174,6 +153,28 @@ class FormsController extends Controller
             $form->research_restrictions = trim($validated['research_restrictions']);
             $form->research_place_date = trim($validated['research_place_date']);
             $form->research_literature_review = trim($validated['research_literature_review']);
+            $form->save();
+            $directory = "public/forms/" . Auth::user()->id . "/{$form->id}";
+
+
+            // Create the directory with 755 permissions if it doesn't exist
+            if (!Storage::exists($directory)) {
+                Storage::makeDirectory($directory, 0755, true);
+                // Explicitly set the permissions for the created directory
+                chmod(storage_path("app/{$directory}"), 0755);
+            } else if ($formid) {
+                // If the form already exists, delete the existing files
+                $pathsToDelete = array_filter([$form->onam_path, $form->anket_path, $form->kurum_izinleri_path]);
+                Storage::delete($pathsToDelete);
+            }
+
+            $form->onam_path = Storage::putFileAs($directory, $validated["onam_path"], "{$validated['student_no']}_onam.pdf", 'public');
+            $form->anket_path = Storage::putFileAs($directory, $validated["anket_path"], "{$validated['student_no']}_anket.pdf", 'public');
+
+            // Check if 'kurum_izinleri_path' is present and not empty before attempting to save it
+            if ($request->hasFile('kurum_izinleri_path') && $request->file('kurum_izinleri_path')->isValid()) {
+                $form->kurum_izinleri_path = Storage::putFileAs($directory, $validated["kurum_izinleri_path"], "{$validated['student_no']}_kurum_izinleri.pdf", 'public');
+            }
             $form->save();
 
             DB::commit();
@@ -217,7 +218,7 @@ class FormsController extends Controller
             //         ->cc($sekreterlikRecipients); // Add all users with role "sekreterlik" to CC
             // });
             $linkPath = "/query-etikkurul/{$form->student_no}";
-            $successMessage = 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz.';
+            $successMessage = 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz. Kısa süre içerisinde anasayfaya yönlendirileceksiniz.';
 
             return redirect()->route('forms.index')->with('successMessage', $successMessage)->with('linkPath', $linkPath);
         } catch (Exception $e) {

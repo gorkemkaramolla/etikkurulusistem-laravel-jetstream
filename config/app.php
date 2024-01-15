@@ -17,7 +17,8 @@ return [
     'asset_url' => env('ASSET_URL'),
 
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Istanbul', // replace with your timezone
+
 
 
 

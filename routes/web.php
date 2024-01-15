@@ -33,6 +33,10 @@ Route::middleware([
 
     Route::get('/adminfeatures', [AdminFeaturesController::class, 'index'])->name('adminfeatures.index');
     Route::get('/getUsers/{userRole}', [AdminFeaturesController::class, 'getUsers'])->name('adminfeatures.getUsers');
+    Route::post('/delete-user/{user_id}', [AdminFeaturesController::class, 'deleteUser'])->name('adminfeatures.deleteUser');
+    Route::post('/add-new-user', [AdminFeaturesController::class, 'addNewUser'])->name('adminfeatures.addNewUser');
+
+
 
     Route::get('export/array', [ExportController::class, 'array'])->name('export.array');
     Route::get("/send-mail", [ExportController::class, 'sendMail'])->name('send.mail');
@@ -48,7 +52,10 @@ Route::middleware([
         $filePath = storage_path("app/{$path}");
 
         if (file_exists($filePath)) {
-            return response()->download($filePath);
+            return response()->file($filePath, [
+                'Content-Type' => 'application/pdf',
+                'Content-Disposition' => 'inline; filename="' . basename($filePath) . '"'
+            ]);
         } else {
             abort(404, 'File not found');
         }
@@ -60,7 +67,9 @@ Route::middleware([
 
 
 
-
+Route::get("/info", function () {
+    return view('info.index');
+});
 
 Route::get('/query-etikkurul/{formid}', [FormsController::class, 'generateQueryStageForm'])->name('forms.get');
 Route::get('/form/{formId?}', [FormsController::class, 'index'])->name('forms.index');

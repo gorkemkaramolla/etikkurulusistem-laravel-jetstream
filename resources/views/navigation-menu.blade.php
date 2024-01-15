@@ -25,7 +25,7 @@
                     @if (auth()->user()->hasRole('student') ||
                             auth()->user()->hasRole('academic'))
                         <x-nav-link href="{{ route('forms.index') }}" :active="request()->routeIs('forms.index')">
-                            Başvuru Yap
+                            Yeni Başvuru
                         </x-nav-link>
                     @endif
                 </div>

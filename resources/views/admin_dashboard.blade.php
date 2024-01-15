@@ -1,19 +1,6 @@
 <x-datatables-layout>
-    <div class="w-full   flex flex-col ">
-        <div class="p-4 flex md:flex-row flex-col">
-            <div class="px-4">
-                Sekreterlik Onayı Bekleyen Başvuru sayısı: {{ $forms->where('stage', 'sekreterlik')->count() }}
-            </div>
-            <div class="px-4">
-                Etik Kurul Onayı Bekleyen Başvuru sayısı: {{ $forms->where('stage', 'etik_kurul')->count() }}
-            </div>
-            <div class="px-4">
-                Reddedilmiş Başvuru sayısı: {{ $forms->where('stage', 'reddedildi')->count() }}
-            </div>
-            <div class="px-4">
-                Onaylanan Başvuru sayısı: {{ $forms->where('stage', 'onaylandi')->count() }}
-            </div>
-        </div>
+    <div class="w-full py-4  flex flex-col ">
+
         <table id="myTable" class="divide-gray-200 ">
         </table>
         <div class="flex  gap-4 px-5">
@@ -46,10 +33,42 @@
         </div>
         <div class="etik_kurul_onaylari  flex gap-2 w-full flex-wrap md:flex-row flex-col items-center justify-center">
         </div>
-
+        <div class="p-5 gap-4 flex md:flex-row flex-col">
+            <div class="">
+                Sekreterlik Onayı Bekleyen Başvuru Sayısı: {{ $forms->where('stage', 'sekreterlik')->count() }}
+            </div>
+            <div class="">
+                Etik Kurul Onayı Bekleyen Başvuru Sayısı: {{ $forms->where('stage', 'etik_kurul')->count() }}
+            </div>
+            <div class="">
+                Reddedilmiş Başvuru Sayısı: {{ $forms->where('stage', 'reddedildi')->count() }}
+            </div>
+            <div class="">
+                Onaylanan Başvuru Sayısı: {{ $forms->where('stage', 'onaylandi')->count() }}
+            </div>
+            <div class="">
+                Düzeltme Beklenen Başvuru Sayısı: {{ $forms->where('stage', 'duzeltme')->count() }}
+            </div>
+        </div>
     </div>
 
 </x-datatables-layout>
+<style>
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+        background: #dc3545;
+        color: white !important;
+    }
+
+    .dataTables_wrapper .dataTables_paginate .paginate_button:active {
+        background: #dc3545 !important;
+        color: white !important;
+    }
+
+    li.paginate_button.page-item.active {
+        background-color: #dc3545 !important;
+        color: white !important;
+    }
+</style>
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         var maxLength = 32; // Change this to your desired character limit
@@ -192,17 +211,7 @@
             colReorder: true,
             responsive: true,
             stateSave: true,
-            stateLoadParams: function(settings, data) {
-                // Update each search input with the saved search value
-                this.api().columns().every(function() {
-                    var column = this;
-                    var columnIndex = column.index();
-                    var searchValue = data.columns[columnIndex].search.search;
 
-                    // Update the search input for this column
-                    $(column.header()).find('input').val(searchValue);
-                });
-            },
             select: {
                 style: 'multi',
                 blurable: false,
@@ -215,7 +224,11 @@
                     width: '100px', // Set your desired fixed width here
                 };
             }),
-
+            search: {
+                caseInsensitive: false,
+                smart: false,
+                regex: true,
+            },
 
             autoWidth: false,
 
@@ -271,32 +284,42 @@
 
                     // Create a container for the search input and button
                     var container = $(
-                        '<div class="gap-3 w-full flex flex-col items-center" ></div>'
-                    );
+                        '<div class="gap-3 w-full flex flex-col items-center" ></div>');
+
+                    var searchValue = ''; // Initialize searchValue
+
+                    // If state is loaded, get the search value
+                    if (api.state.loaded()) {
+                        searchValue = api.state.loaded().columns[columnIndex].search.search;
+                    }
 
                     // Create the search input
-                    var input = $('<input class="w-48" type="text" placeholder="' +
+                    var input = $(
+                            '<input class="rounded-md py-1" type="search" placeholder="' +
                             title +
-                            '" />')
+                            '" value="' + searchValue + '" />')
                         .on('click', function(e) {
                             e
-                                .stopPropagation(); // Prevent click propagation to the th element
+                        .stopPropagation(); // Prevent click propagation to the th element
                         })
                         .on('keyup change', function() {
                             if (column.search() !== this.value) {
                                 column.search(this.value.trim()).draw();
                             }
+                        })
+                        .on('search', function() {
+                            if (!this.value) {
+                                column.search('').draw();
+                            }
                         });
 
                     // Append the input and button to the container
-                    container.append('<span class="">' + title + '</span>').append(
-                        input);
+                    container.append('<span class="">' + title + '</span>').append(input);
 
                     // Append the container to the column header
                     $(column.header()).empty().append(container);
                 });
             }
-
 
 
         });
