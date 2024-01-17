@@ -86,8 +86,7 @@ Route::view('/', 'root.index')->name('root.index');
 //     echo 'ok';
 // });
 
-use Illuminate\Support\Facades\Http;
-use Symfony\Component\DomCrawler\Crawler;
+
 
 //h25514327122
 // Route::get('tken', function () {

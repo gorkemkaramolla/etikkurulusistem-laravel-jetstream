@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\Http;
 use Symfony\Component\DomCrawler\Crawler;
 
 use App\Actions\Jetstream\DeleteUser;
-use App\Models\Form;
 use Illuminate\Support\ServiceProvider;
 use Laravel\Jetstream\Jetstream;
 
@@ -82,13 +81,6 @@ class JetstreamServiceProvider extends ServiceProvider
                         'password' => Hash::make($request['password']),
                         "role" => $userRole,
                     ]);
-                    if ($user) {
-                        Form::all()->where("username", $user->username)->each(function ($form) use ($user) {
-                            $form->user_id = $user->id;
-                            $form->save();
-                        });
-                        return $user;
-                    }
                 }
             } catch (Exception $e) {
                 Log::error('Giriş patladı: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
