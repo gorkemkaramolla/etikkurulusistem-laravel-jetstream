@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
+use App\Http\Controllers\AdminFeaturesController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -26,5 +27,7 @@ Route::middleware([
 ])->group(function () {
     Route::middleware('CheckUserEtikKurulMember')->group(function () {
         Route::post('/send-email', [EmailController::class, 'handleSendEmail']);
+        Route::post('/edit-user/{userId}', [AdminFeaturesController::class, 'editUser'])->name('adminfeatures.editUser');
+        Route::post('/add-new-user', [AdminFeaturesController::class, 'addNewUser'])->name('adminfeatures.addNewUser');
     });
 });

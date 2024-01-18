@@ -40,6 +40,47 @@ class AdminFeaturesController extends Controller
             return response()->json(['error' => 'Bu işlemi yapmaya yetkiniz yok.'], 401);
         }
     }
+    public function editUser(Request $request, $userId)
+    {
+        // Check if the user is an admin
+        if (!auth()->user()->role === "admin") {
+            return response()->json(['error' => 'Bu işlemi yapmaya yetkiniz yok.'], 401);
+        }
+
+        // Validate the request data
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|max:255',
+            'lastname' => 'required|max:255',
+            'username' => 'max:255',
+            'role' => 'required',
+            'email' => 'required|email|max:255',
+        ], [
+            'required' => ':attribute alanı gereklidir.',
+            'max' => ':attribute alanı en fazla :max karakter olabilir.',
+            'unique' => ':attribute alanı zaten kayıtlı.',
+            'min' => ':attribute alanı en az :min karakter olmalıdır.',
+            'email' => ':attribute alanı geçerli bir e-posta adresi olmalıdır.',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors()->all();
+            $errorMessage = implode(' ', $errors);
+            return response()->json([$errorMessage], 400);
+        }
+        // Update the user
+        $user = User::find($userId);
+        if ($user) {
+            $user->name = $request['name'];
+            $user->lastname = $request['lastname'];
+            $user->username = $request['username'];
+            $user->role = $request['role'];
+            $user->email = $request['email'];
+            $user->save();
+            return response()->json(['success' => 'Kullanıcı başarıyla güncellendi.'], 200);
+        } else {
+            return response()->json(['error' => 'Kullanıcı bulunamadı.'], 404);
+        }
+    }
     public function addNewUser(Request $request)
     {
         // Check if the user is an admin

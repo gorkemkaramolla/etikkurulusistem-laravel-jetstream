@@ -40,7 +40,6 @@ class JetstreamServiceProvider extends ServiceProvider
             try {
 
                 if ($user) {
-                    $isEmail = filter_var($userLoginField, FILTER_VALIDATE_EMAIL);
                     if ($user) {
                         if (Hash::check($request->password, $user->password)) {
                             return $user;
