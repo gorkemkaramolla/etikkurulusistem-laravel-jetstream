@@ -2,8 +2,7 @@
 
 <div class="modal-body{{ $formid }}">
 
-    <button onclick="toggleModal('{{ $formid }}')"
-        class="modal-open bg-transparent  py-2 px-4">Karar/Verdict</button>
+    <x-button onclick="toggleModal('{{ $formid }}')">Karar/Verdict</x-button>
 
     <div
         class="modal{{ $formid }} opacity-0 pointer-events-none fixed w-full h-full top-0 left-0 flex items-center justify-center">

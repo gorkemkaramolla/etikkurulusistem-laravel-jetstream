@@ -1,26 +1,10 @@
 <x-datatables-layout>
     <div class="w-full py-4  flex flex-col ">
-
+        <div class="etik_kurul_onaylari  flex gap-2 w-full flex-wrap md:flex-row  items-center justify-center">
+        </div>
         <table id="myTable" class="divide-gray-200 ">
         </table>
-        <div class="flex  gap-4 px-5">
-            <div style="display: flex; align-items:center; justify-content:center;" id="emailModal"
-                class="modal hidden absolute inset-0 bg-black bg-opacity-50 ">
-
-                <div class="bg-white flex items-center justify-center p-6 rounded shadow-lg relative transform ">
-                    <button class="close absolute right-4 text-2xl top-2">×</button>
-                    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
-                    <div>
-                        <form id="emailForm" class="p-4">
-                            @csrf
-                            <label id="emailAddresses">Email Addresses:
-                            </label>
-                            <textarea name="email-content" class="w-full h-16 p-2  resize-none"></textarea>
-                            <button type="submit" class="mt-4 bg-indigo-600 text-white p-2 rounded">Send Email</button>
-                        </form>
-                    </div>
-                </div>
-            </div>
+        <div class="flex flex-wrap gap-4 px-5">
 
             <x-button class=" px-4 send-mail-button hidden">Seçilenlere Mail Gönder</x-button>
             <x-button class=" delete-button hidden">Seçilenleri Sil</x-button>
@@ -29,27 +13,13 @@
                 @method('DELETE')
             </form>
             <a target="_blank"
-                class="show-edit-button hidden  flex items-center  px-4 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Düzenle</a>
+                class="show-edit-button hidden  flex items-center  py-2 px-4 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Düzenle</a>
+            <a target="_blank"
+                class="show-querystage-button hidden  flex items-center py-2 px-4 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Sorgu
+                Linki</a>
         </div>
-        <div class="etik_kurul_onaylari  flex gap-2 w-full flex-wrap md:flex-row flex-col items-center justify-center">
-        </div>
-        <div class="p-5 gap-4 flex md:flex-row flex-col">
-            <div class="">
-                Sekreterlik Onayı Bekleyen Başvuru Sayısı: {{ $forms->where('stage', 'sekreterlik')->count() }}
-            </div>
-            <div class="">
-                Etik Kurul Onayı Bekleyen Başvuru Sayısı: {{ $forms->where('stage', 'etik_kurul')->count() }}
-            </div>
-            <div class="">
-                Reddedilmiş Başvuru Sayısı: {{ $forms->where('stage', 'reddedildi')->count() }}
-            </div>
-            <div class="">
-                Onaylanan Başvuru Sayısı: {{ $forms->where('stage', 'onaylandi')->count() }}
-            </div>
-            <div class="">
-                Düzeltme Beklenen Başvuru Sayısı: {{ $forms->where('stage', 'duzeltme')->count() }}
-            </div>
-        </div>
+
+
     </div>
 
 </x-datatables-layout>
@@ -337,23 +307,24 @@
 
             if (selectedRows.count() === 1) {
                 var id = selectedRows.data()[0].ID;
-                var stage = selectedRows.data()[0].stage;
+                var stage = selectedRows.data()[0].Aşama;
                 $('.etik_kurul_onaylari').toggleClass('hidden', false);
                 $('.show-edit-button').toggleClass('hidden', false);
+                $('.show-querystage-button').toggleClass('hidden', false);
                 $('.show-edit-button').attr('href',
                     `/formshow` + '/' + id);
+                $('.show-querystage-button').attr('href',
+                    `/query-etikkurul` + '/' + id);
                 if (stage === "etik_kurul" || stage === "reddedildi" || stage === "onaylandi") {
-
                     $.ajax({
                         url: `/getEtikKuruluOnayiByFormId` + '/' + id,
                         type: 'GET',
                         success: function(response) {
                             var html =
-                                '<div class="w-full block flex justify-center items-center text-lg font-bold mb-2">Form ID: ' +
-                                id +
+                                '<div class="w-full block flex justify-center items-center text-lg font-bold mb-2"><p>Etik Kurul Onay Durumu</p>' +
                                 '</div>';
                             html += $.map(response, function(value, key) {
-                                return '<div class="flex flex-col  bg-white shadow-md rounded-lg p-4 mb-4 w-64 ">' +
+                                return `<div class="flex flex-col  ${value.onay_durumu === "onaylandi" ? "bg-green-500 text-white" : value.onay_durumu === "reddedildi" ? "bg-red-400 text-white" : "bg-white"} shadow-md rounded-lg p-4 mb-4  ">` +
                                     '<h3 class="text-sm font-bold mb-2 truncate">' +
                                     value.username + ' ' + value.lastname +
                                     '</h3>' +
@@ -370,6 +341,7 @@
                 }
             } else {
                 $('.show-edit-button').toggleClass('hidden', true);
+                $('.show-querystage-button').toggleClass('hidden', true);
                 $('.etik_kurul_onaylari').toggleClass('hidden', true);
 
                 $('.etik_kurul_onaylari').empty();

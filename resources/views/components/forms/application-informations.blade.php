@@ -24,7 +24,7 @@
         <div class="col-md-4 form-group">
             <label for="q1">Akademik Yıl<br><span class="pt-0 small">Term:</span><span
                     class="text-danger">*</span></label>
-            <input name="academic_year" type="text" class="form-control"
+            <input required name="academic_year" type="text" class="form-control"
                 value="{{ $formData ? $formData->academic_year : old('academic_year') }}">
         </div>
         <div class="col-md-4 form-group">
@@ -54,8 +54,7 @@
         <div class="col-md-4 form-group">
             <label for="q3">Başvuru Türü<br><span class="pt-0 small">Program Type:</span><span
                     class="text-danger">*</span></label>
-            <select class="form-control" name="application_type" onchange="toggleOtherInput(this, 'otherInput');"
-                required>
+            <select class="form-control" name="application_type" required>
                 <option value="" disabled
                     {{ ($formData ? $formData->application_type : old('application_type')) ? '' : 'selected' }}>
                     Başvuru Türü
@@ -86,8 +85,7 @@
         <div class="col-md-4 form-group">
             <label for="q4">Çalışmanın Niteliği <br><span class="pt-0 small">The Nature of the Work:</span><span
                     class="text-danger">*</span></label>
-            <select class="form-control" name="work_qualification" onchange="toggleOtherInput(this, 'otherInput');"
-                required>
+            <select class="form-control" name="work_qualification" required>
                 <option value="" disabled
                     {{ ($formData ? $formData->work_qualification : old('work_qualification')) ? '' : 'selected' }}>
                     Çalışmanın Niteliğinizi seçiniz
@@ -113,16 +111,13 @@
                     Diğer
                 </option>
             </select>
-            <div class="col-md-4 form-group"
-                style="display: {{ ($formData ? $formData->work_qualification : old('work_qualification')) == 'Diğer' ? 'block' : 'none' }};">
-                <input type="text" class="form-control" name="other" placeholder="Lütfen belirtiniz">
-            </div>
+
         </div>
 
         <div class="col-md-4 form-group">
             <label for="q5">Araştırma Türü<br><span class="pt-0 small">Type of Research:</span><span
                     class="text-danger">*</span></label>
-            <select class="form-control" name="research_type" onchange="toggleOtherInput(this, 'otherInput');" required>
+            <select class="form-control" name="research_type" required>
                 <option value="" disabled
                     {{ ($formData ? $formData->research_type : old('research_type')) ? '' : 'selected' }}>
                     Araştırma Türü seçiniz
@@ -148,10 +143,7 @@
                     Diğer
                 </option>
             </select>
-            <div class="col-md-4 form-group"
-                style="display: {{ ($formData ? $formData->research_type : old('research_type')) == 'Diğer' ? 'block' : 'none' }};">
-                <input type="text" class="form-control" name="other" placeholder="Lütfen belirtiniz">
-            </div>
+
         </div>
 
         <div class="col-md-4 form-group">
@@ -184,7 +176,7 @@
         <div class="col-md-4 form-group">
             <label for="research_start_date">Araştırma Başlama ve bitiş tarihi<br><span class="pt-0 small">Start date
                     of the research:</span><span class="text-danger">*</span> </label>
-            <input type="date" name="research_start_date" class="form-control" placeholder="dd/mm/yyyy"
+            <input required type="date" name="research_start_date" class="form-control" placeholder="dd/mm/yyyy"
                 pattern="\d{2}/\d{2}/\d{4}"
                 value="{{ $formData ? $formData->research_start_date : old('research_start_date') }}">
         </div>
@@ -192,7 +184,7 @@
         <div class="col-md-4 form-group">
             <label for="research_end_date">Araştırma Bitiş Tarihi<br><span class="pt-0 small">End
                     date of the research:</span><span class="text-danger">*</span> </label>
-            <input type="date" name="research_end_date" class="form-control" placeholder="dd/mm/yyyy"
+            <input required type="date" name="research_end_date" class="form-control" placeholder="dd/mm/yyyy"
                 pattern="\d{2}/\d{2}/\d{4}"
                 value="{{ $formData ? $formData->research_end_date : old('research_end_date') }}">
         </div>

@@ -1,4 +1,19 @@
 <x-datatables-layout>
+    <script>
+        var etikKurulOnayi;
+
+        $.ajax({
+            url: `/getEtikKuruluOnayiByFormId` + '/' + id,
+            type: 'GET',
+            async: false, // This makes the AJAX request synchronous
+            success: function(response) {
+                etikKurulOnayi = response;
+            },
+            error: function(error) {
+                alert(JSON.stringify(error));
+            }
+        });
+    </script>
 
     <head>
         <title>{{ auth()->user()->role === 'sekreterlik' ? 'Sekreterlik Üyesi' : 'Etik Kurulu Üyesi' }}</title>
@@ -39,28 +54,12 @@
                     @method('DELETE')
                 </form> --}}
                 <a target="_blank"
-                    class="show-edit-button hidden  flex items-center  px-4 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Düzenle</a>
+                    class="show-edit-button hidden  flex items-center  px-4 bg-gray-800 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-gray-700 focus:bg-gray-700 active:bg-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 transition ease-in-out duration-150">Görüntüle/Karar</a>
             </div>
             <div
                 class="etik_kurul_onaylari  flex gap-2 w-full flex-wrap md:flex-row flex-col items-center justify-center">
             </div>
-            <div class="p-5 gap-4 flex md:flex-row flex-col">
-                <div class="">
-                    Sekreterlik Onayı Bekleyen Başvuru Sayısı: {{ $forms->where('stage', 'sekreterlik')->count() }}
-                </div>
-                <div class="">
-                    Etik Kurul Onayı Bekleyen Başvuru Sayısı: {{ $forms->where('stage', 'etik_kurul')->count() }}
-                </div>
-                <div class="">
-                    Reddedilmiş Başvuru Sayısı: {{ $forms->where('stage', 'reddedildi')->count() }}
-                </div>
-                <div class="">
-                    Onaylanan Başvuru Sayısı: {{ $forms->where('stage', 'onaylandi')->count() }}
-                </div>
-                <div class="">
-                    Düzeltme Beklenen Başvuru Sayısı: {{ $forms->where('stage', 'duzeltme')->count() }}
-                </div>
-            </div>
+
         </div>
 
         <style>
@@ -160,7 +159,6 @@
                     form['Oluşturulma Tarihi'] = formatDate(created_at);
                     form['Güncelleme Tarihi'] = formatDate(updated_at);
 
-                    delete form['etik_kurul_onayi']; // Remove the etik_kurul_onayi field
 
                     return form;
                 });
@@ -193,6 +191,7 @@
 
 
                 var dataTable = $('#myTable').DataTable({
+
                     data: jsonData,
                     dom: 'Bfrtip',
                     language: {
@@ -218,6 +217,7 @@
                         }
 
                     },
+
                     colReorder: true,
                     responsive: true,
                     stateSave: true,
@@ -363,11 +363,11 @@
                                         id +
                                         '</div>';
                                     html += $.map(response, function(value, key) {
-                                        return '<div class="flex flex-col  bg-white shadow-md rounded-lg p-4 mb-4 w-64 ">' +
+                                        return `<div class="flex flex-col  ${value.onay_durumu === "onaylandi" ? "bg-green-500 text-white" : value.onay_durumu === "reddedildi" ? "bg-red-400 text-white" : "bg-white"} shadow-md rounded-lg p-4 mb-4 w-64 ">` +
                                             '<h3 class="text-sm font-bold mb-2 truncate">' +
                                             value.username + ' ' + value.lastname +
                                             '</h3>' +
-                                            '<p class="text-xs text-gray-700">Onay Durumu: <span class="font-semibold">' +
+                                            '<p class="text-xs ">Onay Durumu: <span class="font-semibold">' +
                                             value.onay_durumu + '</span></p>' +
                                             '</div>';
                                     }).join('');

@@ -20,10 +20,11 @@
                 </button>
             </div>
         </div>
-        <div class="flex items-center bg-custom-red rounded-xl text-white p-2 my-3 gap-3">
-            <h2 class=" text-2xl  self-center   font-extrabold">Tüm Başvurularım</h2>
+        @if ($forms->count() > 0)
+            <div class="flex items-center  text-black p-2 my-3 gap-3">
+                <h2 class=" text-2xl  self-center   font-extrabold">Tüm Başvurularım</h2>
 
-            {{-- <div class="tooltip">
+                {{-- <div class="tooltip">
                 <span class="tooltip-text">
                     Bu, Nişantaşı Üniversitesi tarafından onaylanan başvurunuzun durumunu paylaşmanıza olanak sağlar. Bu
                     bilgi, başvurunuzun onaylandığını ve ilgili süreçlerin tamamlandığını gösterir. Bu durumu,
@@ -36,7 +37,8 @@
                         d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
                 </svg>
             </div> --}}
-        </div>
+            </div>
+        @endif
         <div
             class="w-full h-full my-4 flex   flex-col  gap-4 p-4  items-center md:items-center flex-wrap justify-start">
             @if (count($forms) !== 0)
@@ -125,8 +127,13 @@
                                 href="/formshow/{{ $form->id ?? '' }}">
                                 Başvuruyu Görüntüle
                             </a>
-                            <div class="flex items-center">
-                                <div class="tooltip">
+                            <div class="flex items-center gap-2">
+
+                                <button data-id="{{ $form->id }}"
+                                    class="share-button inline-flex self-end justify-self-end items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50">
+                                    Sorgu Linkini Paylaş
+                                </button>
+                                <div class="tooltip cursor-pointer">
                                     <svg class="" class="text-4xl" xmlns="http://www.w3.org/2000/svg"
                                         width="16" height="16" fill="black" class="bi bi-info-circle"
                                         viewBox="0 0 16 16">
@@ -135,12 +142,6 @@
                                             d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l-.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
                                     </svg>
                                 </div>
-                                <button
-                                    class="inline-flex self-end justify-self-end items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50">
-                                    Paylaş
-                                </button>
-
-
                                 <script>
                                     tippy('.tooltip', {
                                         content: 'Bu, Nişantaşı Üniversitesi tarafından onaylanan başvurunuzun durumunu paylaşmanıza olanak sağlar. Bu bilgi, başvurunuzun onaylandığını ve ilgili süreçlerin tamamlandığını gösterir. Bu durumu, başvurunuzun sonucunu bekleyen diğer kişilerle paylaşabilirsiniz.',
@@ -162,9 +163,52 @@
                         Yeni Başvuru Yap</a>
 
                 </div>
+
             @endif
         </div>
     </div>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+
+    <script type="text/javascript">
+        $('.share-button').on('click', function() {
+            var qrText = "https://etikkurul.nisantasi.edu.tr/query-etikkurul/" + $(this).data('id');
+
+            Swal.fire({
+                title: 'Genel başvuru sorgulama linkiniz',
+                html: `
+                <div id="qrcode" class="w-full flex items-center flex-col justify-center gap-4">
+                    <div>Bu linki paylaşabilirsin</div>
+                    <button class="copy-button flex gap-3 border-2 hover:border-black transition-colors rounded-md p-3 cursor-pointer items-center btn btn-primary" data-qrtext="${qrText}">Linki Kopyala
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="gray" class="bi bi-clipboard" viewBox="0 0 16 16">
+  <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1z"/>
+  <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0z"/>
+</svg></button>
+                </div>
+            `,
+                didOpen: function() {
+                    new QRCode(document.getElementById('qrcode'), {
+                        text: qrText,
+                        width: 256,
+                        height: 256,
+                        colorDark: "black",
+                        colorLight: "white",
+                        correctLevel: QRCode.CorrectLevel.H
+                    });
+
+                    $('.copy-button').on('click', function() {
+                        var qrText = $(this).data('qrtext');
+                        navigator.clipboard.writeText(qrText).then(function() {
+                            /* clipboard successfully set */
+                            Swal.fire('Kopyalandı!', '', 'success');
+                        }, function() {
+                            /* clipboard write failed */
+                            Swal.fire('Failed to copy', '', 'error');
+                        });
+                    });
+                }
+            });
+        });
+    </script>
     <script>
         function hideAnnouncement() {
             $('.announcement').hide();
@@ -187,18 +231,6 @@
             animation: slide-down 0.5s ease-out;
         }
     </style>
-    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
-    <script type="text/javascript">
-        let qrcodeContainer = document.getElementById("qrcode");
-        qrcodeContainer.innerHTML = "";
-        new QRCode(qrcodeContainer, {
-            text: "/query-etikkurul/{{ $form->id }}",
-            width: 128,
-            height: 128,
-            colorDark: "black",
-            colorLight: "white",
-            correctLevel: QRCode.CorrectLevel.H
-        });
-    </script>
+
 
 </x-app-layout>

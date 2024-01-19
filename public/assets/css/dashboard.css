@@ -40,7 +40,9 @@ th {
 #myTable tr.even td {
     background-color: #ffffff !important; /* or any color for odd rows */
 }
-
+.green-row {
+    background-color: green;
+}
 #myTable tr.odd td {
     background-color: #f0eeee !important; /* or any color for odd rows */
 }

@@ -362,7 +362,8 @@ class FormsController extends Controller
                 }
 
                 $response[] = [
-
+                    "user_id" => $etikKurulOnayi->user_id,
+                    "form_id" => $etikKurulOnayi->form_id,
                     'username' => $user->name,
                     'lastname' => $user->lastname,
                     'onay_durumu' => $etikKurulOnayi->onay_durumu,
