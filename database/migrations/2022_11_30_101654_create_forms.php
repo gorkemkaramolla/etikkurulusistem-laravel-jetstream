@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained()->onDelete('set null');
 
             $table->timestamps();
-
+            $table->timestamp('conclusion_date')->nullable();
             //researcher
             $table->string("name", 255); //isim
             $table->string("lastname", 255); //soyisim
@@ -24,7 +24,6 @@ return new class extends Migration
             //researcher
             $table->string("advisor", 255); //danışman
             $table->string('email');
-
             // Change 'ana_bilim_dali' to enum with provided values
             $table->text('ana_bilim_dali');
 

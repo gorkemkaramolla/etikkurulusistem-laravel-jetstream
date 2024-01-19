@@ -309,8 +309,9 @@ class FormsController extends Controller
             //DUZELTME VEYA RED
             $form->stage = $decide;
             $form->decide_reason = $decide_reason;
+            $form->conclusion_date = now();
             $form->save();
-            $researcherEmail = $form->email;
+            // $researcherEmail = $form->email;
 
 
             // // Use the Mail facade to send an email
@@ -324,6 +325,7 @@ class FormsController extends Controller
             if ($etikKurulOnayi->whereNotIn('onay_durumu', ['bekleme', 'duzeltme', 'reddedildi'])->count() === $etikKurulOnayi->count()) {
                 //ONAYLANMA DURUMU
                 $form->stage = 'onaylandi';
+                $form->conclusion_date = now();
                 $form->save();
                 $researcherEmail = $form->email;
 
@@ -369,7 +371,7 @@ class FormsController extends Controller
             }
 
             return response()->json($response);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -393,14 +395,14 @@ class FormsController extends Controller
     }
     public function generateQueryStageForm($formid)
     {
-        try {
-            $form = Form::where('id', $formid)->first();
 
+        $form = Form::where('id', $formid)->first();
 
+        if ($form)
 
             return view('forms.display-querystage', compact('form'));
-        } catch (\Exception $e) {
-            return response()->view('errors.500', ['error' => $e->getMessage()], 500);
+        else {
+            abort(404);
         }
     }
 }

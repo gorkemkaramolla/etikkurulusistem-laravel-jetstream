@@ -1,4 +1,6 @@
 <x-app-layout>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/tippy.js@6"></script>
     <div class="w-full h-full  flex-col flex justify-center items-center">
         <div class="w-full announcement">
             <div
@@ -18,13 +20,29 @@
                 </button>
             </div>
         </div>
-        <h2 class="text-xl  self-center  border-b-2 font-extrabold">Tüm Başvurularım</h2>
+        <div class="flex items-center bg-custom-red rounded-xl text-white p-2 my-3 gap-3">
+            <h2 class=" text-2xl  self-center   font-extrabold">Tüm Başvurularım</h2>
+
+            {{-- <div class="tooltip">
+                <span class="tooltip-text">
+                    Bu, Nişantaşı Üniversitesi tarafından onaylanan başvurunuzun durumunu paylaşmanıza olanak sağlar. Bu
+                    bilgi, başvurunuzun onaylandığını ve ilgili süreçlerin tamamlandığını gösterir. Bu durumu,
+                    başvurunuzun sonucunu bekleyen diğer kişilerle paylaşabilirsiniz.
+                </span>
+                <svg class="" class="text-4xl" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                    fill="white" class="bi bi-info-circle" viewBox="0 0 16 16">
+                    <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                    <path
+                        d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                </svg>
+            </div> --}}
+        </div>
         <div
             class="w-full h-full my-4 flex   flex-col  gap-4 p-4  items-center md:items-center flex-wrap justify-start">
             @if (count($forms) !== 0)
                 @foreach ($forms as $form)
                     <div
-                        class="rounded-lg w-[100%]  md:w-[900px]  flex flex-col justify-start  overflow-y-auto bg-white p-2 border-2 {{ $form->stage === 'etik_kurul' ? 'border-blue-400' : ($form->stage === 'sekreterlik' ? 'border-purple-400' : ($form->stage === 'onaylandi' ? 'border-green-400' : ($form->stage === 'reddedildi' ? 'border-red-400' : 'border-orange-400'))) }}  ">
+                        class="rounded-lg w-[100%]  md:w-[900px]  flex flex-col justify-start z-0  overflow-y-auto bg-white p-2 border-2 {{ $form->stage === 'etik_kurul' ? 'border-blue-400' : ($form->stage === 'sekreterlik' ? 'border-purple-400' : ($form->stage === 'onaylandi' ? 'border-green-400' : ($form->stage === 'reddedildi' ? 'border-red-400' : 'border-orange-400'))) }}  ">
 
                         @if ($form->stage === 'duzeltme')
                             <div class="bg-orange-100   m-4 border-l-4 flex flex-col items-start justify-start border-orange-500 text-orange-700 p-4"
@@ -36,13 +54,16 @@
                                 </a>
                             </div>
                         @endif
+
                         @if ($form->stage === 'etik_kurul')
                             <h2 class="p-2 rounded-md mb-3 bg-blue-600 text-white">
                                 Başvurunuz Etik Kurul Değerlendirmesinde
+
                             </h2>
                         @elseif ($form->stage === 'sekreterlik')
-                            <h2 class="p-2 rounded-md mb-3 bg-purple-600 text-white">
+                            <h2 class="p-2 flex rounded-md mb-3 bg-purple-600 text-white">
                                 Başvurunuz Sekreterlik Değerlendirmesinde
+
                             </h2>
                         @elseif($form->stage === 'onaylandi')
                             <h2 class="p-2 rounded-md mb-3 bg-green-600 text-white">
@@ -71,7 +92,7 @@
                             {{ $form->research_title }}
                         </div>
                         <div class="flex gap-2 justify-center flex-col p-2 rounded-md bg-gray-100  mb-3">
-                            <h3 class="text-center text-lg font-bold text-gray-900">Ek Dosyalarınız</h3>
+                            <h3 class="text-center text-lg font-bold text-gray-900">Ek Dosyalarım</h3>
                             <a target="_blank"
                                 class="inline-flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
                                 href="{{ url('/show-pdf/' . $form->onam_path) }}">
@@ -97,12 +118,35 @@
                                 </a>
                             @endif
                         </div>
-                        <div class="bg-gray-100  mb-3   rounded-md px-3 py-2 text-sm font-semibold text-gray-700 mr-2">
+                        <div
+                            class="bg-gray-100  mb-3  flex justify-between  rounded-md px-3 py-2 text-sm font-semibold text-gray-700 mr-2">
                             <a target="_blank"
                                 class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
                                 href="/formshow/{{ $form->id ?? '' }}">
-                                Tüm Başvuruyu Görüntüle
+                                Başvuruyu Görüntüle
                             </a>
+                            <div class="flex items-center">
+                                <div class="tooltip">
+                                    <svg class="" class="text-4xl" xmlns="http://www.w3.org/2000/svg"
+                                        width="16" height="16" fill="black" class="bi bi-info-circle"
+                                        viewBox="0 0 16 16">
+                                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16" />
+                                        <path
+                                            d="m8.93 6.588-2.29.287-.082.38.45.083c.294.07.352.176.288.469l-.738 3.468c-.194.897.105 1.319.808 1.319.545 0 1.178-.252 1.465-.598l-.088-.416c-.2.176-.492.246-.686.246-.275 0-.375-.193-.304-.533zM9 4.5a1 1 0 1 1-2 0 1 1 0 0 1 2 0" />
+                                    </svg>
+                                </div>
+                                <button
+                                    class="inline-flex self-end justify-self-end items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50">
+                                    Paylaş
+                                </button>
+
+
+                                <script>
+                                    tippy('.tooltip', {
+                                        content: 'Bu, Nişantaşı Üniversitesi tarafından onaylanan başvurunuzun durumunu paylaşmanıza olanak sağlar. Bu bilgi, başvurunuzun onaylandığını ve ilgili süreçlerin tamamlandığını gösterir. Bu durumu, başvurunuzun sonucunu bekleyen diğer kişilerle paylaşabilirsiniz.',
+                                    });
+                                </script>
+                            </div>
                             <x-forms.form-status :formid="$form->id" :stage="$form->stage" :decide_reason="$form->decide_reason" />
 
                         </div>
@@ -121,7 +165,6 @@
             @endif
         </div>
     </div>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         function hideAnnouncement() {
             $('.announcement').hide();
@@ -144,4 +187,18 @@
             animation: slide-down 0.5s ease-out;
         }
     </style>
+    <script src="https://cdn.rawgit.com/davidshimjs/qrcodejs/gh-pages/qrcode.min.js"></script>
+    <script type="text/javascript">
+        let qrcodeContainer = document.getElementById("qrcode");
+        qrcodeContainer.innerHTML = "";
+        new QRCode(qrcodeContainer, {
+            text: "/query-etikkurul/{{ $form->id }}",
+            width: 128,
+            height: 128,
+            colorDark: "black",
+            colorLight: "white",
+            correctLevel: QRCode.CorrectLevel.H
+        });
+    </script>
+
 </x-app-layout>

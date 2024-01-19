@@ -67,11 +67,11 @@ Route::get("/info", function () {
     return view('info.index');
 });
 
-Route::get('/query-etikkurul/{formid}', [FormsController::class, 'generateQueryStageForm'])->name('forms.getx');
 Route::get('/form/{formId?}', [FormsController::class, 'index'])->name('forms.index');
 
 
 Route::view('/', 'root.index')->name('root.index');
+Route::get('/query-etikkurul/{formid}', [FormsController::class, 'generateQueryStageForm']);
 
 // Route::get('/seed-database', [DatabaseSeedController::class, 'seed']);
 // Route::get('generate', function () {
