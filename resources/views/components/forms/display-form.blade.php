@@ -1,4 +1,9 @@
 @props(['form'])
+@section('title', 'Başvuru ' . $form['name'] . ' ' . $form['lastname'])
+
+<!-- form display code -->
+
+<!-- form display code -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/1.5.3/jspdf.debug.js"></script>
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
