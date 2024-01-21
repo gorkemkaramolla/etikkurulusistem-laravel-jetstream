@@ -36,6 +36,8 @@ return [
     'research_data_collection' => 'Araştırma Veri Toplama Yöntemleri',
     'research_restrictions' => 'Araştırma Kısıtlamaları',
     'research_place_date' => 'Araştırma Yapılacak Yer ve Tarih',
+    'conclusion_data' => 'Sonuç Tarihi',
+
     'research_literature_review' => 'Araştırma Literatür Taraması',
     'is_modified' => 'Değiştirildi mi',
 ];

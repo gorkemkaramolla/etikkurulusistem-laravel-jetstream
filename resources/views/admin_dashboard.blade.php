@@ -95,6 +95,8 @@
     $(document).ready(function() {
         var jsonData = @json($forms);
         var columnNamesTurkish = @json(config('columnnames'));
+        jsonData = Array.isArray(jsonData) ? jsonData : Object.values(jsonData);
+        var columnNamesTurkish = @json(config('columnnames'));
         jsonData = jsonData.map(function(item) {
             var newItem = {};
             for (var key in item) {

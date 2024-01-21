@@ -136,7 +136,7 @@
                         <td>Progrma/Alan</td>
                         <td>{{ $form['program'] }}</td>
                         <td>Etik Kurul Toplantı Tarihi</td>
-                        <td>Bu alan doldurulacak</td>
+                        <td>{{ $form['conclusion_date'] }}</td>
                     </tr>
                     <tr>
                         <td>Çalışma Niteliği</td>
@@ -152,7 +152,6 @@
             <div class="d-flex justify-content-center align-items-center">
                 <div class="card" style="width: 50rem;">
                     <div class="card-body">
-                        <h1 class="card-title">Sayın Kullanıcı,</h1>
                         <p class="card-text">Başvurunuz tarafımıza ulaşmış olup, değerlendirme sürecine alınmıştır. Bu
                             süreç, başvurunuzun detaylarına bağlı olarak biraz zaman alabilir. Başvurunuz
                             sonuçlandığında, sonuçları bu bağlantı üzerinden görüntüleyebilirsiniz. Ayrıca, bu

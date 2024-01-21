@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('lastname')->nullable();
             $table->string('username')->unique()->nullable();
+            $table->string('is_user_active')->nullable()->default("1");
+
 
             $table->string('email')->unique();
             $table->string('role')->default('sekreterlik');

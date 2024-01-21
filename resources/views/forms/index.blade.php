@@ -88,7 +88,7 @@
                         }).then(function() {
                             setTimeout(function() {
                                 window.location.href = '/dashboard';
-                            }, 3000);
+                            }, 1000);
                         });
                     </script>
                 @endif {{-- <div

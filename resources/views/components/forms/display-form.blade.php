@@ -266,7 +266,7 @@
     {{-- ARAŞTIRMA BİLGİLERİ TABLOSU --}}
     <table>
         <tr class="bg-[#ac143c] text-white w-full text-center">
-            <th colspan="2" class="w-full">
+            <th colspan="4" class="w-full">
                 <h2 class="font-extrabold text-sm">3-Araştırma Bilgileri/Research Informations</h2>
             </th>
         </tr>
@@ -378,6 +378,54 @@
             <td data-column-name="research_literature_review" class="w-8/12" colspan="3">
                 <p> {{ $form['research_literature_review'] }}
                 </p>
+            </td>
+        </tr>
+        <tr>
+            <th class="w-4/12" data-column-name="conclusion_date">
+                <p class="font-bold">Sonuçlanma Tarihi</p>
+                <p class="font-bold"><i>Conclusion Date</i></p>
+            </th>
+            <td data-column-name="conclusion_date" class="w-8/12" colspan="3">
+                <p> {{ $form['conclusion_date'] }}
+                </p>
+            </td>
+        </tr>
+        <tr class="w-full">
+            <th class="w-4/12">
+                <p>Ek dosyalar</p>
+                <i>Additional Files
+                </i>
+            </th>
+            <td class="w-4/12 text-center" colspan="1">
+                <a target="_blank"
+                    class="inline-flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
+                    href="{{ url('/show-pdf/' . $form->onam_path) }}">
+                    Gönüllü Onam Formu
+                    <x-svg.download />
+
+                </a>
+
+            </td>
+            <td class="w-4/12 text-center" colspan="1">
+                <a target="_blank"
+                    class="inline-flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
+                    href="{{ url('/show-pdf/' . $form->anket_path) }}">
+                    Anket Formu
+                    <x-svg.download />
+
+                </a>
+            </td>
+            <td class="w-4/12 text-center" colspan="1">
+                @if ($form->kurum_izinleri_path)
+                    <a target="_download"
+                        class="flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
+                        href="{{ url('/show-pdf/' . $form->kurum_izinleri_path) }}">
+
+                        Kurum İzinleri
+                        <x-svg.download />
+
+                    </a>
+                @endif
             </td>
         </tr>
         @if (Auth::user()->role === 'sekreterlik' || Auth::user()->role === 'etik_kurul')

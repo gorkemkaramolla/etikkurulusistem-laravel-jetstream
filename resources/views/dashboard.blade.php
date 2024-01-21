@@ -133,6 +133,10 @@
 
             $(document).ready(function() {
                 var jsonData = @json($forms);
+
+
+                console.log(jsonData)
+                jsonData = Array.isArray(jsonData) ? jsonData : Object.values(jsonData);
                 var columnNamesTurkish = @json(config('columnnames'));
                 jsonData = jsonData.map(function(item) {
                     var newItem = {};

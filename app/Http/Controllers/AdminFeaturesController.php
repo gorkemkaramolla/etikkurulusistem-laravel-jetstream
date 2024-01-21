@@ -31,7 +31,7 @@ class AdminFeaturesController extends Controller
         if (auth()->user()->role == "admin") {
             $user = User::find($user_id);
             if ($user) {
-                $user->delete();
+                $user->is_user_active = 0;
                 return response()->json(['success' => 'Kullanıcı başarıyla silindi.'], 200);
             } else {
                 return response()->json(['error' => 'Kullanıcı bulunamadı.'], 404);

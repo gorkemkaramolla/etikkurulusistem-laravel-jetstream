@@ -1,7 +1,7 @@
 <x-app-layout>
 
-    <div class="w-full flex  lg:flex-row flex-col mx-auto container  gap-3">
-        <div class="lg:w-2/6 px-6 relative w-full bg-white my-4 py-8 shadow-xl rounded-xl ">
+    <div class="w-full flex  lg:flex-row flex-col mx-auto container justify-center  gap-3">
+        <div class="lg:w-2/6 px-6 relative w-full  bg-white my-4 py-8 shadow-xl rounded-xl ">
             <h1 class="text-2xl text-center font-extrabold">Yeni Kullanıcı Oluştur</h1>
             <form action="/api/add-new-user" method="POST" id="create-user-form" class=" flex flex-col gap-3 ">
                 @csrf
@@ -62,7 +62,7 @@
             </form>
         </div>
 
-        <div class="lg:w-4/6 px-6  w-full">
+        <div class=" lg:w-4/6 w-full">
             <div class="bg-white my-4 py-8 px-4 shadow-xl rounded-xl ">
                 <h1 class="text-2xl text-center font-extrabold">Kullanıcılar</h1>
                 <select name="" id="filterUserRole">
@@ -113,7 +113,6 @@
                 </div>
             </div>
         </div>
-        <div class="lg:w-1/6 px-6 w-full"></div>
 
     </div>
     <script>
