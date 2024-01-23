@@ -420,7 +420,7 @@ $(document).ready(function () {
                             url: "/api/send-email",
                             type: "POST",
                             headers: {
-                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                                "X-CSRF-TOKEN": csrfToken,
                             },
                             data: {
                                 emails: emailAddresses,

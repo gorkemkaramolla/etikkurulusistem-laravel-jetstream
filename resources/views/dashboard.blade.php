@@ -66,6 +66,7 @@
         <script>
             var phpForms = @json($forms);
             var turkishColumnNames = @json(config('columnnames'));
+            var csrfToken = "{{ csrf_token() }}";
         </script>
         <script src="{{ asset('assets/js/dashboards.js') }}"></script>
 
