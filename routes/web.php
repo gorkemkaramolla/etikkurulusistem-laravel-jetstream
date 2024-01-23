@@ -33,7 +33,6 @@ Route::middleware([
 
     Route::get('/adminfeatures', [AdminFeaturesController::class, 'index'])->name('adminfeatures.index');
     Route::get('/getUsers/{userRole}', [AdminFeaturesController::class, 'getUsers'])->name('adminfeatures.getUsers');
-    Route::post('/delete-user/{user_id}', [AdminFeaturesController::class, 'deleteUser'])->name('adminfeatures.deleteUser');
     Route::get('export/array', [ExportController::class, 'array'])->name('export.array');
     Route::get("/send-mail", [ExportController::class, 'sendMail'])->name('send.mail');
 

@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use Illuminate\Support\Facades\LOG;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Facades\Session;
 
 use Exception;
 use Illuminate\Http\Request;
@@ -41,8 +43,13 @@ class JetstreamServiceProvider extends ServiceProvider
 
                 if ($user) {
                     if ($user) {
+
                         if (Hash::check($request->password, $user->password)) {
-                            return $user;
+                            if ($user->is_user_active == 0) {
+                                Session::flash('login_error', 'Hesabınız İnaktif. Lütfen destekle iletişime geçiniz./Your account is inactive. Please contact support.');
+                                return;
+                            } else
+                                return $user;
                         }
                     }
                 } else {

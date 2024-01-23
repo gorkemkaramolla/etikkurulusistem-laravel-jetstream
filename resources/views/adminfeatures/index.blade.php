@@ -65,11 +65,14 @@
         <div class=" lg:w-4/6 w-full">
             <div class="bg-white my-4 py-8 px-4 shadow-xl rounded-xl ">
                 <h1 class="text-2xl text-center font-extrabold">Kullanıcılar</h1>
+
                 <select name="" id="filterUserRole">
                     <option selected value="etik_kurul">Etik Kurul Üyeleri</option>
                     <option value="student">Öğrenciler</option>
                     <option value="academic">Akademisyenler</option>
                     <option value="sekreterlik">Sekreterler</option>
+                    <option value="inactive">İnaktif Kullanıcılar</option>
+
                 </select>
                 <div id="table-container" class="fixed-height-table-container">
 
@@ -87,7 +90,8 @@
                         </thead>
                         <tbody>
                             @foreach ($users as $user)
-                                <tr class="border-t userData" data-role="{{ $user->role }}">
+                                <tr class="border-t userData" data-is_user_active="{{ $user->is_user_active }}"
+                                    data-role="{{ $user->role }}">
                                     <td class="px-4 py-2">{{ $user->id }}</td>
 
                                     <td class="px-4 py-2">{{ $user->name }} {{ $user->lastname }}</td>
@@ -95,12 +99,23 @@
                                     <td class="px-4 py-2">{{ $user->username }}</td>
                                     <td class="px-4 py-2">
                                         <div class="flex gap-3">
-                                            <form class="delete-user-form" method="POST"
-                                                action="/delete-user/{{ $user->id }}">
-                                                @csrf
-                                                <button type="submit"
-                                                    class="bg-custom-red text-white px-2 py-1 rounded-xl">Sil</button>
-                                            </form>
+                                            @if ($user->is_user_active == '0')
+                                                <form class="activate-user-form" method="POST"
+                                                    action="/api/inactive-user/{{ $user->id }}">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="bg-green-500 text-white px-3  py-1 rounded-xl">Aktif
+                                                        Et</button>
+                                                </form>
+                                            @else
+                                                <form class="inactivate-user-form" method="POST"
+                                                    action="/api/inactive-user/{{ $user->id }}">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="bg-custom-red text-white px-3  py-1 rounded-xl">İnaktif
+                                                        Et</button>
+                                                </form>
+                                            @endif
                                             <button
                                                 class="edit-button bg-blue-500 text-white px-2 py-1 rounded-xl">Düzenle</button>
                                         </div>
@@ -139,8 +154,13 @@
                 $.fn.dataTable.ext.search.pop();
                 $.fn.dataTable.ext.search.push(
                     function(settings, data, dataIndex) {
+                        var isActive = table.row(dataIndex).node().getAttribute('data-is_user_active');
                         var rowRole = table.row(dataIndex).node().getAttribute('data-role');
-                        return rowRole === role;
+                        if (role === "inactive") {
+                            return isActive === "0";
+                        } else {
+                            return rowRole === role && isActive === "1";
+                        }
                     }
                 );
                 table.draw();
@@ -314,18 +334,18 @@
                 }
             });
         });
-        $('.delete-user-form').on('submit', function(event) {
+        $('.activate-user-form').on('submit', function(event) {
             event.preventDefault(); // Prevent the form from causing a page reload
 
             var actionUrl = $(this).attr('action');
             var userId = actionUrl.split('/').pop(); // Extract the user id from the action URL
 
             Swal.fire({
-                title: "ID'si " + userId + " olan kullanıcıyı silmek istediğinize emin misiniz?",
+                title: "ID'si " + userId + " olan kullanıcıyı aktif etmek istediğinize emin misiniz?",
                 text: "Bu işlem geri alınamaz.",
                 icon: "warning",
                 showCancelButton: true,
-                confirmButtonText: 'Evet, sil!',
+                confirmButtonText: 'Aktif et!',
                 cancelButtonText: 'Hayır, iptal!',
                 dangerMode: true,
             }).then((result) => {
@@ -350,7 +370,60 @@
                                 });
                             } else {
                                 Swal.fire({
-                                    title: "Success",
+                                    title: "Başarılı",
+                                    text: data.success,
+                                    icon: "success",
+                                    confirmButtonText: 'OK',
+                                }).then(function() {
+                                    location
+                                        .reload(); // Reload the page to fetch the updated user list
+                                });
+                            }
+                        },
+                        error: function(error) {
+                            console.error('Error:', error);
+                        }
+                    });
+                }
+            });
+        });
+        $('.inactivate-user-form').on('submit', function(event) {
+            event.preventDefault(); // Prevent the form from causing a page reload
+
+            var actionUrl = $(this).attr('action');
+            var userId = actionUrl.split('/').pop(); // Extract the user id from the action URL
+
+            Swal.fire({
+                title: "ID'si " + userId + " olan kullanıcıyı inaktif etmek istediğinize emin misiniz?",
+                text: "Bu işlem geri alınamaz.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: 'İnaktif et!',
+                cancelButtonText: 'Hayır, iptal!',
+                dangerMode: true,
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    var formData = new FormData(this);
+                    $.ajax({
+                        url: this.action,
+                        method: 'POST',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        headers: {
+                            'X-CSRF-TOKEN': $('input[name="_token"]').val()
+                        },
+                        success: function(data) {
+                            if (data.error) {
+                                Swal.fire({
+                                    title: "Error",
+                                    text: data.error,
+                                    icon: "error",
+                                    confirmButtonText: 'OK',
+                                });
+                            } else {
+                                Swal.fire({
+                                    title: "Başarılı",
                                     text: data.success,
                                     icon: "success",
                                     confirmButtonText: 'OK',
@@ -368,6 +441,8 @@
             });
         });
     </script>
+
+
     <script>
         $(".pw-unvisible").click(function() {
             $(this).toggleClass("hidden")

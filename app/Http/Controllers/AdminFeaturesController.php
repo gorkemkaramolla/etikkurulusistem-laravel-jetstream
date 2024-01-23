@@ -26,13 +26,14 @@ class AdminFeaturesController extends Controller
             return response()->json($users);
         }
     }
-    public function deleteUser($user_id)
+    public function inActiveUser($user_id)
     {
         if (auth()->user()->role == "admin") {
             $user = User::find($user_id);
             if ($user) {
                 $user->is_user_active = 0;
-                return response()->json(['success' => 'Kullanıcı başarıyla silindi.'], 200);
+                $user->save();
+                return response()->json(['success' => "ID'si $user->id olan kullanıcı inaktif edildi."], 200);
             } else {
                 return response()->json(['error' => 'Kullanıcı bulunamadı.'], 404);
             }
