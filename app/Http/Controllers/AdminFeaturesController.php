@@ -26,14 +26,21 @@ class AdminFeaturesController extends Controller
             return response()->json($users);
         }
     }
-    public function inActiveUser($user_id)
+    public function setUserStatus($status, $user_id)
     {
         if (auth()->user()->role == "admin") {
             $user = User::find($user_id);
             if ($user) {
-                $user->is_user_active = 0;
-                $user->save();
-                return response()->json(['success' => "ID'si $user->id olan kullanıcı inaktif edildi."], 200);
+                if ($status === "inactivate") {
+                    $user->is_user_active = 0;
+                    $user->save();
+                } else {
+                    $user->is_user_active = 1;
+                    $user->save();
+                }
+                $status === 'activate' ? 'aktif' : 'inaktif';
+
+                return response()->json(['success' => "ID'si $user->id olan kullanıcı {$status} edildi"], 200);
             } else {
                 return response()->json(['error' => 'Kullanıcı bulunamadı.'], 404);
             }

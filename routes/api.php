@@ -29,6 +29,6 @@ Route::middleware([
         Route::post('/send-email', [EmailController::class, 'handleSendEmail']);
         Route::post('/edit-user/{userId}', [AdminFeaturesController::class, 'editUser'])->name('adminfeatures.editUser');
         Route::post('/add-new-user', [AdminFeaturesController::class, 'addNewUser'])->name('adminfeatures.addNewUser');
-        Route::post('/inactive-user/{user_id}', [AdminFeaturesController::class, 'inActiveUser'])->name('adminfeatures.inActiveUser');
+        Route::post('/set-user-status/{status}/{user_id}', [AdminFeaturesController::class, 'setUserStatus'])->name('adminfeatures.setUserStatus');
     });
 });
