@@ -93,6 +93,8 @@ class FormsController extends Controller
 
                 return response()->json(['success' => 'Değişiklikler başarıyla kaydedildi.']);
             } catch (Exception $e) {
+                Log::error('fixForm function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+
                 return response()->json(['error' => $e->getMessage()], 400);
             }
         } else {
@@ -223,60 +225,69 @@ class FormsController extends Controller
             return redirect()->route('forms.index')->with('successMessage', $successMessage)->with('linkPath', $linkPath);
         } catch (Exception $e) {
             DB::rollBack();
-            Log::error('Form patladi: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+            Log::error('Store Form Hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
 
             return redirect()->back()->withErrors($validated)->withInput();
         }
     }
+
     public function approveSekreterlik($formid, Request $request)
     {
-        $form = Form::find($formid);
-        $decide_reason = $request->input('decide_reason');
-        $decide = $request->input('decide');
+        try {
+            $form = Form::find($formid);
+            $decide_reason = $request->input('decide_reason');
+            $decide = $request->input('decide');
 
-        $this->startSekreterlikApprovalProcess($form, $decide, $decide_reason);
-        return redirect()->route('dashboard')->with('success', 'Talebiniz Başarıyla Onaylandı.');
+            $this->startSekreterlikApprovalProcess($form, $decide, $decide_reason);
+            return redirect()->route('dashboard')->with('success', 'Talebiniz Başarıyla Onaylandı.');
+        } catch (\Exception $e) {
+            Log::error('approveSekreterlik function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+        }
     }
 
     private function startSekreterlikApprovalProcess(Form $form, $decide, $decide_reason)
     {
-        //SEKRETER ONAY DURUMU
-        if ($decide === "onaylandi") {
-            $form->stage = "etik_kurul";
-            $form->save();
-            $etikKurulUyeler = User::where('role', 'etik_kurul')->get();
+        try {
+            //SEKRETER ONAY DURUMU
+            if ($decide === "onaylandi") {
+                $form->stage = "etik_kurul";
+                $form->save();
+                $etikKurulUyeler = User::where('role', 'etik_kurul')->get();
 
-            foreach ($etikKurulUyeler as $etikKurulUye) {
-                $etikKurulOnayi = new EtikKurulOnayi([
-                    'form_id' => $form->id,
-                    'user_id' => $etikKurulUye->id,
-                    'onay_durumu' => 'bekleme',
-                ]);
+                foreach ($etikKurulUyeler as $etikKurulUye) {
+                    $etikKurulOnayi = new EtikKurulOnayi([
+                        'form_id' => $form->id,
+                        'user_id' => $etikKurulUye->id,
+                        'onay_durumu' => 'bekleme',
+                    ]);
 
-                $etikKurulOnayi->save();
+                    $etikKurulOnayi->save();
+                }
+                $etikKurulRecipients = User::where('role', 'etik_kurul')->pluck('email')->toArray();
+
+                $researcherEmail = $form->email;
+                // Mail::send('emails.form-sekreter-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $etikKurulRecipients) {
+                //     $message->to($researcherEmail)
+                //         ->cc($etikKurulRecipients) // Add CC recipients
+                //         ->subject('Başvurunuz Sekreterlik Tarafından Onaylanmıştır.');
+                // });
+            } else if ($decide === "duzeltme") {
+                $ccRecipients = User::pluck('email')->toArray();
+                //SEKRETER DUZELTME
+                $form->stage = "duzeltme";
+                $form->decide_reason = $decide_reason;
+                $form->save();
+                $researcherEmail = $form->email;
+
+                // Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
+                //     $message->to($researcherEmail)
+                //         ->cc($ccRecipients) // Add CC recipients
+                //         ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
+                // });
+                // $form->delete();
             }
-            $etikKurulRecipients = User::where('role', 'etik_kurul')->pluck('email')->toArray();
-
-            $researcherEmail = $form->email;
-            // Mail::send('emails.form-sekreter-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $etikKurulRecipients) {
-            //     $message->to($researcherEmail)
-            //         ->cc($etikKurulRecipients) // Add CC recipients
-            //         ->subject('Başvurunuz Sekreterlik Tarafından Onaylanmıştır.');
-            // });
-        } else if ($decide === "duzeltme") {
-            $ccRecipients = User::pluck('email')->toArray();
-            //SEKRETER DUZELTME
-            $form->stage = "duzeltme";
-            $form->decide_reason = $decide_reason;
-            $form->save();
-            $researcherEmail = $form->email;
-
-            // Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
-            //     $message->to($researcherEmail)
-            //         ->cc($ccRecipients) // Add CC recipients
-            //         ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
-            // });
-            // $form->delete();
+        } catch (Exception $e) {
+            Log::error('startSekreterlikApprovalProcess function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
         }
     }
     public function approveEtikkurul($formid, Request $request)
@@ -373,37 +384,44 @@ class FormsController extends Controller
 
             return response()->json($response);
         } catch (Exception $e) {
+            Log::error('getEtikKuruluOnayiByFormId function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
     public function deleteFormById($formIds)
     {
-        $formIds = explode(',', $formIds);
-        $user = auth()->user();
+        try {
+            $formIds = explode(',', $formIds);
+            $user = auth()->user();
 
-        if ($user && $user->role === 'admin') {
-            $forms = Form::whereIn('id', $formIds)->get();
+            if ($user && $user->role === 'admin') {
+                $forms = Form::whereIn('id', $formIds)->get();
 
-            if (!$forms->isEmpty()) {
-                Form::destroy($formIds);
-                return redirect()->route('dashboard')->with('success', 'Başvurular başarıyla silindi.');
+                if (!$forms->isEmpty()) {
+                    Form::destroy($formIds);
+                    return redirect()->route('dashboard')->with('success', 'Başvurular başarıyla silindi.');
+                } else {
+                    return redirect()->route('dashboard')->with('error', 'Başvuru bulunamadı.');
+                }
             } else {
-                return redirect()->route('dashboard')->with('error', 'Başvuru bulunamadı.');
+                return redirect()->route('dashboard')->with('error', 'Bu işlemi yapmaya yetkiniz yok.');
             }
-        } else {
-            return redirect()->route('dashboard')->with('error', 'Bu işlemi yapmaya yetkiniz yok.');
+        } catch (Exception $e) {
+            Log::error('deleteFormById function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
         }
     }
     public function generateQueryStageForm($formid)
     {
-
-        $form = Form::where('id', $formid)->first();
-
-        if ($form)
-
-            return view('forms.display-querystage', compact('form'));
-        else {
-            abort(404);
+        try {
+            $form = Form::where('id', $formid)->first();
+            if ($form)
+                return view('forms.display-querystage', compact('form'));
+            else {
+                abort(404);
+            }
+        } catch (Exception $e) {
+            Log::error('generateQueryStageForm function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
         }
     }
 }
