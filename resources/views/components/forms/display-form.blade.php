@@ -401,54 +401,59 @@
                 <i>Additional Files
                 </i>
             </th>
-            <td class="w-4/12 text-center" colspan="1">
-                <a target="_blank"
-                    class="inline-flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
-                    href="{{ url('/show-pdf/' . $form->onam_path) }}">
-                    Gönüllü Onam Formu
-                    <x-svg.download />
+            <td class="w-4/12 text-center" colspan="4">
+                <div class="w-full flex md:flex-row flex-col gap-3 justify-center">
 
-                </a>
-
-            </td>
-            <td class="w-4/12 text-center" colspan="1">
-                <a target="_blank"
-                    class="inline-flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
-                    href="{{ url('/show-pdf/' . $form->anket_path) }}">
-                    Anket Formu
-                    <x-svg.download />
-
-                </a>
-            </td>
-            <td class="w-4/12 text-center" colspan="1">
-                @if ($form->kurum_izinleri_path)
-                    <a target="_download"
-                        class="flex justify-between items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-gray-200 hover:text-gray-950 focus:outline-none  transition ease-in-out duration-50"
-                        href="{{ url('/show-pdf/' . $form->kurum_izinleri_path) }}">
-
-                        Kurum İzinleri
+                    <a class="text-blue-500 hover:underline flex gap-1 items-center justify-center hover:text-blue-700 transition-all"
+                        target="_blank" href="{{ url('/show-pdf/' . $form->onam_path) }}">
                         <x-svg.download />
 
+                        Gönüllü Onam Formu
+
                     </a>
-                @endif
+                    <a class="text-blue-500 hover:underline flex gap-1 items-center justify-center" target="_blank"
+                        href="{{ url('/show-pdf/' . $form->anket_path) }}">
+                        <x-svg.download />
+
+                        Anket Formu
+
+                    </a>
+                    @if ($form->kurum_izinleri_path)
+                        <a class="text-blue-500 hover:underline flex gap-1 items-center justify-center"
+                            target="_download" href="{{ url('/show-pdf/' . $form->kurum_izinleri_path) }}">
+                            <x-svg.download />
+                            Kurum İzinleri
+
+                        </a>
+                    @endif
+                </div>
             </td>
+
         </tr>
         @if (Auth::user()->role === 'sekreterlik' || Auth::user()->role === 'etik_kurul')
             <tr>
-                <td colspan="2" class="text-center">
-                    @if (auth()->user()->hasRole('sekreterlik') &&
-                            $form &&
-                            $form->stage === 'sekreterlik')
+                @if (auth()->user()->hasRole('sekreterlik') &&
+                        $form &&
+                        $form->stage === 'sekreterlik')
+                    <td colspan="2" class="text-center">
                         <x-approve-modal :formid="$form->id"></x-approve-modal>
-                    @elseif(auth()->user()->hasRole('etik_kurul'))
-                        @php
-                            // Check if there is an ethics committee approval for the specific form and user
-                            $etikKurulOnayi = $form->etik_kurul_onayi
-                                ->where('form_id', $form->id) // Check form_id
-                                ->where('user_id', auth()->user()->id) // Check user_id
-                                ->first();
-                        @endphp
+                    </td>
+                @elseif ($form->stage === 'onaylandi')
+                    <td colspan="4" class="text-center">
+                        <p class="text-green-500">Bu başvuru <span class="text-black">
+                                {{ $form->conclusion_date }}</span> tarihinde Etik Kurul Onayı
+                            Almıştır</p>
+                    </td>
+                @elseif(auth()->user()->hasRole('etik_kurul') && !$form->stage === 'onaylandi')
+                    @php
+                        // Check if there is an ethics committee approval for the specific form and user
+                        $etikKurulOnayi = $form->etik_kurul_onayi
+                            ->where('form_id', $form->id) // Check form_id
+                            ->where('user_id', auth()->user()->id) // Check user_id
+                            ->first();
+                    @endphp
 
+                    <td colspan="2" class="text-center">
                         @if ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'onaylandi')
                             <span class="text-green-600">Etik kurulu onay oyu verdiniz.</span>
                         @elseif ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'reddedildi')
@@ -458,12 +463,17 @@
                         @else
                             <x-approve-modal :formid="$form->id"></x-approve-modal>
                         @endif
-                    @elseif (request()->segment(2) === 'duzeltme')
+                    </td>
+                @elseif (request()->segment(2) === 'duzeltme')
+                    <td colspan="2" class="text-center">
                         <p class="text-orange-500">Düzeltilmesi Bekleniyor</p>
-                    @elseif (request()->segment(2) === 'reddedildi')
+                    </td>
+                @elseif (request()->segment(2) === 'reddedildi')
+                    <td colspan="2" class="text-center">
                         <p class="text-red-500">Reddedildi</p>
-                    @endif
-                </td>
+                    </td>
+
+                @endif
             </tr>
 
         @endif
@@ -527,7 +537,7 @@
 
                 // AJAX request
                 $.ajax({
-                    url: '/fix-form/' + {{ $form['id'] }},
+                    url: '/fix-form/' + "{{ $form['id'] }}",
                     method: 'POST',
                     data: JSON.stringify(changes),
                     contentType: 'application/json',
