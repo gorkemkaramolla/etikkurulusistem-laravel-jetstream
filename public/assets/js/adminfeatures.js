@@ -55,7 +55,6 @@ $(document).ready(function () {
         var userEmail = users[userIndex].email;
         var userUsername = users[userIndex].username;
         var userRole = users[userIndex].role;
-
         Swal.fire({
             title: "Kullanıcı Bilgilerini Düzenle",
             html: `
@@ -87,6 +86,9 @@ $(document).ready(function () {
 <input type="text" id="lastname" name="lastnamename" class="mt-1 focus:ring-indigo-500 focus:ring-2 transition-colors block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" value="${userLastName}">
 <label for="email" class="block text-sm font-medium text-gray-700">Email</label>
 <input type="email" id="email" name="email" class="mt-1 focus:ring-indigo-500 focus:ring-2 transition-colors block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" value="${userEmail}">
+<label for="password" class="block text-sm font-medium text-gray-700">Parola</label>
+<input type="password" id="password" name="password" class="mt-1 focus:ring-indigo-500 focus:ring-2 transition-colors block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
+
 </form>
 `,
             confirmButtonText: "Değişiklikleri Kaydet",
@@ -101,6 +103,7 @@ $(document).ready(function () {
                 let email = Swal.getPopup().querySelector("#email").value;
                 let lastname = Swal.getPopup().querySelector("#lastname").value;
                 let role = Swal.getPopup().querySelector("#role").value;
+                let password = Swal.getPopup().querySelector("#password").value;
 
                 if (false) {
                     Swal.showValidationMessage(`Please enter all fields.`);
@@ -111,6 +114,7 @@ $(document).ready(function () {
                     email: email,
                     lastname: lastname, // Add a comma here
                     role: role,
+                    password: password,
                 };
             },
         }).then((result) => {
@@ -120,6 +124,7 @@ $(document).ready(function () {
                 let email = result.value.email;
                 let lastname = result.value.lastname;
                 let role = result.value.role;
+                let password = result.value.password;
                 Swal.fire({
                     title: `${userId} ID'li kullanıcıyı güncellemek istediğinize emin misiniz?`,
                     text: "Kullanıcı bilgileri güncellenecek.",
@@ -133,7 +138,7 @@ $(document).ready(function () {
                             url: "/api/edit-user/" + userId,
                             type: "POST",
                             headers: {
-                                "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                                "X-CSRF-TOKEN": csrfToken,
                             },
                             data: {
                                 username: username,
@@ -141,6 +146,7 @@ $(document).ready(function () {
                                 email: email,
                                 lastname: lastname,
                                 role: role,
+                                password: password,
                             },
                             success: function (response) {
                                 Swal.fire(
@@ -153,7 +159,6 @@ $(document).ready(function () {
                             },
                             error: function (jqXHR, textStatus, errorThrown) {
                                 let errorMessage = jqXHR.responseJSON;
-                                console.log(errorMessage);
                                 Swal.fire(
                                     "Hata!",
                                     "Kullanıcı bilgileri güncellenirken bir hata oluştu: " +

@@ -85,6 +85,7 @@ $(document).ready(function () {
 
         return form;
     });
+    console.log(jsonData);
     var columnNames = Object.keys(jsonData[0]);
     console.log(columnNames);
     var theadHtml =
@@ -107,7 +108,11 @@ $(document).ready(function () {
         tbodyHtml += "</tr>";
     });
     tbodyHtml += "</tbody>";
-
+    jsonData.forEach((rowData, index) => {
+        if (rowData["Aşama"] === "onaylandi") {
+            $(".show-edit-button").html("Formu Görüntüle");
+        }
+    });
     // Append tbody to the existing table
     $("#myTable").append(tbodyHtml);
 
@@ -273,6 +278,12 @@ $(document).ready(function () {
 
             $(".etik_kurul_onaylari").toggleClass("hidden", false);
             $(".show-edit-button").toggleClass("hidden", false);
+            $(".show-querystage-button").toggleClass("hidden", false);
+            $(".show-querystage-button").attr(
+                "href",
+                `/query-etikkurul` + "/" + id
+            );
+
             $(".show-edit-button").attr("href", `/formshow` + "/" + id);
             if (
                 stage === "etik_kurul" ||
@@ -317,6 +328,7 @@ $(document).ready(function () {
         } else {
             $(".show-edit-button").toggleClass("hidden", true);
             $(".etik_kurul_onaylari").toggleClass("hidden", true);
+            $(".show-querystage-button").toggleClass("hidden", true);
 
             $(".etik_kurul_onaylari").empty();
         }
