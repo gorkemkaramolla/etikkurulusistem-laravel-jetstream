@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('forms', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary(); // Changed this line
+
             $table->foreignId('user_id')->nullable()->constrained();
 
             $table->timestamps();

@@ -9,6 +9,7 @@ use Illuminate\Support\FacadesLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class Form extends Model
 {
@@ -61,7 +62,15 @@ class Form extends Model
         $etikKurulApprovals = $this->etik_kurul_onayi->pluck('onay_durumu')->toArray();
         return count(array_unique($etikKurulApprovals)) === 1 && in_array('onaylandi', $etikKurulApprovals);
     }
+    public $incrementing = false;
+    protected $keyType = 'string';
 
+    protected static function booted()
+    {
+        static::creating(function ($model) {
+            $model->{$model->getKeyName()} = (string) Str::uuid();
+        });
+    }
     public function approveFormByEtikKurul()
     {
         if ($this->isApprovedByEtikKurul()) {

@@ -10,7 +10,7 @@ class CreateEtikKurulOnayiTable extends Migration
     {
         Schema::create('etik_kurul_onayi', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('form_id');
+            $table->uuid('form_id');
             $table->foreign('form_id')->references('id')->on('forms')->onDelete('cascade');
             $table->unsignedBigInteger('user_id');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
