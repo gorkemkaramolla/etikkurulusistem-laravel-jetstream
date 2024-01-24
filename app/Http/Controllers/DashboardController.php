@@ -25,8 +25,11 @@ class DashboardController extends Controller
             $forms = Form::with('etik_kurul_onayi')->get();
         } else {
 
-            $forms = Form::all()
-                ->where('stage', Auth::user()->role);
+            if (auth()->user()->role === "sekreterlik") {
+                $forms = Form::where('stage', 'sekreterlik')->get();
+            } else {
+                $forms = Form::where('stage', '!=', 'sekreterlik')->get();
+            }
         }
 
 
