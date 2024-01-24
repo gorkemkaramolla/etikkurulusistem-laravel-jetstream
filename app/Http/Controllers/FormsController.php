@@ -337,6 +337,9 @@ class FormsController extends Controller
                 //ONAYLANMA DURUMU
                 $form->stage = 'onaylandi';
                 $form->conclusion_date = now();
+                $form->etik_kurul_onayi()->delete();
+
+
                 $form->save();
                 $researcherEmail = $form->email;
 
