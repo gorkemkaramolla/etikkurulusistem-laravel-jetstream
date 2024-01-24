@@ -134,6 +134,8 @@
     </div>
     <script>
         var users = @json($users);
+        console.log(users)
+        var csrfToken = "{{ csrf_token() }}";
     </script>
     <script src="{{ asset('assets/js/adminfeatures.js') }}"></script>
     <style>
