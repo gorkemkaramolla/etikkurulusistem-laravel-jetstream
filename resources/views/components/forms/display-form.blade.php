@@ -88,6 +88,7 @@
                 <h2 class="font-extrabold text-sm">1-Araştırmacı Bilgileri/Researcher Informations</h2>
             </th>
         </tr>
+
         <tr>
             <th class="w-4/12">
                 <p class="font-bold">Araştırmacı Adı:</p>
@@ -430,6 +431,47 @@
             </td>
 
         </tr>
+        <tr class="bg-[#ac143c] text-white  w-full text-center">
+            <th colspan="2" class="w-full">
+                <h2 class="font-extrabold text-sm">Etik Kurulu Onay Durumları</h2>
+            </th>
+        </tr>
+        @if (auth()->user()->hasRole('admin') ||
+                auth()->user()->hasRole('etik_kurul'))
+            <tr class="w-full">
+                <th class="w-4/12" colspan="4">
+
+                    <div class="flex flex-wrap w-full justify-center gap-4">
+                        @foreach ($form->etik_kurul_onayi as $etikOnay)
+                            <div
+                                class="flex flex-col w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/4 2xl:w-1/4 shadow-md rounded-lg p-4 mb-4
+        {{ $etikOnay->onay_durumu == 'reddedildi' ? 'bg-red-500 text-white' : '' }}
+        {{ $etikOnay->onay_durumu == 'duzeltme' ? 'bg-yellow-500 text-white' : '' }}
+        {{ $etikOnay->onay_durumu == 'onaylandi' ? 'bg-green-500 text-white' : '' }}
+        ">
+                                <div class="flex gap-2 text-lg font-bold">
+                                    <span class="w-full">
+                                        {{ $etikOnay->etikKurulUye->name }}
+                                        {{ $etikOnay->etikKurulUye->lastname }}
+                                    </span>
+                                </div>
+                                <div class="flex gap-1 text-sm font-semibold">
+                                    <span>
+                                        Onay Durumu :
+                                    </span>
+                                    <span>
+                                        {{ $etikOnay->onay_durumu }}
+                                    </span>
+                                </div>
+
+                            </div>
+                        @endforeach
+                    </div>
+                </th>
+
+
+            </tr>
+        @endif
         @if (Auth::user()->role === 'sekreterlik' || Auth::user()->role === 'etik_kurul')
             <tr>
                 @if (auth()->user()->hasRole('sekreterlik') &&
@@ -444,7 +486,7 @@
                                 {{ $form->conclusion_date }}</span> tarihinde Etik Kurul Onayı
                             Almıştır</p>
                     </td>
-                @elseif(auth()->user()->hasRole('etik_kurul') && !$form->stage === 'onaylandi')
+                @elseif(auth()->user()->hasRole('etik_kurul') && !($form->stage === 'onaylandi'))
                     @php
                         // Check if there is an ethics committee approval for the specific form and user
                         $etikKurulOnayi = $form->etik_kurul_onayi
@@ -463,6 +505,7 @@
                         @else
                             <x-approve-modal :formid="$form->id"></x-approve-modal>
                         @endif
+
                     </td>
                 @elseif (request()->segment(2) === 'duzeltme')
                     <td colspan="2" class="text-center">

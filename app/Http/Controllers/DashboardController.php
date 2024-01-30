@@ -15,21 +15,16 @@ class DashboardController extends Controller
     public function index($formStatus = null)
     {
         if ($formStatus === "duzeltme") {
-            $forms = Form::all()
-                ->where('stage', "duzeltme");
+            $forms = Form::all()->where('stage', "duzeltme");
         } else if ($formStatus === "reddedildi") {
-            $forms = Form::all()
-                ->where('stage', "reddedildi");
+            $forms = Form::all()->where('stage', "reddedildi");
         } else if (Auth::user()->role === "admin") {
-
             $forms = Form::with('etik_kurul_onayi')->get();
+        } else if (auth()->user()->role === "sekreterlik") {
+            $forms = Form::where('stage', '!=', 'etik_kurul')->get();
+        } else if (auth()->user()->role === "etik_kurul") {
+            $forms = Form::where('stage', '!=', 'sekreterlik')->get();
         } else {
-
-            if (auth()->user()->role === "sekreterlik") {
-                $forms = Form::where('stage', 'sekreterlik')->get();
-            } else {
-                $forms = Form::where('stage', '!=', 'sekreterlik')->get();
-            }
         }
 
 

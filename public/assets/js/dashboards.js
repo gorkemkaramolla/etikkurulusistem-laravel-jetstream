@@ -85,9 +85,11 @@ $(document).ready(function () {
 
         return form;
     });
-    console.log(jsonData);
-    var columnNames = Object.keys(jsonData[0]);
-    console.log(columnNames);
+
+    var columnNames = [];
+    if (jsonData.length > 0) {
+        columnNames = Object.keys(jsonData[0]);
+    }
     var theadHtml =
         '<thead class="bg-indigo-500 w-full text-white divide-y divide-indigo-700"><tr>';
     columnNames.forEach(function (columnName) {
@@ -128,6 +130,7 @@ $(document).ready(function () {
             processing: "İşleniyor...",
             search: "Ara:",
             zeroRecords: "Eşleşen kayıt bulunamadı",
+
             paginate: {
                 first: "İlk",
                 last: "Son",
@@ -156,6 +159,7 @@ $(document).ready(function () {
                 width: "100px", // Set your desired fixed width here
             };
         }),
+
         search: {
             caseInsensitive: false,
             smart: false,
@@ -262,6 +266,32 @@ $(document).ready(function () {
             });
         },
     });
+    // Store the original data in a separate variable
+
+    var originalData = jsonData.slice();
+    $(".filterStage")
+        .on("change", function () {
+            let status = $(this).val();
+            console.log(status);
+
+            var filteredData;
+            if (status === "all") {
+                // If "all" is selected, use the original data
+                filteredData = originalData;
+            } else {
+                // Otherwise, filter the original data based on the selected status
+                filteredData = originalData.filter(function (item) {
+                    return item["Aşama"] === status; // replace "Aşama" with the actual column name
+                });
+            }
+
+            // Deselect all rows
+            dataTable.rows().deselect();
+
+            // Clear the DataTable, add the filtered data, and redraw the table
+            dataTable.clear().rows.add(filteredData).draw();
+        })
+        .change(); // Trigger the change event manually
     dataTable.order(["0", "asc"]).draw();
     dataTable.on("select deselect", function () {
         var selectedRows = dataTable.rows({
@@ -295,29 +325,51 @@ $(document).ready(function () {
                     type: "GET",
                     success: function (response) {
                         var html =
-                            '<div class="w-full block flex justify-center items-center text-lg font-bold mb-2">Form ID: ' +
-                            id +
-                            "</div>";
-                        html += $.map(response, function (value, key) {
-                            return (
-                                `<div class="flex flex-col  ${
-                                    value.onay_durumu === "onaylandi"
-                                        ? "bg-green-500 text-white"
-                                        : value.onay_durumu === "reddedildi"
-                                        ? "bg-red-400 text-white"
-                                        : "bg-white"
-                                } shadow-md rounded-lg p-4 mb-4 w-64 ">` +
-                                '<h3 class="text-sm font-bold mb-2 truncate">' +
+                            '<h2 class="w-full text-center text-2xl font-bold mb-4">Etik Kurulu Onayları</h2>';
+                        $.each(response, function (key, value) {
+                            var onayDurumuText;
+                            switch (value.onay_durumu) {
+                                case "onaylandi":
+                                    onayDurumuText = "Onayladı";
+                                    break;
+                                case "reddedildi":
+                                    onayDurumuText = "Reddedildi";
+                                    break;
+                                case "bekleme":
+                                    onayDurumuText = "Bekleme";
+                                    break;
+                                case "duzeltme":
+                                    onayDurumuText = "Düzeltme";
+                                    break;
+                                default:
+                                    onayDurumuText = value.onay_durumu;
+                            }
+                            html +=
+                                '<details open class="mb-2 text-sm rounded shadow ' +
+                                (value.onay_durumu === "onaylandi"
+                                    ? "bg-green-500 text-white"
+                                    : value.onay_durumu === "reddedildi"
+                                    ? "bg-red-500 text-white"
+                                    : "bg-white text-black") +
+                                '">';
+                            html +=
+                                "<summary class='cursor-pointer text-sm p-2 bg-gray-200 rounded-t'><strong class='text-gray-700'>" +
                                 value.username +
                                 " " +
                                 value.lastname +
-                                "</h3>" +
-                                '<p class="text-xs ">Onay Durumu: <span class="font-semibold">' +
-                                value.onay_durumu +
-                                "</span></p>" +
-                                "</div>"
-                            );
-                        }).join("");
+                                "</strong></summary>";
+                            html += '<p class="p-2">' + onayDurumuText + "</p>";
+
+                            // Add decision reason
+                            if (value.decision_reason) {
+                                html +=
+                                    '<p class="p-2">' +
+                                    value.decision_reason +
+                                    "</p>";
+                            }
+
+                            html += "</details>";
+                        });
                         $(".etik_kurul_onaylari").empty().html(html);
                     },
                     error: function (error) {
