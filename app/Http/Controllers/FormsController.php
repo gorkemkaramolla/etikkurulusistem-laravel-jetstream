@@ -122,7 +122,9 @@ class FormsController extends Controller
 
 
             if ($form->stage === 'duzeltme') {
+
                 $form->stage = 'sekreterlik';
+                $form->application_type = "duzeltme";
             }
             $form->user_id = Auth::user()->id;
             $form->name = trim($validated['name']);
@@ -156,7 +158,7 @@ class FormsController extends Controller
             $form->research_place_date = trim($validated['research_place_date']);
             $form->research_literature_review = trim($validated['research_literature_review']);
             $form->save();
-            $directory = "public/forms/" . Auth::user()->id . "/{$form->id}";
+            $directory = "public/forms/" . Auth::user()->username . "/{$form->id}";
 
 
             // Create the directory with 755 permissions if it doesn't exist
@@ -181,44 +183,17 @@ class FormsController extends Controller
 
             DB::commit();
 
-            $fieldNameMappings = [
-                'name' => 'Araştırmacı Adı',
-                'lastname' => 'Araştırmacı Soyadı',
-                'advisor' => 'Danışman Adı',
-                'gsm' => 'Araştırmacı GSM',
-                'email' => 'Araştırmacı Email',
-                'ana_bilim_dali' => 'Araştırmacı Ana Bilim Dalı',
-                'program' => 'Araştırmacı Departman',
-                'student_no' => 'Araştırmacı Öğrenci Numarası',
-                'application_semester' => 'Başvuru Dönemi',
-                'temel_alan_bilgisi' => 'Temel Alan Bilgisi',
-                'academic_year' => 'Akademik Yıl',
-                'application_type' => 'Başvuru Türü',
-                'work_qualification' => 'Çalışma Niteliği',
-                'research_type' => 'Araştırma Türü',
-                'institution_permission' => 'Kurum İzni',
-                'research_end_date' => 'Araştırmanın Bitiş Tarihi',
-                'research_start_date' => 'Araştırmanın Başlangıç Tarihi',
-                'research_title' => 'Araştırma Başlığı',
-                'research_subject_purpose' => 'Araştırma Konusu ve Amacı',
-                'research_unique_value' => 'Araştırmanın Benzersiz Değeri',
-                'research_hypothesis' => 'Araştırma Hipotezi',
-                'research_method' => 'Araştırma Yöntemi',
-                'research_universe' => 'Araştırma Evreni',
-                'research_forms' => 'Araştırma Formları',
-                'research_data_collection' => 'Araştırma Veri Toplama Yöntemleri',
-                'research_restrictions' => 'Araştırma Kısıtlamaları',
-                'research_place_date' => 'Araştırma Yapılacak Yer ve Tarih',
-                'research_literature_review' => 'Araştırma Literatür Taraması',
 
-            ];
-            $sekreterlikRecipients = User::where('role', 'sekreterlik')->pluck('email')->toArray();
-
-            // Mail::send('emails.form-submitted', ['formFields' => $validated, 'fieldNameMappings' => $fieldNameMappings], function ($message) use ($form, $sekreterlikRecipients) {
-            //     $message->to($form->email, $form->researcher->name . ' ' . $form->lastname)
-            //         ->subject('Application Confirmation')
-            //         ->cc($sekreterlikRecipients); // Add all users with role "sekreterlik" to CC
-            // });
+            try {
+                $sekreterlikRecipients = User::where('role', 'sekreterlik')->pluck('email')->toArray();
+                $emailMessage = config('email-messages.confirmation');
+                Mail::send('emails.generic', ['emailMessage' => $emailMessage], function ($message) use ($form, $sekreterlikRecipients) {
+                    $message->to($form->email, $form->name . ' ' . $form->lastname)
+                        ->subject('Başvurunuz tarafımıza ulaşmıştır.');
+                });
+            } catch (\Exception $e) {
+                Log::error('Email sending failed: ' . $e->getMessage());
+            }
             $linkPath = "/query-etikkurul/{$form->student_no}";
             $successMessage = 'Başvurunuz alınmıştır. Bilgilendirme için e-posta adresinizi kontrol ediniz. Kısa süre içerisinde anasayfaya yönlendirileceksiniz.';
 
@@ -250,8 +225,13 @@ class FormsController extends Controller
         try {
             //SEKRETER ONAY DURUMU
             if ($decide === "onaylandi") {
+                if ($form->etik_kurul_onayi) {
+                    $form->etik_kurul_onayi()->delete();
+                }
                 $form->stage = "etik_kurul";
+
                 $form->save();
+
                 $etikKurulUyeler = User::where('role', 'etik_kurul')->get();
 
                 foreach ($etikKurulUyeler as $etikKurulUye) {
@@ -337,7 +317,6 @@ class FormsController extends Controller
                 //ONAYLANMA DURUMU
                 $form->stage = 'onaylandi';
                 $form->conclusion_date = now();
-                $form->etik_kurul_onayi()->delete();
 
 
                 $form->save();
@@ -388,6 +367,27 @@ class FormsController extends Controller
             return response()->json($response);
         } catch (Exception $e) {
             Log::error('getEtikKuruluOnayiByFormId function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
+    public function getPendingApprovalFormIdsByUserId($user_id)
+    {
+        try {
+            $userEtikKurulOnaylari = EtikKurulOnayi::where("user_id", $user_id)->get();
+            Log::error($userEtikKurulOnaylari);
+
+            $waitingForApproval = [];
+
+            foreach ($userEtikKurulOnaylari as $etikOnay) {
+                if ($etikOnay->onay_durumu === 'bekleme') {
+
+                    $waitingForApproval[] = $etikOnay->form_id;
+                }
+            }
+            return response()->json($waitingForApproval);
+        } catch (Exception $e) {
+            Log::error('getEtikKuruluOnayiByUserId function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
 
             return response()->json(['error' => $e->getMessage()], 500);
         }
