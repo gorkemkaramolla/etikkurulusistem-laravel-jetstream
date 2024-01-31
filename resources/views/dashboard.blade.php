@@ -16,8 +16,11 @@
                         <h1>Sekreterlik Onayı Bekleyen Başvurular</h1>
                     </option>
                 @elseif(auth()->user()->role === 'etik_kurul')
-                    <option {{ auth()->user()->role === 'etik_kurul' ? 'selected' : null }} value="etik_kurul">
+                    <option value="etik_kurul">
                         <h1>Etik Kurul Onayı Bekleyen Başvurular</h1>
+                    </option>
+                    <option {{ auth()->user()->role === 'etik_kurul' ? 'selected' : null }} value="user_onay_bekleyen">
+                        <h1>Etik Kurul Oyunuzu Bekleyen Başvurular</h1>
                     </option>
                 @endif
                 <option value="onaylandi">
@@ -78,6 +81,7 @@
             var phpForms = @json($forms);
             var turkishColumnNames = @json(config('columnnames'));
             var csrfToken = "{{ csrf_token() }}";
+            var user_id = "{!! Auth::user()->id !!}";
         </script>
         <script src="{{ asset('assets/js/dashboards.js') }}"></script>
 

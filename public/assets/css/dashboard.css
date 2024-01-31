@@ -37,6 +37,10 @@ th {
     text-overflow: ellipsis;
     max-width: 10px !important;
 }
+#myTable {
+    min-height: 100px;
+}
+
 #myTable tr.even td {
     background-color: #ffffff !important; /* or any color for odd rows */
 }

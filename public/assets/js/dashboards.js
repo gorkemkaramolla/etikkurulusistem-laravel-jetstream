@@ -122,7 +122,7 @@ $(document).ready(function () {
         data: jsonData,
         dom: "Bfrtip",
         language: {
-            info: "_TOTAL_ kayıttan _START_ - _END_ arası gösteriliyor",
+            info: "Toplam _TOTAL_ adet başvuru ",
             infoEmpty: "Gösterilecek hiç kayıt yok.",
             infoFiltered: "(toplamda _MAX_ kayıttan filtrelenmiş)",
             lengthMenu: "_MENU_ kayıt göster",
@@ -130,7 +130,6 @@ $(document).ready(function () {
             processing: "İşleniyor...",
             search: "Ara:",
             zeroRecords: "Eşleşen kayıt bulunamadı",
-
             paginate: {
                 first: "İlk",
                 last: "Son",
@@ -212,6 +211,7 @@ $(document).ready(function () {
                 },
             },
         ],
+
         scrollX: true,
 
         initComplete: function () {
@@ -272,26 +272,37 @@ $(document).ready(function () {
     $(".filterStage")
         .on("change", function () {
             let status = $(this).val();
-            console.log(status);
 
-            var filteredData;
             if (status === "all") {
-                // If "all" is selected, use the original data
-                filteredData = originalData;
-            } else {
-                // Otherwise, filter the original data based on the selected status
-                filteredData = originalData.filter(function (item) {
-                    return item["Aşama"] === status; // replace "Aşama" with the actual column name
+                dataTable.clear().rows.add(originalData).search("").draw();
+            } else if (status === "user_onay_bekleyen") {
+                $.ajax({
+                    url: `api/user/${user_id}/pending-approval-forms`,
+                    type: "GET",
+                    success: function (response) {
+                        var filteredData = originalData.filter(function (item) {
+                            return response
+                                .map(String)
+                                .includes(String(item["ID"]));
+                        });
+
+                        // Clear the DataTable, add the filtered data, and redraw the table
+                        dataTable.clear().rows.add(filteredData).draw();
+                    },
+                    error: function (error) {
+                        alert(JSON.stringify(error));
+                    },
                 });
+            } else {
+                var filteredData = originalData.filter(function (item) {
+                    return item["Aşama"] === status;
+                });
+
+                // Clear the DataTable, add the filtered data, and redraw the table
+                dataTable.clear().rows.add(filteredData).draw();
             }
-
-            // Deselect all rows
-            dataTable.rows().deselect();
-
-            // Clear the DataTable, add the filtered data, and redraw the table
-            dataTable.clear().rows.add(filteredData).draw();
         })
-        .change(); // Trigger the change event manually
+        .change();
     dataTable.order(["0", "asc"]).draw();
     dataTable.on("select deselect", function () {
         var selectedRows = dataTable.rows({
@@ -315,11 +326,7 @@ $(document).ready(function () {
             );
 
             $(".show-edit-button").attr("href", `/formshow` + "/" + id);
-            if (
-                stage === "etik_kurul" ||
-                stage === "reddedildi" ||
-                stage === "onaylandi"
-            ) {
+            if (stage === "etik_kurul" || stage === "reddedildi") {
                 $.ajax({
                     url: `/getEtikKuruluOnayiByFormId` + "/" + id,
                     type: "GET",

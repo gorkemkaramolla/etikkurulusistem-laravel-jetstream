@@ -402,7 +402,7 @@
                 <i>Additional Files
                 </i>
             </th>
-            <td class="w-4/12 text-center" colspan="4">
+            <th class="w-4/12 text-center" colspan="4">
                 <div class="w-full flex md:flex-row flex-col gap-3 justify-center">
 
                     <a class="text-blue-500 hover:underline flex gap-1 items-center justify-center hover:text-blue-700 transition-all"
@@ -428,16 +428,19 @@
                         </a>
                     @endif
                 </div>
-            </td>
+            </th>
 
         </tr>
-        <tr class="bg-[#ac143c] text-white  w-full text-center">
-            <th colspan="2" class="w-full">
-                <h2 class="font-extrabold text-sm">Etik Kurulu Onay Durumları</h2>
-            </th>
-        </tr>
-        @if (auth()->user()->hasRole('admin') ||
-                auth()->user()->hasRole('etik_kurul'))
+
+        @if (
+            $form->stage === 'etik_kurul' &&
+                (auth()->user()->hasRole('admin') ||
+                    auth()->user()->hasRole('etik_kurul')))
+            <tr class="bg-[#ac143c] text-white  w-full text-center">
+                <th colspan="2" class="w-full">
+                    <h2 class="font-extrabold text-sm">Etik Kurulu Onay Durumları</h2>
+                </th>
+            </tr>
             <tr class="w-full">
                 <th class="w-4/12" colspan="4">
 
@@ -551,30 +554,33 @@
         function saveChanges() {
             var cells = $('td[contenteditable="true"]');
             var changes = {};
+            var editedColumns = [];
 
             // Collect the updated data from editable cells
             cells.each(function() {
                 var columnName = $(this).data('column-name');
                 var cellValue = $(this).text();
 
-                // Only add the change to the changes object if the cell has been edited
+                // Add the change to the changes object
+                changes[columnName] = cellValue.trim();
+
+                // Only add the column name to the editedColumns array if the cell has been edited
                 if ($(this).attr('data-edited') === 'true') {
-                    changes[columnName] = cellValue.trim();
+                    editedColumns.push(columnName);
                 }
             });
 
             // Show an alert with the names of the edited columns
             Swal.fire({
                 title: "Emin misiniz?",
-                text: 'Aşağıdaki sütunları düzenlemek istediğinizden emin misiniz: ' + Object.keys(changes).join(
-                    ', '),
+                text: 'Aşağıdaki sütunları düzenlemek istediğinizden emin misiniz: ' + editedColumns.join(', '),
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: 'Evet, düzenle!',
                 cancelButtonText: 'Hayır, iptal!',
                 dangerMode: true,
             }).then((willEdit) => {
-                if (!willEdit) {
+                if (!willEdit.value) {
                     return;
                 }
 
