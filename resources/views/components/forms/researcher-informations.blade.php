@@ -1,5 +1,9 @@
 @props(['formData' => null])
+@php
+    use App\Models\ProgramEnum;
+    $fields = ProgramEnum::first()->fields;
 
+@endphp
 <div class="container pt-1">
     <div class="row g-3">
         <div class="col-md-4">
@@ -43,7 +47,7 @@
             <select class="form-control" name="ana_bilim_dali" id="ana_bilim_dali" onchange="updateProgramOptions()"
                 required>
                 <option value="" disabled selected>Ana Bilim Dalı Seçiniz</option>
-                @foreach (config('enums') as $anabilimDali)
+                @foreach (array_keys($fields) as $anabilimDali)
                     <option value="{{ $anabilimDali }}">{{ $anabilimDali }}</option>
                 @endforeach
             </select>
@@ -70,8 +74,8 @@
             programSelect.disabled = !selectedAnabilimDali;
 
             if (selectedAnabilimDali) {
-                // Retrieve program options from the program_enums config file
-                var programs = {!! json_encode(config('program_enums')) !!}[selectedAnabilimDali] || [];
+                // Retrieve program options from the fields array in the database
+                var programs = {!! json_encode($fields) !!}[selectedAnabilimDali] || [];
 
                 // Add new program options based on the selected Anabilim Dalı
                 programs.forEach(function(program) {
