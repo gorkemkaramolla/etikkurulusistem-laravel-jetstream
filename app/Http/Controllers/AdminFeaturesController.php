@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Events\NewUserAdded;
 use App\Events\UserInActivated;
 use Illuminate\Support\Facades\Validator;
+use App\Models\ProgramEnum;
 
 class AdminFeaturesController extends Controller
 {
@@ -15,8 +16,9 @@ class AdminFeaturesController extends Controller
     {
         if (auth()->user()->role == "admin") {
             $users = User::select('id', 'name', "lastname", 'email', "username", "role", "is_user_active")->get(); // Specify the fields you want
+            $programs = ProgramEnum::where("name", "programs")->first();
 
-            return view('adminfeatures.index', compact('users'));
+            return view('adminfeatures.index', compact('users', 'programs'));
         }
     }
     public function getUsers($userRole)
