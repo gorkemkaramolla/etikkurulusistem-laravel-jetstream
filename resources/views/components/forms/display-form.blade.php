@@ -497,7 +497,6 @@
                             ->where('user_id', auth()->user()->id) // Check user_id
                             ->first();
                     @endphp
-
                     <td colspan="2" class="text-center">
                         @if ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'onaylandi')
                             <span class="text-green-600">Etik kurulu onay oyu verdiniz.</span>

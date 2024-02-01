@@ -12,13 +12,18 @@ use Illuminate\Support\Facades\Mail;
 
 class EmailController extends Controller
 {
-    private function sendEmail($emailsx, $subjectx, $messagex)
+    private function sendEmail($emailsx, $subjectx, $messagex = null)
     {
         try {
             $emailArray = explode(',', $emailsx);
 
             foreach ($emailArray as $email) {
-                Mail::send('emails.generic', ['emailMessage' => $messagex], function ($msg) use ($email, $subjectx) {
+                $data = [];
+                if ($messagex) {
+                    $data['emailMessage'] = $messagex;
+                }
+
+                Mail::send('emails.generic', $data, function ($msg) use ($email, $subjectx) {
                     $msg->to($email)
                         ->subject($subjectx);
                 });

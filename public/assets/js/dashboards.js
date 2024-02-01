@@ -118,6 +118,9 @@ $(document).ready(function () {
     // Append tbody to the existing table
     $("#myTable").append(tbodyHtml);
 
+    // Show loading text
+    $("#loading").show();
+
     var dataTable = $("#myTable").DataTable({
         data: jsonData,
         dom: "Bfrtip",
@@ -168,6 +171,7 @@ $(document).ready(function () {
         autoWidth: false,
 
         paging: true,
+
         buttons: [
             {
                 extend: "copyHtml5",
@@ -215,6 +219,9 @@ $(document).ready(function () {
         scrollX: true,
 
         initComplete: function () {
+            // Hide loading text after the DataTable has been initialized
+            $("#loading").hide();
+
             var api = this.api();
             api.columns().every(function () {
                 var column = this;

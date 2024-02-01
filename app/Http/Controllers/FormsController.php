@@ -186,8 +186,10 @@ class FormsController extends Controller
 
             try {
                 $sekreterlikRecipients = User::where('role', 'sekreterlik')->pluck('email')->toArray();
-                $emailMessage = config('email-messages.confirmation');
-                Mail::send('emails.generic', ['emailMessage' => $emailMessage], function ($message) use ($form, $sekreterlikRecipients) {
+                $emailMessageTr = config('email-messages.confirmation.tr');
+                $emailMessageEn = config('email-messages.confirmation.en');
+
+                Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($form, $sekreterlikRecipients) {
                     $message->to($form->email, $form->name . ' ' . $form->lastname)
                         ->subject('Başvurunuz tarafımıza ulaşmıştır.');
                 });
@@ -244,13 +246,14 @@ class FormsController extends Controller
                     $etikKurulOnayi->save();
                 }
                 $etikKurulRecipients = User::where('role', 'etik_kurul')->pluck('email')->toArray();
+                $emailMessageTr = config('email-messages.approved-sekreterlik.tr');
+                $emailMessageEn = config('email-messages.approved-sekreterlik.en');
 
                 $researcherEmail = $form->email;
-                // Mail::send('emails.form-sekreter-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $etikKurulRecipients) {
-                //     $message->to($researcherEmail)
-                //         ->cc($etikKurulRecipients) // Add CC recipients
-                //         ->subject('Başvurunuz Sekreterlik Tarafından Onaylanmıştır.');
-                // });
+                Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($researcherEmail, $etikKurulRecipients) {
+                    $message->to($researcherEmail)
+                        ->subject('Başvurunuz Sekreterlik Tarafından Onaylanmıştır.');
+                });
             } else if ($decide === "duzeltme") {
                 $ccRecipients = User::pluck('email')->toArray();
                 //SEKRETER DUZELTME
@@ -259,12 +262,18 @@ class FormsController extends Controller
                 $form->save();
                 $researcherEmail = $form->email;
 
-                // Mail::send('emails.form-corrected', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
-                //     $message->to($researcherEmail)
-                //         ->cc($ccRecipients) // Add CC recipients
-                //         ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
-                // });
-                // $form->delete();
+                $fixMessageTr = config('email-messages.fix.tr');
+                $fixMessageEn = config('email-messages.fix.en');
+
+                $decideReason = $form->decide_reason;
+
+                $messageTr = $fixMessageTr . ' ' . $decideReason;
+                $messageEn = $fixMessageEn . ' ' . $decideReason;
+
+                Mail::send('emails.generic', ['messageTr' => $messageTr, 'messageEn' => $messageEn], function ($message) use ($researcherEmail, $ccRecipients) {
+                    $message->to($researcherEmail)
+                        ->subject('Başvurunuz Sekreterlik tarafından düzeltme aşamasına geçmiştir.');
+                });
             }
         } catch (Exception $e) {
             Log::error('startSekreterlikApprovalProcess function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
@@ -297,21 +306,28 @@ class FormsController extends Controller
         $ccRecipients = User::pluck('email')->toArray();
 
         if ($decide === "duzeltme" || $decide === "reddedildi") {
-            //DUZELTME VEYA RED
             $form->stage = $decide;
             $form->decide_reason = $decide_reason;
             $form->conclusion_date = now();
             $form->save();
-            // $researcherEmail = $form->email;
 
+            $decideReason = $form->decide_reason;
 
-            // // Use the Mail facade to send an email
-            // Mail::send('emails.form-declined', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
-            //     // Set the recipient's email address and name
-            //     $message->to($researcherEmail)
-            //         ->subject('Etik Kurulu Başvurunuz Reddedildi')->cc($ccRecipients);
-            // });
-            // $form->delete();
+            if ($decide == 'duzeltme') {
+                $emailMessageTr = config('email-messages.fix.tr') . ' ' .  $decideReason;
+                $emailMessageEn = config('email-messages.fix.en') . ' ' .  $decideReason;
+                $subject = 'Etik Kurul başvurunuzu düzeltmeniz gerekmektedir.';
+            } else if ($decide == 'reddedildi') {
+                $emailMessageTr = config('email-messages.declined.tr') . ' ' .  $decideReason;
+                $emailMessageEn = config('email-messages.declined.en') . ' ' .  $decideReason;
+                $subject = 'Etik Kurulu Başvurunuz Reddedildi';
+            }
+
+            $researcherEmail = $form->email;
+            Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($researcherEmail, $ccRecipients, $subject) {
+                $message->to($researcherEmail)
+                    ->subject($subject);
+            });
         } else {
             if ($etikKurulOnayi->whereNotIn('onay_durumu', ['bekleme', 'duzeltme', 'reddedildi'])->count() === $etikKurulOnayi->count()) {
                 //ONAYLANMA DURUMU
@@ -322,11 +338,14 @@ class FormsController extends Controller
                 $form->save();
                 $researcherEmail = $form->email;
 
-                // Mail::send('emails.form-etik-approved', ['decide_reason' => $decide_reason], function ($message) use ($researcherEmail, $ccRecipients) {
-                //     $message->to($researcherEmail)
-                //         ->cc($ccRecipients) // Add CC recipients
-                //         ->subject('Etik kurulu başvurunuz onaylandı.');
-                // });
+                $emailMessageTr = config('email-messages.approved-etikkurul.tr');
+                $emailMessageEn = config('email-messages.approved-etikkurul.en');
+
+                $researcherEmail = $form->email;
+                Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($researcherEmail, $ccRecipients) {
+                    $message->to($researcherEmail)
+                        ->subject('Etik kurulu başvurunuz onaylandı.');
+                });
             }
         }
     }
@@ -374,15 +393,24 @@ class FormsController extends Controller
     public function getPendingApprovalFormIdsByUserId($user_id)
     {
         try {
-            $userEtikKurulOnaylari = EtikKurulOnayi::where("user_id", $user_id)->get();
+            $userEtikKurulOnaylari = EtikKurulOnayi::all();
+            $formIds = $userEtikKurulOnaylari->pluck('form_id')->unique();
+
             Log::error($userEtikKurulOnaylari);
 
             $waitingForApproval = [];
 
-            foreach ($userEtikKurulOnaylari as $etikOnay) {
-                if ($etikOnay->onay_durumu === 'bekleme') {
+            foreach ($formIds as $formId) {
+                $formOnaylari = $userEtikKurulOnaylari->where('form_id', $formId);
 
-                    $waitingForApproval[] = $etikOnay->form_id;
+                $currentUserOnay = $formOnaylari->where('user_id', $user_id)->first();
+                $otherUsersOnay = $formOnaylari->where('user_id', '!=', $user_id);
+
+                if (
+                    $currentUserOnay && $currentUserOnay->onay_durumu == 'bekleme' &&
+                    $otherUsersOnay->whereIn('onay_durumu', ['reddedildi', 'duzeltme'])->count() == 0
+                ) {
+                    $waitingForApproval[] = $formId;
                 }
             }
             return response()->json($waitingForApproval);
