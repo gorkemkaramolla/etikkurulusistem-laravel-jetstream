@@ -234,8 +234,7 @@ class FormsController extends Controller
 
                 $form->save();
 
-                $etikKurulUyeler = User::where('role', 'etik_kurul')->get();
-
+                $etikKurulUyeler = User::where('role', 'etik_kurul')->where('is_user_active', 1)->get();
                 foreach ($etikKurulUyeler as $etikKurulUye) {
                     $etikKurulOnayi = new EtikKurulOnayi([
                         'form_id' => $form->id,
