@@ -5,7 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\Facades\LOG;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Session;
-
+use Illuminate\Support\Facades\Auth;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -50,43 +50,12 @@ class JetstreamServiceProvider extends ServiceProvider
                                 return;
                             } else
                                 return $user;
+                        } else {
+                            JetstreamServiceProvider::createUser($request);
                         }
                     }
                 } else {
-
-
-                    $data = [
-                        'university_id' => $request->email,
-                        'password' => $request->password,
-                    ];
-                    $authInformations = JetstreamServiceProvider::loginToSanalKampus($data);
-
-                    $content = $authInformations->getContent();
-                    $decodedData = json_decode($content, true);
-
-
-
-                    $name = $decodedData["name"];
-                    $lastname = $decodedData["lastname"];
-                    $email = $decodedData["email"];
-                    $role = $decodedData["role"];
-                    $userRole = $role === "8" ? "student" : "academic";
-
-                    if (User::where("email", $email)->exists()) {
-                        $user = User::where("email", $email)->first();
-                        $user->username = $request['email'];
-                        $user->password = Hash::make($request['password']);
-                        $user->save();
-                        return $user;
-                    }
-                    $user = User::create([
-                        "name" => $name,
-                        "lastname" => $lastname,
-                        "email" =>  $email,
-                        'username' => $request['email'],
-                        'password' => Hash::make($request['password']),
-                        "role" => $userRole,
-                    ]);
+                    JetstreamServiceProvider::createUser($request);
                 }
             } catch (Exception $e) {
                 Log::error('Giriş patladı: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
@@ -97,8 +66,47 @@ class JetstreamServiceProvider extends ServiceProvider
 
 
 
+    protected function createUser(Request $request)
+    {
+        $data = [
+            'university_id' => $request->email,
+            'password' => $request->password,
+        ];
+        $authInformations = JetstreamServiceProvider::loginToSanalKampus($data);
+
+        $content = $authInformations->getContent();
+        $decodedData = json_decode($content, true);
 
 
+
+        $name = $decodedData["name"];
+        $lastname = $decodedData["lastname"];
+        $email = $decodedData["email"];
+        $role = $decodedData["role"];
+        $userRole = $role === "8" ? "student" : "academic";
+
+        if (User::where("email", $email)->exists()) {
+            $user = User::where("email", $email)->first();
+            $user->username = $request['email'];
+            $user->password = Hash::make($request['password']);
+            $user->save();
+            Auth::login($user);
+
+            return $user;
+        } else {
+            $user = User::create([
+                "name" => $name,
+                "lastname" => $lastname,
+                "email" =>  $email,
+                'username' => $request['email'],
+                'password' => Hash::make($request['password']),
+                "role" => $userRole,
+            ]);
+            Auth::login($user);
+
+            return $user;
+        }
+    }
     protected function loginToSanalkampus($credentials)
     {
         try {
