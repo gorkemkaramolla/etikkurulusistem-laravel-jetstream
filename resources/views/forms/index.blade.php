@@ -39,11 +39,6 @@
 
 
 <body class="d-flex flex-column">
-
-
-
-
-
     @if (session('error'))
         <div>
             Error: {{ session('error') }}
