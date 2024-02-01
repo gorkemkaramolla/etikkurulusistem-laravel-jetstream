@@ -1,4 +1,8 @@
 <x-app-layout>
+
+    <head>
+        <title>Öğrenci {{ auth()->user()->username }}</title>
+    </head>
     <script src="https://unpkg.com/@popperjs/core@2"></script>
     <script src="https://unpkg.com/tippy.js@6"></script>
     <div class="w-full h-full  flex-col flex justify-center items-center">
