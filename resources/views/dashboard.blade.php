@@ -3,7 +3,6 @@
     <head>
         <title>{{ auth()->user()->role === 'sekreterlik' ? 'Sekreterlik Üyesi' : 'Etik Kurulu Üyesi' }}</title>
     </head>
-    <div id="loading">loading...</div>
     @if (auth()->user()->hasRole('sekreterlik') ||
             auth()->user()->hasRole('etik_kurul'))
         <div class="w-full py-4  flex flex-col ">
