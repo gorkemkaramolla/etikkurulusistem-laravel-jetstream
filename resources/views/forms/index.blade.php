@@ -45,7 +45,7 @@
         </div>
     @endif
 
-    <div class="container">
+    <div class="container w-100">
         <a href="/dashboard" class="link-underline-primary">
 
             < Ana Sayfa </a>

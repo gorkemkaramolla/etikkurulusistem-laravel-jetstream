@@ -21,7 +21,7 @@ th {
         "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif,
         "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
     border: 1px solid #dee2e6;
-    white-space: nowrap;
+    white-space: normal !important;
 }
 #myTable tr td {
     font-size: 14px;
@@ -38,7 +38,6 @@ th {
     max-width: 10px !important;
 }
 #myTable {
-    min-height: 100px;
 }
 
 #myTable tr.even td {

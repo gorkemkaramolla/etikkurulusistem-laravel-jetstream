@@ -23,8 +23,17 @@
 
         </select>
 
-        <table id="myTable" class="divide-gray-200 ">
-        </table>
+        @if (count($forms) > 0)
+            <table id="myTable" class="divide-gray-200 ">
+            </table>
+        @else
+            <div class="flex items-center justify-center h-[75vh]">
+                <div class="text-center">
+                    <h2 class="text-2xl font-bold mb-4">Görüntüleyebileceğiniz başvuru bulunmamaktadır</h2>
+                    <p class="text-gray-500">Lütfen daha sonra tekrar deneyin.</p>
+                </div>
+            </div>
+        @endif
         <div class="flex flex-wrap gap-4 px-5">
 
             <x-button class=" px-4 send-mail-button hidden">Seçilenlere Mail Gönder</x-button>
