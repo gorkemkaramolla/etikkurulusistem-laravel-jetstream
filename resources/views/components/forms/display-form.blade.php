@@ -579,9 +579,7 @@
                 cancelButtonText: 'Hayır, iptal!',
                 dangerMode: true,
             }).then((willEdit) => {
-                if (!willEdit.value) {
-                    return;
-                }
+
 
                 // AJAX request
                 $.ajax({

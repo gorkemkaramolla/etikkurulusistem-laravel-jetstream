@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+$(document).ready(function () {
     var maxLength = 32; // Change this to your desired character limit
     var currentEditColumn = null;
 
@@ -16,27 +16,39 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     });
     // Save button functionality
-    document
-        .querySelector(".save-button")
-        .addEventListener("click", function () {
-            if (currentEditColumn) {
-                var newText = editableArea.textContent;
+    $(document).ready(function () {
+        var saveButton = document.querySelector(".save-button");
 
-                var td = document.querySelector(
-                    'td[data-column="' + currentEditColumn + '"]'
-                );
-                td.dataset.originalText = newText;
-                td.textContent = newText.substring(0, maxLength) + "...";
-                modal.style.display = "none";
-                currentEditColumn = null;
-            }
-        });
+        if (saveButton) {
+            saveButton.addEventListener("click", function () {
+                if (currentEditColumn) {
+                    var newText = editableArea.textContent;
+
+                    var td = document.querySelector(
+                        'td[data-column="' + currentEditColumn + '"]'
+                    );
+                    td.dataset.originalText = newText;
+                    td.textContent = newText.substring(0, maxLength) + "...";
+                    modal.style.display = "none";
+                    currentEditColumn = null;
+                }
+            });
+        } else {
+            console.log("Save button not found");
+        }
+    });
 
     // Close the modal when the close button is clicked
-    document.querySelector(".close").addEventListener("click", function () {
-        modal.style.display = "none";
-        currentEditColumn = null;
-    });
+    var closeButton = document.querySelector(".close");
+
+    if (closeButton) {
+        closeButton.addEventListener("click", function () {
+            modal.style.display = "none";
+            currentEditColumn = null;
+        });
+    } else {
+        console.log("Close button not found");
+    }
 
     // Close the modal when clicking outside the modal
     window.addEventListener("click", function (event) {
@@ -71,10 +83,12 @@ $(document).ready(function () {
             day: "2-digit",
             month: "2-digit",
             year: "numeric",
+            hour: "2-digit",
+            minute: "2-digit",
+            hour12: false,
         });
         return formatter.format(date);
     }
-
     jsonData = jsonData.map(function (form) {
         var created_at = new Date(form["Oluşturulma Tarihi"]);
         var updated_at = new Date(form["Güncelleme Tarihi"]);
@@ -174,6 +188,16 @@ $(document).ready(function () {
 
         buttons: [
             {
+                extend: "print",
+                text: "Yazdır",
+                exportOptions: {
+                    columns: [0, ":visible"],
+                    modifier: {
+                        selected: true,
+                    },
+                },
+            },
+            {
                 extend: "copyHtml5",
                 text: "Kopyala",
                 exportOptions: {
@@ -186,6 +210,7 @@ $(document).ready(function () {
             {
                 extend: "excelHtml5",
                 text: "Seçilenleri Excel'e Aktar",
+                filename: "etikkurul_tablo", // Add this line
                 exportOptions: {
                     format: {
                         header: function (data, columnIdx) {
@@ -276,41 +301,50 @@ $(document).ready(function () {
     // Store the original data in a separate variable
 
     var originalData = jsonData.slice();
-    $(".filterStage")
-        .on("change", function () {
-            let status = $(this).val();
 
-            if (status === "all") {
-                dataTable.clear().rows.add(originalData).search("").draw();
-            } else if (status === "user_onay_bekleyen") {
-                $.ajax({
-                    url: `api/user/${user_id}/pending-approval-forms`,
-                    type: "GET",
-                    success: function (response) {
-                        var filteredData = originalData.filter(function (item) {
-                            return response
-                                .map(String)
-                                .includes(String(item["ID"]));
-                        });
+    // Set the selected option from localStorage when the page loads
+    var savedValue = localStorage.getItem("selectedOption");
+    if (savedValue) {
+        $(".filterStage").val(savedValue).trigger("change");
+    }
 
-                        // Clear the DataTable, add the filtered data, and redraw the table
-                        dataTable.clear().rows.add(filteredData).draw();
-                    },
-                    error: function (error) {
-                        alert(JSON.stringify(error));
-                    },
-                });
-            } else {
-                var filteredData = originalData.filter(function (item) {
-                    return item["Aşama"] === status;
-                });
+    $(".filterStage").on("change", function () {
+        let status = $(this).val();
 
-                // Clear the DataTable, add the filtered data, and redraw the table
-                dataTable.clear().rows.add(filteredData).draw();
-            }
-        })
-        .change();
-    dataTable.order(["0", "asc"]).draw();
+        // Save the selected option to localStorage when the select value changes
+        localStorage.setItem("selectedOption", status);
+
+        if (status === "all") {
+            dataTable.clear().rows.add(originalData).search("").draw();
+        } else if (status === "user_onay_bekleyen") {
+            $.ajax({
+                url: `api/user/${user_id}/pending-approval-forms`,
+                type: "GET",
+                success: function (response) {
+                    var filteredData = originalData.filter(function (item) {
+                        return response
+                            .map(String)
+                            .includes(String(item["ID"]));
+                    });
+
+                    // Clear the DataTable, add the filtered data, and redraw the table
+                    dataTable.clear().rows.add(filteredData).draw();
+                },
+                error: function (error) {
+                    alert(JSON.stringify(error));
+                },
+            });
+        } else {
+            var filteredData = originalData.filter(function (item) {
+                return item["Aşama"] === status;
+            });
+
+            // Clear the DataTable, add the filtered data, and redraw the table
+            dataTable.clear().rows.add(filteredData).draw();
+        }
+    });
+
+    dataTable.order(["2", "desc"]).draw();
     dataTable.on("select deselect", function () {
         var selectedRows = dataTable.rows({
             selected: true,
@@ -339,7 +373,7 @@ $(document).ready(function () {
                     type: "GET",
                     success: function (response) {
                         var html =
-                            '<h2 class="w-full text-center text-2xl font-bold mb-4">Etik Kurulu Onayları</h2>';
+                            '<h2 class="w-full  text-center text-2xl font-bold py-4">Etik Kurulu Onayları</h2>';
                         $.each(response, function (key, value) {
                             var onayDurumuText;
                             switch (value.onay_durumu) {
@@ -347,7 +381,8 @@ $(document).ready(function () {
                                     onayDurumuText = "Onayladı";
                                     break;
                                 case "reddedildi":
-                                    onayDurumuText = "Reddedildi";
+                                    onayDurumuText =
+                                        "Reddedildi : " + value.decide_reason;
                                     break;
                                 case "bekleme":
                                     onayDurumuText = "Bekleme";
@@ -359,25 +394,28 @@ $(document).ready(function () {
                                     onayDurumuText = value.onay_durumu;
                             }
                             html +=
-                                '<details open class="mb-2 text-sm rounded shadow ' +
+                                '<details open class="mb-2 text-sm max-w-[150px] rounded shadow ' +
                                 (value.onay_durumu === "onaylandi"
                                     ? "bg-green-500 text-white"
                                     : value.onay_durumu === "reddedildi"
                                     ? "bg-red-500 text-white"
                                     : "bg-white text-black") +
-                                '">';
+                                ' word-wrap: break-word;">';
                             html +=
                                 "<summary class='cursor-pointer text-sm p-2 bg-gray-200 rounded-t'><strong class='text-gray-700'>" +
                                 value.username +
                                 " " +
                                 value.lastname +
                                 "</strong></summary>";
-                            html += '<p class="p-2">' + onayDurumuText + "</p>";
+                            html +=
+                                '<p class="p-2" style="max-width: 200px; word-wrap: break-word;">' +
+                                onayDurumuText +
+                                "</p>";
 
                             // Add decision reason
                             if (value.decision_reason) {
                                 html +=
-                                    '<p class="p-2">' +
+                                    '<p class="p-2 break-words ">' +
                                     value.decision_reason +
                                     "</p>";
                             }
