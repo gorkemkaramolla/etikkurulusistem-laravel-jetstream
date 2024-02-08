@@ -244,15 +244,22 @@ class FormsController extends Controller
 
                     $etikKurulOnayi->save();
                 }
-                $etikKurulRecipients = User::where('role', 'etik_kurul')->pluck('email')->toArray();
-                $emailMessageTr = config('email-messages.approved-sekreterlik.tr');
-                $emailMessageEn = config('email-messages.approved-sekreterlik.en');
+                try {
+                    $etikKurulRecipients = User::where('role', 'etik_kurul')->pluck('email')->toArray();
+                    $emailMessageTr = config('email-messages.approved-sekreterlik.tr');
+                    $emailMessageEn = config('email-messages.approved-sekreterlik.en');
 
-                $researcherEmail = $form->email;
-                Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($researcherEmail, $etikKurulRecipients) {
-                    $message->to($researcherEmail)
-                        ->subject('Başvurunuz Sekreterlik Tarafından Onaylanmıştır.');
-                });
+                    $researcherEmail = $form->email;
+                    Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($researcherEmail, $etikKurulRecipients) {
+                        $message->to($researcherEmail)
+                            ->subject('Başvurunuz Sekreterlik Tarafından Onaylanmıştır.');
+                    });
+                } catch (Exception $e) {
+                    Log::error('Mail sending failed', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
             } else if ($decide === "duzeltme") {
                 $ccRecipients = User::pluck('email')->toArray();
                 //SEKRETER DUZELTME
@@ -322,11 +329,18 @@ class FormsController extends Controller
                 $subject = 'Etik Kurulu Başvurunuz Reddedildi';
             }
 
-            $researcherEmail = $form->email;
-            Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($researcherEmail, $ccRecipients, $subject) {
-                $message->to($researcherEmail)
-                    ->subject($subject);
-            });
+            try {
+                $researcherEmail = $form->email;
+                Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($researcherEmail, $ccRecipients, $subject) {
+                    $message->to($researcherEmail)
+                        ->subject($subject);
+                });
+            } catch (Exception $e) {
+                Log::error('Mail sending failed', [
+                    'error' => $e->getMessage(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
         } else {
             if ($etikKurulOnayi->whereNotIn('onay_durumu', ['bekleme', 'duzeltme', 'reddedildi'])->count() === $etikKurulOnayi->count()) {
                 //ONAYLANMA DURUMU
@@ -335,16 +349,21 @@ class FormsController extends Controller
 
 
                 $form->save();
-                $researcherEmail = $form->email;
+                try {
+                    $researcherEmail = $form->email;
+                    $emailMessageTr = config('email-messages.approved-etikkurul.tr');
+                    $emailMessageEn = config('email-messages.approved-etikkurul.en');
 
-                $emailMessageTr = config('email-messages.approved-etikkurul.tr');
-                $emailMessageEn = config('email-messages.approved-etikkurul.en');
-
-                $researcherEmail = $form->email;
-                Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($researcherEmail, $ccRecipients) {
-                    $message->to($researcherEmail)
-                        ->subject('Etik kurulu başvurunuz onaylandı.');
-                });
+                    Mail::send('emails.generic', ['emailMessageTr' => $emailMessageTr, 'emailMessageEn' => $emailMessageEn], function ($message) use ($researcherEmail, $ccRecipients) {
+                        $message->to($researcherEmail)
+                            ->subject('Etik kurulu başvurunuz onaylandı.');
+                    });
+                } catch (Exception $e) {
+                    Log::error('Mail sending failed', [
+                        'error' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
             }
         }
     }
@@ -430,6 +449,7 @@ class FormsController extends Controller
 
                 if (!$forms->isEmpty()) {
                     Form::destroy($formIds);
+
                     return redirect()->route('dashboard')->with('success', 'Başvurular başarıyla silindi.');
                 } else {
                     return redirect()->route('dashboard')->with('error', 'Başvuru bulunamadı.');
