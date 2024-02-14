@@ -41,7 +41,6 @@ Route::middleware([
 
     Route::get('/dil-degistir', [DashboardController::class, 'changeLanguageToTurkish']);
 
-    Route::delete('/delete-form/{formid}', [FormsController::class, 'deleteFormById']);
 
     Route::get('/show-pdf/{path}', function ($path) {
         $filePath = storage_path("app/{$path}");

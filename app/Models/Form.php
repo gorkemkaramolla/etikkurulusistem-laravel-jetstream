@@ -9,10 +9,14 @@ use Illuminate\Support\FacadesLog;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 use Illuminate\Support\Str;
 
 class Form extends Model
 {
+    use SoftDeletes;
+
     protected $fillable = [
         'stage',
         'decide_reason',

@@ -36,5 +36,7 @@ Route::middleware([
         Route::get('/user/{user_id}/pending-approval-forms', [FormsController::class, 'getPendingApprovalFormIdsByUserId']); // Modify this line
         Route::post('/enums',  [EnumController::class, 'store']);
         Route::delete('/enums', [EnumController::class, 'destroy']);
+        Route::delete('/delete-form/{formid}', [FormsController::class, 'deleteFormById']);
+        Route::post('/restore-form/{formIds}', [FormsController::class, 'restoreFormById']);
     });
 });

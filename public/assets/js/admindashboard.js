@@ -26,9 +26,67 @@ $(document).ready(function () {
                         return dataTable.row(rowIndex).data().ID;
                     });
                     // Set the action of the form and submit it
-                    $("#deleteForm")
-                        .attr("action", "/delete-form/" + formIds)
-                        .submit();
+                    $.ajax({
+                        url: "api/delete-form/" + formIds,
+                        type: "DELETE",
+                        headers: {
+                            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr(
+                                "content"
+                            ),
+                        },
+                        success: function (response) {
+                            Swal.fire({
+                                title: response.success,
+                                icon: "success",
+                                showCancelButton: true,
+                                confirmButtonText:
+                                    "Silinen başvuruları geri Al",
+                                cancelButtonText: "Evet Sil.",
+                                cancelButtonColor: "#d33",
+                            }).then((result) => {
+                                if (result.isConfirmed) {
+                                    // User clicked "Undo", so restore the forms
+                                    $.ajax({
+                                        url:
+                                            "api/restore-form/" +
+                                            response.formIds,
+                                        type: "POST",
+                                        headers: {
+                                            "X-CSRF-TOKEN": $(
+                                                'meta[name="csrf-token"]'
+                                            ).attr("content"),
+                                        },
+                                        success: function (response) {
+                                            Swal.fire({
+                                                title: response.success,
+                                                icon: "success",
+                                            }).then(() => {
+                                                location.reload();
+                                            });
+                                        },
+                                        error: function (error) {
+                                            console.log(error);
+                                            Swal.fire({
+                                                title: "Error!",
+                                                text: "An error occurred while restoring the forms.",
+                                                icon: "error",
+                                            });
+                                        },
+                                    });
+                                } else if (result.isDismissed) {
+                                    // User clicked "Cancel", so do nothing and let the forms stay deleted
+                                    location.reload();
+                                }
+                            });
+                        },
+                        error: function (error) {
+                            Swal.fire({
+                                title: "Error!",
+                                text: "An error occurred while deleting the forms.",
+                                icon: "error",
+                            });
+                        },
+                    });
                 }
             });
         } else {

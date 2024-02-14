@@ -17,6 +17,7 @@ return new class extends Migration
             $table->foreignId('user_id')->nullable()->constrained();
 
             $table->timestamps();
+            $table->softDeletes(); // Add this line
             $table->timestamp('conclusion_date')->nullable();
             //researcher
             $table->string("name", 255); //isim
@@ -47,8 +48,6 @@ return new class extends Migration
             $table->text('institution_permission'); //kurum izinleri
             $table->date('research_start_date'); //araştırma başlangıç tarihi
             $table->date('research_end_date'); //araştırma bitiş tarihi
-
-
 
             //research
             $table->text("research_title"); //Araştırma başlığı

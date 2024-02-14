@@ -448,17 +448,64 @@ class FormsController extends Controller
                 $forms = Form::whereIn('id', $formIds)->get();
 
                 if (!$forms->isEmpty()) {
-                    Form::destroy($formIds);
+                    foreach ($forms as $form) {
+                        $form->delete();
+                    }
 
-                    return redirect()->route('dashboard')->with('success', 'Başvurular başarıyla silindi.');
+                    return response()->json([
+                        'success' => 'Başvurular başarıyla silindi.',
+                        'formIds' => $formIds
+                    ]);
                 } else {
-                    return redirect()->route('dashboard')->with('error', 'Başvuru bulunamadı.');
+                    return response()->json([
+                        'error' => 'Başvuru bulunamadı.'
+                    ], 404);
                 }
             } else {
-                return redirect()->route('dashboard')->with('error', 'Bu işlemi yapmaya yetkiniz yok.');
+                return response()->json([
+                    'error' => 'Bu işlemi yapmaya yetkiniz yok.'
+                ], 403);
             }
         } catch (Exception $e) {
             Log::error('deleteFormById function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'error' => 'An error occurred while deleting the forms.'
+            ], 500);
+        }
+    }
+
+    public function restoreFormById($formIds)
+    {
+        try {
+            $formIds = explode(',', $formIds);
+            $user = auth()->user();
+
+            if ($user && $user->role === 'admin') {
+                $forms = Form::onlyTrashed()->whereIn('id', $formIds)->get();
+
+                if (!$forms->isEmpty()) {
+                    foreach ($forms as $form) {
+                        $form->restore();
+                    }
+
+                    return response()->json([
+                        'success' => 'Başvurular başarıyla geri yüklendi.'
+                    ]);
+                } else {
+                    return response()->json([
+                        'error' => 'Başvuru bulunamadı.'
+                    ], 404);
+                }
+            } else {
+                return response()->json([
+                    'error' => 'Bu işlemi yapmaya yetkiniz yok.'
+                ], 403);
+            }
+        } catch (Exception $e) {
+            Log::error('restoreFormById function hatası: ' . $e->getMessage() . ' Stack trace: ' . $e->getTraceAsString());
+            return response()->json([
+                'error' => 'An error occurred while restoring the forms.'
+            ], 500);
         }
     }
     public function generateQueryStageForm($formid)
