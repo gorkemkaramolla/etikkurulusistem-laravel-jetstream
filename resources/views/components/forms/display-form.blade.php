@@ -9,7 +9,21 @@
     integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
 @if (Auth::user()->role == 'admin')
 @endif
+<style>
+    @media print {
+        .non-printable {
+            display: none;
+        }
 
+        * {
+            font-size: 8px;
+        }
+
+        #printable {
+            display: block;
+        }
+    }
+</style>
 <style>
     table {
         width: 100%;
@@ -29,8 +43,12 @@
     @media (max-width: 500px) {
         .pdf-render {}
     }
+
+    #printable {
+        display: none;
+    }
 </style>
-<div class="pdf-render w-full  flex flex-col items-center  overflow-y-hidden  p-0 my-8 ">
+<div class="pdf-render w-full  flex flex-col items-center  overflow-y-hidden  p-0 my-8 px-24 ">
     {{-- <button id="downloadPdf">Download PDF</button> --}}
 
     <style>
@@ -64,14 +82,14 @@
             </th>
             <th class="p-0" colspan="1" class="w-2/12">
                 <div style=' height:50%;text-align:center;border-bottom: 1pt solid rgb(191, 191, 191);  '>
-                    <span style='font-size:11px;'>Tarih/Date</span>
-                    <p style="font-size:11px;">
+                    <span style='font-size:11px!important;'>Tarih/Date</span>
+                    <p style="font-size:11px!important;">
                         {{ \Carbon\Carbon::parse($form['created_at'])->format('d/m/Y') }}
                     </p>
                 </div>
                 <div style='text-align:center; height:50%;'>
-                    <span style='font-size:11px;'>Evrak No/Document Number</span>
-                    <p style="font-size:11px;">
+                    <span style='font-size:9px!important;'>Evrak No/Document Number</span>
+                    <p style="font-size:9px!important;">
                         {{ $form->id }}
                     </p>
                 </div>
@@ -318,7 +336,7 @@
         </tr>
         <tr>
             <th class="w-4/12" data-column-name="research_method">
-                <p class="font-bold">Yöntem :</p>
+                <p class="font-bold">Yöntem </p>
                 <p class="font-bold"><i>Research Method </i></p>
             </th>
             <td data-column-name="research_method" class="w-8/12" colspan="3">
@@ -328,7 +346,7 @@
         </tr>
         <tr>
             <th class="w-4/12" data-column-name="research_universe">
-                <p class="font-bold">Evren ve Örneklem :</p>
+                <p class="font-bold">Evren ve Örneklem </p>
                 <p class="font-bold"><i>Research Universe and Sample </i></p>
             </th>
             <td data-column-name="research_universe" class="w-8/12" colspan="3">
@@ -392,12 +410,12 @@
                 <p class="font-bold"><i>Conclusion Date</i></p>
             </th>
             <td data-column-name="conclusion_date" class="w-8/12" colspan="3">
-                <p> {{ $form['conclusion_date'] }}
+                <p> {{ $form['conclusion_date'] ?? 'Henüz sonuçlanmadı' }}
                 </p>
             </td>
         </tr>
-        <tr class="w-full">
-            <th class="w-4/12">
+        <tr class="w-full non-printable">
+            <th class="w-4/12 ">
                 <p>Ek dosyalar</p>
                 <i>Additional Files
                 </i>
@@ -416,7 +434,7 @@
                         href="{{ url('/show-pdf/' . $form->anket_path) }}">
                         <x-svg.download />
 
-                        Anket Formu
+                        Anket Formu / Ölçüm Aracı
 
                     </a>
                     @if ($form->kurum_izinleri_path)
@@ -431,17 +449,20 @@
             </th>
 
         </tr>
+        <tr class="w-full non-printable">
+            <th class="w-4/12 text-center " colspan="4">
+                <x-button onclick="print()">Yazdır / Print</x-button>
+            </th>
 
-        @if (
-            $form->stage === 'etik_kurul' &&
-                (auth()->user()->hasRole('admin') ||
-                    auth()->user()->hasRole('etik_kurul')))
+
+        </tr>
+        @if ($form->stage === 'etik_kurul' && (auth()->user()->hasRole('admin') || auth()->user()->hasRole('etik_kurul')))
             <tr class="bg-[#ac143c] text-white  w-full text-center">
                 <th colspan="2" class="w-full">
                     <h2 class="font-extrabold text-sm">Etik Kurulu Onay Durumları</h2>
                 </th>
             </tr>
-            <tr class="w-full">
+            <tr class="w-full non-printable">
                 <th class="w-4/12" colspan="4">
 
                     <div class="flex flex-wrap w-full justify-center gap-4">
@@ -476,10 +497,8 @@
             </tr>
         @endif
         @if (Auth::user()->role === 'sekreterlik' || Auth::user()->role === 'etik_kurul')
-            <tr>
-                @if (auth()->user()->hasRole('sekreterlik') &&
-                        $form &&
-                        $form->stage === 'sekreterlik')
+            <tr class="non-printable">
+                @if (auth()->user()->hasRole('sekreterlik') && $form && $form->stage === 'sekreterlik')
                     <td colspan="2" class="text-center">
                         <x-approve-modal :formid="$form->id"></x-approve-modal>
                     </td>
@@ -497,7 +516,7 @@
                             ->where('user_id', auth()->user()->id) // Check user_id
                             ->first();
                     @endphp
-                    <td colspan="2" class="text-center">
+                    <td colspan="2" class="text-center non-printable">
                         @if ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'onaylandi')
                             <span class="text-green-600">Etik kurulu onay oyu verdiniz.</span>
                         @elseif ($etikKurulOnayi && $etikKurulOnayi->onay_durumu === 'reddedildi')

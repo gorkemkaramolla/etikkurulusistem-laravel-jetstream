@@ -1,6 +1,16 @@
 @props(['forms'])
 
 <style>
+    @media print {
+        .non-printable {
+            display: none;
+        }
+
+        #printable {
+            display: block;
+        }
+    }
+
     table {
         min-height: 100%;
         width: 100%;
@@ -92,10 +102,8 @@
 
 
                         </td>
-                        <td>
-                            @if (auth()->user()->hasRole('sekreterlik') &&
-                                    $form &&
-                                    $form->stage === 'sekreterlik')
+                        <td class="non-printable">
+                            @if (auth()->user()->hasRole('sekreterlik') && $form && $form->stage === 'sekreterlik')
                                 <x-approve-modal :formid="$form->id"></x-approve-modal>
                             @elseif(auth()->user()->hasRole('etik_kurul'))
                                 @php

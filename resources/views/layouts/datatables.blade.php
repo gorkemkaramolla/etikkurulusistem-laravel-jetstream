@@ -1,6 +1,16 @@
 <x-app-layout>
 
+    <style>
+        @media print {
+            .non-printable {
+                display: none;
+            }
 
+            #printable {
+                display: block;
+            }
+        }
+    </style>
 
     <script type="text/javascript" language="javascript"
         src="https://cdn.datatables.net/1.13.7/js/jquery.dataTables.min.js"></script>
