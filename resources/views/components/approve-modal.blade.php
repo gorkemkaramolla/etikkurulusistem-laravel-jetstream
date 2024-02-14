@@ -1,6 +1,17 @@
+<style>
+    @media print {
+        .non-printable {
+            display: none;
+        }
+
+        #printable {
+            display: block;
+        }
+    }
+</style>
 @props(['formid'])
 
-<div class="modal-body{{ $formid }}">
+<div class="non-printable modal-body{{ $formid }}">
 
     <x-button onclick="toggleModal('{{ $formid }}')">Karar/Verdict</x-button>
 

@@ -3,7 +3,8 @@
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+        integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -197,30 +198,88 @@
                                 <div class="accordion-body">
                                     <div
                                         class="d-flex flex-column gap-2 pt-5 justify-content-center align-items-center ">
-                                        <div class="custom-file-input">
+                                        <div class="custom-file-input ">
 
                                             <label id="path_gonullu_onam_form_label" for="onam_path"> Gönüllü
                                                 Onam
                                                 Formu</label>
-                                            <input class="form-control" value="{{ old('onam_path') }}" type="file"
-                                                name="onam_path" accept="application/pdf" id="onam_path" required>
-                                        </div>
-                                        <div class="custom-file-input">
+                                            <div class=" d-flex flex-column gap-2">
+                                                <input class="form-control" value="{{ old('onam_path') }}"
+                                                    type="file" name="onam_path" accept="application/pdf"
+                                                    id="onam_path" required>
 
-                                            <label id="path_gonullu_onam_form_label" for="anket_path"> Anket
-                                                Formu</label>
-                                            <input class="form-control" type="file" name="anket_path"
-                                                accept="application/pdf" value="{{ old('anket_path') }}"
-                                                id="anket_path" required>
+                                                <div
+                                                    class="d-flex justify-content-around align-items-center preview-container">
+                                                    <div class="preview-link-container"></div>
+
+                                                    <div style=" display: none!important;"
+                                                        class="cancel-btn text-center">
+
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                                                            viewBox="0 0 24 24" width="24px" fill="#000000">
+                                                            <path d="M0 0h24v24H0z" fill="none" />
+                                                            <path
+                                                                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
+
                                         <div class="custom-file-input">
+                                            <label id="path_gonullu_onam_form_label" class="w-100" for="anket_path">
+                                                Anket
+                                                Formu / Ölçüm Aracı</label>
+                                            <div class="d-flex flex-column gap-2">
+                                                <input class="form-control" type="file" name="anket_path"
+                                                    accept="application/pdf" value="{{ old('anket_path') }}"
+                                                    id="anket_path" required>
+                                                <div
+                                                    class="d-flex justify-content-around align-items-center preview-container ">
+                                                    <div class="preview-link-container"></div>
+
+                                                    <div style=" display: none!important;"
+                                                        class="cancel-btn text-center">
+
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                                                            viewBox="0 0 24 24" width="24px" fill="#000000">
+                                                            <path d="M0 0h24v24H0z" fill="none" />
+                                                            <path
+                                                                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="custom-file-input ">
 
                                             <label id="path_gonullu_onam_form_label" for="kurum_izinleri_path">
                                                 Kurum İzni
                                                 (Varsa)</label>
-                                            <input class="form-control" type="file" name="kurum_izinleri_path"
-                                                accept="application/pdf " value="{{ old('kurum_izinleri_path') }}"
-                                                id="kurum_izinleri_path">
+                                            <div class="d-flex flex-column gap-2">
+                                                <input class="form-control" type="file" name="kurum_izinleri_path"
+                                                    accept="application/pdf "
+                                                    value="{{ old('kurum_izinleri_path') }}"
+                                                    id="kurum_izinleri_path">
+                                                <div
+                                                    class="d-flex justify-content-around align-items-center preview-container ">
+                                                    <div class="preview-link-container"></div>
+
+                                                    <div style=" display: none!important;"
+                                                        class="cancel-btn text-center">
+
+                                                        <svg xmlns="http://www.w3.org/2000/svg" height="24px"
+                                                            viewBox="0 0 24 24" width="24px" fill="#000000">
+                                                            <path d="M0 0h24v24H0z" fill="none" />
+                                                            <path
+                                                                d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
 
@@ -250,6 +309,42 @@
             var popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
             var popoverList = popoverTriggerList.map(function(element) {
                 return new bootstrap.Popover(element);
+            });
+
+        });
+        $(document).ready(function() {
+            $('.form-control').change(function() {
+                var file = this.files[0];
+
+                if (file) {
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        var fileURL = URL.createObjectURL(file);
+                        var link = $('<a></a>');
+                        link.attr('href', fileURL);
+                        link.attr('target', '_blank');
+                        link.text('Önizleme');
+                        $(this).siblings('.preview-container').find('.preview-link-container').find('a')
+                            .remove(); // remove the existing preview link
+                        $(this).siblings('.preview-container').find('.preview-link-container').append(
+                            link).show();
+
+                        // Show the cancel button
+                        $(this).siblings('.preview-container').find('.cancel-btn').show();
+                    }.bind(this);
+                    reader.readAsDataURL(file);
+                } else {
+                    $(this).siblings('.preview-container').find('.preview-link-container').hide();
+                }
+            });
+
+            $('.cancel-btn').click(function() {
+                $(this).parent().siblings('.form-control').replaceWith($(this).parent().siblings(
+                    '.form-control').val('').clone(true)); // clear the current upload and replace the input
+                $(this).hide();
+
+                // Remove the "Önizleme" link
+                $(this).siblings('.preview-link-container').find('a').remove();
             });
         });
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')

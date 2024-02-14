@@ -3,8 +3,7 @@
     <head>
         <title>{{ auth()->user()->role === 'sekreterlik' ? 'Sekreterlik Üyesi' : 'Etik Kurulu Üyesi' }}</title>
     </head>
-    @if (auth()->user()->hasRole('sekreterlik') ||
-            auth()->user()->hasRole('etik_kurul'))
+    @if (auth()->user()->hasRole('sekreterlik') || auth()->user()->hasRole('etik_kurul'))
         <div class="w-full py-4  flex flex-col ">
             <select class="mx-auto filterStage" name="status" id="">
                 <option {{ auth()->user()->role === 'admin' ? 'selected' : null }} value="all">
