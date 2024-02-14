@@ -602,7 +602,7 @@
 
                 // AJAX request
                 $.ajax({
-                    url: '/fix-form/' + "{{ $form['id'] }}",
+                    url: '/api/fix-form/' + "{{ $form['id'] }}",
                     method: 'POST',
                     data: JSON.stringify(changes),
                     contentType: 'application/json',

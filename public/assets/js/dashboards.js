@@ -369,7 +369,7 @@ $(document).ready(function () {
             $(".show-edit-button").attr("href", `/formshow` + "/" + id);
             if (stage === "etik_kurul" || stage === "reddedildi") {
                 $.ajax({
-                    url: `/getEtikKuruluOnayiByFormId` + "/" + id,
+                    url: `/api/getEtikKuruluOnayiByFormId` + "/" + id,
                     type: "GET",
                     success: function (response) {
                         var html =

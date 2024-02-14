@@ -114,7 +114,7 @@
                         </script>
                     </div> --}}
                 <form enctype="multipart/form-data"
-                    action="{{ url('store-form/' . (isset($formData) ? $formData->id : '')) }}" method="POST">
+                    action="{{ url('api/store-form/' . (isset($formData) ? $formData->id : '')) }}" method="POST">
                     @csrf
                     <div class="row d-flex justify-content-center mb-1">
                         <img src="/assets/images/logo-nisantasi.png" style="width:180px;">

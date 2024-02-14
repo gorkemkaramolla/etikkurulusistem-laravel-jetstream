@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\EmailController;
 use App\Http\Controllers\FormsController;
 use App\Http\Controllers\AdminFeaturesController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EnumController;
 
 /*
@@ -28,15 +29,41 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    // Admin ve Etik Kurul üyelerine açık olan api routeları
+    // Admin and Etik Kurul members' routes
     Route::middleware('CheckUserEtikKurulMember')->group(function () {
         Route::post('/send-email', [EmailController::class, 'handleSendEmail']);
-        Route::post('/edit-user/{userId}', [AdminFeaturesController::class, 'editUser'])->name('adminfeatures.editUser');
-        Route::post('/add-new-user', [AdminFeaturesController::class, 'addNewUser'])->name('adminfeatures.addNewUser');
-        Route::post('/set-user-status/{status}/{user_id}', [AdminFeaturesController::class, 'setUserStatus'])->name('adminfeatures.setUserStatus');
-        Route::get('/user/{user_id}/pending-approval-forms', [FormsController::class, 'getPendingApprovalFormIdsByUserId']); // Modify this line
-        Route::post('/enums',  [EnumController::class, 'store']);
-        Route::delete('/enums', [EnumController::class, 'destroy']);
-        Route::delete('/delete-form/{formid}', [FormsController::class, 'deleteFormById']);
-        Route::post('/restore-form/{formIds}', [FormsController::class, 'restoreFormById']);
+        Route::controller(AdminFeaturesController::class)->group(function () {
+            Route::post('/edit-user/{userId}', 'editUser');
+            Route::post('/add-new-user', 'addNewUser');
+            Route::post('/set-user-status/{status}/{user_id}', 'setUserStatus');
+            Route::get('/getUsers/{userRole}',  'getUsers')->name('adminfeatures.getUsers');
+        });
+
+        Route::controller(EnumController::class)->group(function () {
+            Route::post('/enums',  [EnumController::class, 'store']);
+            Route::delete('/enums', [EnumController::class, 'destroy']);
+        });
+        Route::controller(FormsController::class)->group(function () {
+            Route::get('/user/{user_id}/pending-approval-forms',  'getPendingApprovalFormIdsByUserId');
+            Route::post('/approve-sekreterlik/{formid}',  'approveSekreterlik');
+            Route::post('/approve-etikkurul/{formid}',  'approveEtikkurul');
+            Route::delete('/delete-form/{formid}',  'deleteFormById');
+            Route::post('/restore-form/{formIds}',  'restoreFormById');
+            Route::get('/getEtikKuruluOnayiByFormId/{id}',  'getEtikKuruluOnayiByFormId');
+        });
+        Route::controller(DashboardController::class)->group(function () {
+            Route::get('/dil-degistir', [DashboardController::class, 'changeLanguageToTurkish']);
+            Route::get('/pdf/{slug}', [DashboardController::class, 'generatePdf']);
+        });
+    });
+    /*
+        Başvuru yapanlara açık olan api routeları (Giriş Yapmış Üyeler)
+        Public routes for applicants (Logged in users)
+
+    */
+    Route::controller(FormsController::class)->group(function () {
+        Route::post('store-form/{formId?}',  'store');
+        Route::post('/fix-form/{formId}',  'fixForm');
     });
 });

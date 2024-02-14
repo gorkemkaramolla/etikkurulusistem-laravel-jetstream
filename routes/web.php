@@ -2,17 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FormsController;
-use App\Http\Controllers\DatabaseSeedController;
-use Tymon\JWTAuth\Facades\JWTAuth;
-
-use Illuminate\Support\Facades\Gate;
-
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DataVisualizationController;
-
-use App\Http\Controllers\TestController;
-
-use App\Http\Controllers\ExportController;
 use App\Http\Controllers\AdminFeaturesController;
 
 
@@ -21,27 +12,18 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard/{formStatus?}', [DashboardController::class, 'index'])->name('dashboard');
+    Route::controller(FormsController::class)->group(function () {
+        Route::get('/form/{formId?}', 'index')->name('forms.index');
+        Route::get('/query-etikkurul/{formid}',  'generateQueryStageForm');
+    });
+    Route::controller(DashboardController::class)->group(function () {
+        Route::get('/dashboard/{formStatus?}', [DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/formshow/{formid}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
+    });
+    Route::controller(AdminFeaturesController::class)->group(function () {
+        Route::get('/adminfeatures', 'index')->name('adminfeatures.index');
+    });
     Route::get('/visualize', [DataVisualizationController::class, 'index'])->name('visualize');
-    Route::post('store-form/{formId?}', [FormsController::class, 'store'])->name('forms.store');
-    Route::post('/fix-form/{formId}', [FormsController::class, 'fixForm'])->name('fixForm');
-
-    Route::get('/formshow/{formid}', [DashboardController::class, 'getFormSlug'])->name('forms.get');
-
-    Route::get('/export-to-excel', 'YourController@exportToExcel')->name('export.to.excel');
-    Route::get('/getEtikKuruluOnayiByFormId/{id}', [FormsController::class, 'getEtikKuruluOnayiByFormId']);
-
-    Route::get('/adminfeatures', [AdminFeaturesController::class, 'index'])->name('adminfeatures.index');
-    Route::get('/getUsers/{userRole}', [AdminFeaturesController::class, 'getUsers'])->name('adminfeatures.getUsers');
-    Route::get('export/array', [ExportController::class, 'array'])->name('export.array');
-    Route::get("/send-mail", [ExportController::class, 'sendMail'])->name('send.mail');
-
-    Route::post('/approve-sekreterlik/{formid}', [FormsController::class, 'approveSekreterlik'])->name('approve.sekreterlik');
-    Route::post('/approve-etikkurul/{formid}', [FormsController::class, 'approveEtikkurul'])->name('approve.etikkurul');
-
-    Route::get('/dil-degistir', [DashboardController::class, 'changeLanguageToTurkish']);
-
-
     Route::get('/show-pdf/{path}', function ($path) {
         $filePath = storage_path("app/{$path}");
 
@@ -54,22 +36,11 @@ Route::middleware([
             abort(404, 'File not found');
         }
     })->where('path', '.*');
-
-    Route::post('/forms/approve/{formid}', [FormsController::class, 'approveSekreterlik']);
-    Route::get('/pdf/{slug}', [DashboardController::class, 'generatePdf']);
 });
-
-
-
 Route::get("/info", function () {
     return view('info.index');
 });
-
-Route::get('/form/{formId?}', [FormsController::class, 'index'])->name('forms.index');
-
-
 Route::view('/', 'root.index')->name('root.index');
-Route::get('/query-etikkurul/{formid}', [FormsController::class, 'generateQueryStageForm']);
 
 // Route::get('/seed-database', [DatabaseSeedController::class, 'seed']);
 // Route::get('generate', function () {

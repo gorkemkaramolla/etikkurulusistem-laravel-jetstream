@@ -1,7 +1,5 @@
 $(".share-button").on("click", function () {
-    var qrText =
-        "https://etikkurul.nisantasi.edu.tr/query-etikkurul/" +
-        $(this).data("id");
+    var qrText = "query-etikkurul/" + $(this).data("id");
 
     Swal.fire({
         title: "Genel başvuru sorgulama linkiniz",

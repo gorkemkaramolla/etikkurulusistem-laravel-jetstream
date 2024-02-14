@@ -49,7 +49,7 @@
                 </div>
 
                 <form
-                    action="{{ !Auth::user()->hasRole('sekreterlik') ? route('approve.etikkurul', ['formid' => $formid]) : route('approve.sekreterlik', ['formid' => $formid]) }}"
+                    action="{{ !Auth::user()->hasRole('sekreterlik') ? route('api.approve.etikkurul', ['formid' => $formid]) : route('api.approve.sekreterlik', ['formid' => $formid]) }}"
                     method="POST">
 
                     @csrf
